@@ -5,7 +5,7 @@
 
 
 namespace graphics {
-	//TODO: Textur richtig abbilden, kamera richtig nutzen
+	//TODO: Textur richtig abbilden
 
 	MeshRenderer::MeshRenderer() {
 		program.attach(ShaderManager::get("shader\\mesh.vert", ShaderType::VERTEX));
@@ -43,10 +43,12 @@ namespace graphics {
 		program.use();
 		program.setUniform(0, _camera.getViewProjection());
 		unsigned transformID = glCall(glGetUniformLocation, program.getID(), "Transform");
+		unsigned cameraID = glCall(glGetUniformLocation, program.getID(), "Camera");
 
 		for (auto it = instances.begin(); it != instances.end(); it++) {
 			it->texture.bind(0);
 			glCall(glUniformMatrix4fv, transformID, 1, GL_FALSE, &it->transform[0][0]);
+			glCall(glUniformMatrix4fv, cameraID, 1, GL_FALSE, &_camera.getViewProjection()[0][0]);
 			if (it->dirty) {
 				glCall(glBindBuffer, GL_ARRAY_BUFFER, it->vbo);
 				glCall(glBufferData, GL_ARRAY_BUFFER, it->meshVertices.size() * sizeof(Mesh::Vertex), &(it->meshVertices[0]), GL_STATIC_DRAW);
