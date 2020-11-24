@@ -5,23 +5,18 @@ layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec2 vertexUv;
 
 uniform mat4 Transform;
-uniform vec3 lightPos;
-uniform vec3 viewerPos;
+uniform mat4 Camera;
 
 out vec2 uv;
 out vec3 Normal;
-out vec3 lpos;
-
+out vec3 Position;
+out mat4 Camera2;
 
 void main() {
+	Position = vec3(Transform * vec4(vertexPosition, 1));
+	Normal = mat3(transpose(inverse(Transform))) * vertexNormal;
 
-    uv= vertexUv;
-	
-	gl_Position = Transform * vec4(vertexPosition, 2);
-	
-	Normal = normalize(vertexNormal);
-
-
-	lpos = normalize(vertexPosition - lightPos);
-	
+	uv = vertexUv;
+	gl_Position = Camera * Transform * vec4(vertexPosition, 1);
+	Camera2 = Camera;
 }
