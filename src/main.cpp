@@ -11,6 +11,7 @@
 #include <gl/GL.h>
 #include <GLFW/glfw3.h>
 #include <thread>
+#include <glm\ext\matrix_transform.hpp>
 
 // CRT's memory leak detection
 #ifndef NDEBUG 
@@ -64,7 +65,7 @@ int main(int argc, char* argv[])
 	Mesh meshCrate(*utils::MeshLoader::get("models/crate.obj"));
 	MeshRenderer renderer[10];
 	for (int i = 0; i < 10; i++)
-		renderer[i].draw(meshPlanet, texturePlanet, camera.getViewProjection());
+		renderer[i].draw(meshPlanet, texturePlanet, glm::mat4(1.f));
 
 	auto lastCursorPos = input::InputManager::getCursorPos();
 
