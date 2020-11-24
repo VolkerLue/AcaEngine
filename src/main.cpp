@@ -34,16 +34,16 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-	glm::vec3 plantetPositions[] = {
+	glm::vec3 planetPositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
 		glm::vec3(-1.5f, -2.2f, -2.5f),
 		glm::vec3(-3.8f, -2.0f, -12.3f),
-		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(2.4f, -4.0f, -3.5f),
 		glm::vec3(-1.7f,  3.0f, -7.5f),
 		glm::vec3(1.3f, -2.0f, -2.5f),
 		glm::vec3(1.5f,  2.0f, -2.5f),
-		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(1.5f,  7.0f, -1.5f),
 		glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
 
@@ -84,8 +84,10 @@ int main(int argc, char* argv[])
 	float yaw = -90.0f;
 	float pitch = 0.0f;
 
-	const float sensitivity = 3.0f;
+	const float mouseSensitivity = 3.0f;
 	const float cameraSpeed = 3.0f;
+
+	float angle = 1.0f;
 
 	input::InputManager::setCursorMode(input::InputManager::CursorMode::DISABLED);
 	while (!glfwWindowShouldClose(window))
@@ -112,8 +114,8 @@ int main(int argc, char* argv[])
 			lastCursorPos.y = InputManager::getCursorPos().y;
 			lastCursorPos.x = InputManager::getCursorPos().x;
 
-			yaw += deltaX * sensitivity * deltaTime;
-			pitch += deltaY * sensitivity * deltaTime;
+			yaw += deltaX * mouseSensitivity * deltaTime;
+			pitch += deltaY * mouseSensitivity * deltaTime;
 
 			if (pitch > 89.0f)
 				pitch = 89.0f;
@@ -130,15 +132,20 @@ int main(int argc, char* argv[])
 		
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		camera.setView(view);
+
 		for (unsigned int i = 0; i < 10; i++){
 				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, plantetPositions[i]);
+				if (angle >= 360.0) angle -= 360.0;
+				angle += 0.05f * deltaTime * (i + 1);
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0, 1.0, 0.0));
+				model = glm::translate(model, planetPositions[i]);
 				camera.setView(camera.getView() * model);
 				renderer[i].present(camera);
 		}
 
 		std::cout << deltaTime << "\n";
 				
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
