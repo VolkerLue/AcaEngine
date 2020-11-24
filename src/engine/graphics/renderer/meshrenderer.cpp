@@ -8,8 +8,8 @@ namespace graphics {
 	//TODO: Textur richtig abbilden
 
 	MeshRenderer::MeshRenderer() {
-		program.attach(ShaderManager::get("shader\\mesh.vert", ShaderType::VERTEX));
-		program.attach(ShaderManager::get("shader\\mesh.frag", ShaderType::FRAGMENT));
+		program.attach(ShaderManager::get("shader/mesh.vert", ShaderType::VERTEX));
+		program.attach(ShaderManager::get("shader/mesh.frag", ShaderType::FRAGMENT));
 		program.link();
 
 	}
@@ -33,7 +33,7 @@ namespace graphics {
 		glCall(glVertexAttribPointer, 2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), (void*)offsetof(Mesh::Vertex, TexCoords));
 
 		bool dirty = true;
-		struct MeshInstance mi = { _mesh.vertices, _texture, _transform, vao, vbo, dirty };
+		struct MeshInstance mi = {_mesh.vertices, _texture, _transform, vao, vbo, dirty};
 		instances.push_back(mi);
 	}
 
@@ -41,7 +41,6 @@ namespace graphics {
 		if (instances.empty()) return;
 
 		program.use();
-		program.setUniform(0, _camera.getViewProjection());
 		unsigned transformID = glCall(glGetUniformLocation, program.getID(), "Transform");
 		unsigned cameraID = glCall(glGetUniformLocation, program.getID(), "Camera");
 
@@ -55,8 +54,10 @@ namespace graphics {
 				it->dirty = false;
 			}
 			glCall(glBindVertexArray, it->vao);
-			glCall(glDrawArrays, GL_TRIANGLES, 0, it->meshVertices.size() * 3);
+			glCall(glDrawArrays, GL_TRIANGLES, 0, it->meshVertices.size());
+			
 		}
+		
 	}
 
 	void MeshRenderer::clear() {
