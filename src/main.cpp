@@ -4,17 +4,12 @@
 #include <engine/graphics/core/device.hpp>
 #include <engine/input/inputmanager.hpp>
 #include <engine/utils/meshloader.hpp>
-#include <engine\graphics\core\opengl.hpp>
-#include <engine\graphics\core\geometrybuffer.hpp>
-
-#include <engine\graphics\core\vertexformat.hpp>
-#include <engine\graphics\core\texture.hpp>
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
+#include <engine/graphics/core/opengl.hpp>
+#include <engine/graphics/core/geometrybuffer.hpp>
+#include <engine/graphics/core/vertexformat.hpp>
+#include <engine/graphics/core/texture.hpp>
 #include <gl/GL.h>
 #include <GLFW/glfw3.h>
-
 #include <thread>
 
 // CRT's memory leak detection
@@ -23,9 +18,9 @@
 #define _CRTDBG_MAP_ALLOC
 #include <crtdbg.h>
 #endif
+#include <iostream>
 
 #endif
-
 
 using namespace std::chrono_literals;
 
@@ -38,97 +33,103 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-	graphics::Device::initialize(1000, 1000, false);
+	glm::vec3 plantetPositions[] = {
+		glm::vec3(0.0f,  0.0f,  0.0f),
+		glm::vec3(2.0f,  5.0f, -15.0f),
+		glm::vec3(-1.5f, -2.2f, -2.5f),
+		glm::vec3(-3.8f, -2.0f, -12.3f),
+		glm::vec3(2.4f, -0.4f, -3.5f),
+		glm::vec3(-1.7f,  3.0f, -7.5f),
+		glm::vec3(1.3f, -2.0f, -2.5f),
+		glm::vec3(1.5f,  2.0f, -2.5f),
+		glm::vec3(1.5f,  0.2f, -1.5f),
+		glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
+
+	graphics::Device::initialize(1366, 768, false);
 	GLFWwindow* window = graphics::Device::getWindow();
 	input::InputManager::initialize(window);
 
 	using namespace graphics;
-	//Camera camera(45.f, 0.01f, 10000.f);
-	Camera camera(0.f, 0.f, 0.f);
+	Camera camera(45.f, 0.1f, 10000.f);
+
+	glm::mat4 view = camera.getView();
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 cameraPos = glm::mat4(1.0f);
+
 	Sampler sampler(Sampler::Filter::LINEAR, Sampler::Filter::LINEAR, Sampler::Filter::LINEAR);
-	const Texture2D& planet = *Texture2DManager::get("textures\\planet1.png", sampler);
-	Mesh mesh(*utils::MeshLoader::get("models\\sphere.obj"));
-	MeshRenderer renderer;
-	glm::mat4 id(1.f);
-	glm::mat4 rotate = glm::rotate(id, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	const Texture2D& texturePlanet = *Texture2DManager::get("textures/planet1.png", sampler);
+	const Texture2D& textureCrate = *Texture2DManager::get("textures/cratetex.png", sampler);
+	Mesh meshPlanet(*utils::MeshLoader::get("models/sphere.obj"));
+	Mesh meshCrate(*utils::MeshLoader::get("models/crate.obj"));
+	MeshRenderer renderer[10];
+	for (int i = 0; i < 10; i++)
+		renderer[i].draw(meshPlanet, texturePlanet, camera.getViewProjection());
 
-	//glClearColor(0.f, 1.f, 0.f, 1.f);
+	auto lastCursorPos = input::InputManager::getCursorPos();
 
-	glm::mat4 rotateX = glm::rotate(id, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-	glm::mat4 rotateY = glm::rotate(id, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	float lastTime = glfwGetTime();
+	float currentTime = glfwGetTime();
+	float delta = glfwGetTime()- lastTime;
 
-	auto radX = glm::radians(1.0f);
-	auto radY = glm::radians(1.0f);
+	float camX = 0.0f;
+	float camZ = 0.0f;
 
-	auto cur = input::InputManager::getCursorPos();
-	glm::mat4 translate = glm::translate(glm::vec3(0.0, 0.0, 90.));
-
+	input::InputManager::setCursorMode(input::InputManager::CursorMode::DISABLED);
 	while (!glfwWindowShouldClose(window))
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		renderer.draw(mesh, planet, rotate);
-		camera.setView(rotate);
-		renderer.present(camera);
+		currentTime = glfwGetTime();
+		delta = currentTime - lastTime;
+		lastTime = currentTime;
 
 		using namespace input;
-		if (InputManager::getCursorPos().x < cur.x) {
-			cur.x = InputManager::getCursorPos().x;
-			radX -= glm::radians(1.f);
-			rotateX = glm::rotate(id, radX, glm::vec3(0.0, 1.0, 0.0));
+
+		////camera dreht um plantet0
+		//if (InputManager::isKeyPressed(input::Key::ESCAPE))		glfwSetWindowShouldClose(window, true);
+		//if (InputManager::isKeyPressed(input::Key::W))			view *= glm::translate(glm::vec3(0.0, 0.0, 1.0 * delta));
+		//if (InputManager::isKeyPressed(input::Key::S))			view *= glm::translate(glm::vec3(0.0, 0.0, -1.0 * delta));
+		//if (InputManager::isKeyPressed(input::Key::A))			view *= glm::translate(glm::vec3(1.0 * delta, 0.0, 0.0));
+		//if (InputManager::isKeyPressed(input::Key::D))			view *= glm::translate(glm::vec3(-1.0 * delta, 0.0, 0.0));
+		//if (InputManager::isKeyPressed(input::Key::Q))			view *= glm::translate(glm::vec3(0.0, 1.0 * delta, 0.0));
+		//if (InputManager::isKeyPressed(input::Key::E))			view *= glm::translate(glm::vec3(0.0, -1.0 * delta, 0.0));
+
+		// camera dreht um Punkt
+		if (InputManager::isKeyPressed(input::Key::ESCAPE))		glfwSetWindowShouldClose(window, true);
+		if (InputManager::isKeyPressed(input::Key::W))			plantetPositions[0] += glm::vec3(0.0, 0.0, 2.0 * delta);
+		if (InputManager::isKeyPressed(input::Key::S))			plantetPositions[0] += glm::vec3(0.0, 0.0, -2.0 * delta);
+		if (InputManager::isKeyPressed(input::Key::A))			plantetPositions[0] += glm::vec3(2.0 * delta, 0.0, 0.0);
+		if (InputManager::isKeyPressed(input::Key::D))			plantetPositions[0] += glm::vec3(-2.0 * delta, 0.0, 0.0);
+		if (InputManager::isKeyPressed(input::Key::Q))			plantetPositions[0] += glm::vec3(0.0, 2.0 * delta, 0.0);
+		if (InputManager::isKeyPressed(input::Key::E))			plantetPositions[0] += glm::vec3(0.0, -2.0 * delta, 0.0);
+
+		if (InputManager::getCursorPos().x != lastCursorPos.x) {
+			float deltaX = InputManager::getCursorPos().x - lastCursorPos.x;
+			lastCursorPos.x = InputManager::getCursorPos().x;		
+			view *= glm::rotate(model, glm::radians(5.0f) * delta * deltaX, glm::vec3(0.0, 1.0, 0.0));
 		}
-		if (InputManager::getCursorPos().x > cur.x) {
-			cur.x = InputManager::getCursorPos().x;
-			radX += glm::radians(1.f);
-			rotateX = glm::rotate(id, radX, glm::vec3(0.0, 1.0, 0.0));
+		if (InputManager::getCursorPos().y != lastCursorPos.y) {
+			float deltaY = InputManager::getCursorPos().y - lastCursorPos.y;
+			lastCursorPos.y = InputManager::getCursorPos().y;
+			view *= glm::rotate(model, glm::radians(5.0f) * delta * deltaY, glm::vec3(1.0, 0.0, 0.0));
 		}
-		if (InputManager::getCursorPos().y < cur.y) {
-			cur.y = InputManager::getCursorPos().y;
-			radY -= glm::radians(1.f);
-			rotateY = glm::rotate(id, radY, glm::vec3(1.0, 0.0, 0.0));
-		}
-		if (InputManager::getCursorPos().y > cur.y) {
-			cur.y = InputManager::getCursorPos().y;
-			radY += glm::radians(1.f);
-			rotateY = glm::rotate(id, radY, glm::vec3(1.0, 0.0, 0.0));
+				
+		camera.setView(view);
+		for (unsigned int i = 0; i < 10; i++){
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, plantetPositions[i]);
+				camera.setView(camera.getView() * model);
+				renderer[i].present(camera);
 		}
 
+		std::cout << delta << "\n";
 
-
-		if (InputManager::isKeyPressed(input::Key::W)) {
-			rotateY = rotateY * glm::translate(glm::vec3(0.0, 0.01, 0.0));
-		}
-		if (InputManager::isKeyPressed(input::Key::S)) {
-			rotateY = rotateY * glm::translate(glm::vec3(0.0, -0.01, 0.0));
-		}
-		if (InputManager::isKeyPressed(input::Key::A)) {
-			rotateX = rotateX * glm::translate(glm::vec3(-0.01, 0.0, 0.0));
-		}
-		if (InputManager::isKeyPressed(input::Key::D)) {
-			rotateX = rotateX * glm::translate(glm::vec3(0.01, 0.0, 0.0));
-		}
-
-		if (InputManager::isKeyPressed(input::Key::UP)) {
-			rotateX = rotateX * glm::scale(glm::vec3(0.9, 0.9, 0.9));
-		}
-		if (InputManager::isKeyPressed(input::Key::DOWN)) {
-			rotateX = rotateX * glm::scale(glm::vec3(1.1, 1.1, 1.1));
-		}
-		if (InputManager::isKeyPressed(input::Key::LEFT)) {
-			rotateX = rotateX * glm::translate(glm::vec3(0.0, 0.0, 0.01));
-		}
-		if (InputManager::isKeyPressed(input::Key::RIGHT)) {
-			rotateX = rotateX * glm::translate(glm::vec3(0.0, 0.0, -0.01));
-		}
-
-
-		rotate = rotateX * rotateY;
-
+		
 		glEnable(GL_CULL_FACE);
-
 		glfwPollEvents();
 		glfwSwapBuffers(window);
-		std::this_thread::sleep_for(16ms);
+		std::this_thread::sleep_for(8ms);
 	}
 
 	utils::MeshLoader::clear();
