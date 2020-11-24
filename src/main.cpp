@@ -56,7 +56,6 @@ int main(int argc, char* argv[])
 
 	glm::mat4 view = camera.getView();
 	glm::mat4 model = glm::mat4(1.0f);
-	glm::mat4 cameraPos = glm::mat4(1.0f);
 
 	Sampler sampler(Sampler::Filter::LINEAR, Sampler::Filter::LINEAR, Sampler::Filter::LINEAR);
 	const Texture2D& texturePlanet = *Texture2DManager::get("textures/planet1.png", sampler);
@@ -73,8 +72,19 @@ int main(int argc, char* argv[])
 	float currentTime = glfwGetTime();
 	float delta = glfwGetTime()- lastTime;
 
-	float camX = 0.0f;
-	float camZ = 0.0f;
+	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	glm::vec3 cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 cameraDirection = glm::normalize(cameraPos - cameraTarget);
+	glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+	glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraDirection));
+	glm::vec3 cameraUp = glm::cross(cameraDirection, cameraRight);
+	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+	glm::vec3 direction;
+	float yaw = -90.0f;
+	float pitch = 0.0f;
+
+	float sensitivity = 0.05f;
 
 	input::InputManager::setCursorMode(input::InputManager::CursorMode::DISABLED);
 	while (!glfwWindowShouldClose(window))
@@ -87,15 +97,6 @@ int main(int argc, char* argv[])
 
 		using namespace input;
 
-		////camera dreht um plantet0
-		//if (InputManager::isKeyPressed(input::Key::ESCAPE))		glfwSetWindowShouldClose(window, true);
-		//if (InputManager::isKeyPressed(input::Key::W))			view *= glm::translate(glm::vec3(0.0, 0.0, 1.0 * delta));
-		//if (InputManager::isKeyPressed(input::Key::S))			view *= glm::translate(glm::vec3(0.0, 0.0, -1.0 * delta));
-		//if (InputManager::isKeyPressed(input::Key::A))			view *= glm::translate(glm::vec3(1.0 * delta, 0.0, 0.0));
-		//if (InputManager::isKeyPressed(input::Key::D))			view *= glm::translate(glm::vec3(-1.0 * delta, 0.0, 0.0));
-		//if (InputManager::isKeyPressed(input::Key::Q))			view *= glm::translate(glm::vec3(0.0, 1.0 * delta, 0.0));
-		//if (InputManager::isKeyPressed(input::Key::E))			view *= glm::translate(glm::vec3(0.0, -1.0 * delta, 0.0));
-
 		// camera dreht um Punkt
 		if (InputManager::isKeyPressed(input::Key::ESCAPE))		glfwSetWindowShouldClose(window, true);
 		if (InputManager::isKeyPressed(input::Key::W))			plantetPositions[0] += glm::vec3(0.0, 0.0, 2.0 * delta);
@@ -105,15 +106,29 @@ int main(int argc, char* argv[])
 		if (InputManager::isKeyPressed(input::Key::Q))			plantetPositions[0] += glm::vec3(0.0, 2.0 * delta, 0.0);
 		if (InputManager::isKeyPressed(input::Key::E))			plantetPositions[0] += glm::vec3(0.0, -2.0 * delta, 0.0);
 
-		if (InputManager::getCursorPos().x != lastCursorPos.x) {
+		if (InputManager::getCursorPos() != lastCursorPos) {
+
 			float deltaX = InputManager::getCursorPos().x - lastCursorPos.x;
-			lastCursorPos.x = InputManager::getCursorPos().x;		
-			view *= glm::rotate(model, glm::radians(5.0f) * delta * deltaX, glm::vec3(0.0, 1.0, 0.0));
-		}
-		if (InputManager::getCursorPos().y != lastCursorPos.y) {
-			float deltaY = InputManager::getCursorPos().y - lastCursorPos.y;
+			float deltaY = lastCursorPos.y - InputManager::getCursorPos().y;
+
 			lastCursorPos.y = InputManager::getCursorPos().y;
-			view *= glm::rotate(model, glm::radians(5.0f) * delta * deltaY, glm::vec3(1.0, 0.0, 0.0));
+			lastCursorPos.x = InputManager::getCursorPos().x;
+
+			yaw += deltaX * sensitivity;
+			pitch += deltaY * sensitivity;
+
+			if (pitch > 89.0f)
+				pitch = 89.0f;
+			if (pitch < -89.0f)
+				pitch = -89.0f;
+
+			glm::vec3 direction;
+			direction.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+			direction.y = sin(glm::radians(pitch));
+			direction.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+
+			cameraFront = glm::normalize(direction);
+			view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp * delta);
 		}
 				
 		camera.setView(view);
@@ -125,8 +140,7 @@ int main(int argc, char* argv[])
 		}
 
 		std::cout << delta << "\n";
-
-		
+				
 		glEnable(GL_CULL_FACE);
 		glfwPollEvents();
 		glfwSwapBuffers(window);
