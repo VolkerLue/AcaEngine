@@ -5,12 +5,18 @@
 
 
 namespace graphics {
-	//TODO: Textur richtig abbilden, mehrere textures, mehrere objekte zeichnen, kamera richtig nutzen
+	//TODO: Textur richtig abbilden
 
-	MeshRenderer::MeshRenderer() : dirty(true) {
-		program.attach(ShaderManager::get("shader\\mesh.vert", ShaderType::VERTEX));
-		program.attach(ShaderManager::get("shader\\mesh.frag", ShaderType::FRAGMENT));
+	MeshRenderer::MeshRenderer() {
+		program.attach(ShaderManager::get("shader/mesh.vert", ShaderType::VERTEX));
+		program.attach(ShaderManager::get("shader/mesh.frag", ShaderType::FRAGMENT));
 		program.link();
+
+	}
+
+	void MeshRenderer::draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform) {
+		unsigned vao;
+		unsigned vbo;
 
 		glCall(glGenVertexArrays, 1, &vao);
 		glCall(glBindVertexArray, vao);
@@ -27,39 +33,36 @@ namespace graphics {
 		glCall(glEnableVertexAttribArray, 2);
 		glCall(glVertexAttribPointer, 2, 2, GL_FLOAT, GL_FALSE, sizeof(Mesh::Vertex), (void*)offsetof(Mesh::Vertex, TexCoords));
 
-	}
-
-	void MeshRenderer::draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform) {
-		meshes.push_back(_mesh);
-		textures = &_texture;
-		transforms.push_back(_transform);
-		dirty = true;
+		bool dirty = true;
+		struct MeshInstance mi = {_mesh.vertices, _texture, _transform, vao, vbo, dirty};
+		instances.push_back(mi);
 	}
 
 	void MeshRenderer::present(const Camera& _camera) {
-		if (meshes.size() == 0) return;
+		if (instances.empty()) return;
+
 		program.use();
-		program.setUniform(0, _camera.getViewProjection());
-
-		(*textures).bind(0);
 		unsigned transformID = glCall(glGetUniformLocation, program.getID(), "Transform");
-		glCall(glUniformMatrix4fv, transformID, 1, GL_FALSE, &transforms[0][0][0]);
+		unsigned cameraID = glCall(glGetUniformLocation, program.getID(), "Camera");
 
-
-		if (dirty) {
-			glCall(glBindBuffer, GL_ARRAY_BUFFER, vbo);
-			glCall(glBufferData, GL_ARRAY_BUFFER, meshes[0].vertices.size() * sizeof(Mesh::Vertex), &(meshes[0].vertices[0]), GL_STATIC_DRAW);
-			dirty = false;
+		for (auto it = instances.begin(); it != instances.end(); it++) {
+			it->texture.bind(0);
+			glCall(glUniformMatrix4fv, transformID, 1, GL_FALSE, &it->transform[0][0]);
+			glCall(glUniformMatrix4fv, cameraID, 1, GL_FALSE, &_camera.getViewProjection()[0][0]);
+			if (it->dirty) {
+				glCall(glBindBuffer, GL_ARRAY_BUFFER, it->vbo);
+				glCall(glBufferData, GL_ARRAY_BUFFER, it->meshVertices.size() * sizeof(Mesh::Vertex), &(it->meshVertices[0]), GL_STATIC_DRAW);
+				it->dirty = false;
+			}
+			glCall(glBindVertexArray, it->vao);
+			glCall(glDrawArrays, GL_TRIANGLES, 0, it->meshVertices.size());
+			
 		}
-		glCall(glBindVertexArray, vao);
-		glCall(glDrawArrays, GL_TRIANGLES, 0, meshes[0].vertices.size() * 3);
+		
 	}
 
 	void MeshRenderer::clear() {
-		meshes.clear();
-		textures = (graphics::Texture2D*) 0;
-		transforms.clear();
-		dirty = true;
+		instances.clear();
 	}
 
 }
