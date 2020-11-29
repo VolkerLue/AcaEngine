@@ -17,6 +17,7 @@ namespace graphics {
 	void MeshRenderer::draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform) {
 		unsigned vao;
 		unsigned vbo;
+
 		glCall(glGenVertexArrays, 1, &vao);
 		glCall(glBindVertexArray, vao);
 
