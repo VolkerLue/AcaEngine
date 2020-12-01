@@ -4,7 +4,7 @@
 #include <chrono>
 #include <iostream>
 
-Game::Game() : maxDt(1.f/60.f) {
+Game::Game() : maxDt(1.f / 60.f) {
 	//acquires global resources
 	graphics::Device::initialize(1366, 768, false);
 	window = graphics::Device::getWindow();
@@ -18,18 +18,18 @@ Game::~Game() {
 	graphics::Device::close();
 }
 
-void Game::run(std::unique_ptr<UpAndDown> _initialState) {
+void Game::run(std::unique_ptr<GameState> _initialState) {
 	//manages game states with a stack invoking the appropriate events
 	//controls delta time to maintain a smooth frame rate without wasting to much CPU time
 	//performs state update + rendering
 
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
-	states.push_back(*_initialState);
+	states.push_back(std::move(_initialState));
 	std::cout << "in run methode" << std::endl;
 
 	while (!states.empty()) {	//TODO: Mehrere States und Wechsel zwischen ihnen.
-		GameState& current = states.back();
+		GameState& current = *states.back();
 		float t = 0;
 		auto currentTime = clock::now();
 		float dt = 0.f;
@@ -47,11 +47,10 @@ void Game::run(std::unique_ptr<UpAndDown> _initialState) {
 				t += dt;
 			} while (frameTime.count() > 0.0f);
 			current.draw(t, dt);
-			
+
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 		}
-		states.pop_back();		
+		states.pop_back();
 	}
 }
-
