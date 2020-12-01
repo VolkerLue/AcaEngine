@@ -13,7 +13,8 @@
 #include <thread>
 #include <glm\ext\matrix_transform.hpp>
 #include <engine/utils/Game.hpp>
-#include <engine/utils/UpAndDown.hpp>
+//#include <engine/utils/UpAndDown.hpp>
+#include <engine/utils/FreeFall.hpp>
 #include <memory>
 #include <chrono>
 #pragma once
@@ -39,8 +40,10 @@ int main(int argc, char* argv[])
 #endif
 #endif
 	Game game;
-	UpAndDown a;
-	game.run(std::make_unique<UpAndDown>(a));
+	//UpAndDown upanddown;
+	FreeFall freefall;
+	//game.run(std::make_unique<UpAndDown>(upanddown));
+	game.run(std::make_unique<FreeFall>(freefall)); 
 
 	/*
 	glm::vec3 planetPositions[] = {

@@ -8,10 +8,10 @@ public:
 	void draw(float _time, float _deltaTime);
 
 	//has virtual interface for state transition events
-	void onResume() ;
-	void onPause() ;
+	void onResume();
+	void onPause();
 
 	//interface to mark current state as finished and to provide a new state
-	void newState() ;
+	void newState();
 	bool isFinished();
 };
