@@ -12,6 +12,11 @@
 #include <GLFW/glfw3.h>
 #include <thread>
 #include <glm\ext\matrix_transform.hpp>
+#include <engine/utils/Game.hpp>
+#include <engine/utils/UpAndDown.hpp>
+#include <memory>
+#include <chrono>
+#pragma once
 
 // CRT's memory leak detection
 #ifndef NDEBUG 
@@ -33,7 +38,11 @@ int main(int argc, char* argv[])
 	//	_CrtSetBreakAlloc(2760);
 #endif
 #endif
+	Game game;
+	UpAndDown a;
+	game.run(std::make_unique<UpAndDown>(a));
 
+	/*
 	glm::vec3 planetPositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
@@ -70,7 +79,7 @@ int main(int argc, char* argv[])
 
 	float lastTime = glfwGetTime();
 	float currentTime = glfwGetTime();
-	float deltaTime = glfwGetTime()- lastTime;
+	float deltaTime = glfwGetTime() - lastTime;
 
 	glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
 	glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -129,22 +138,22 @@ int main(int argc, char* argv[])
 
 			cameraFront = glm::normalize(direction);
 		}
-		
+
 		view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 		camera.setView(view);
 
-		for (unsigned int i = 0; i < 10; i++){
-				glm::mat4 model = glm::mat4(1.0f);
-				if (angle >= 360.0) angle -= 360.0;
-				angle += 0.05f * deltaTime * (i + 1);
-				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0, 1.0, 0.0));
-				model = glm::translate(model, planetPositions[i]);
-				camera.setView(camera.getView() * model);
-				renderer[i].present(camera);
+		for (unsigned int i = 0; i < 10; i++) {
+			glm::mat4 model = glm::mat4(1.0f);
+			if (angle >= 360.0) angle -= 360.0;
+			angle += 0.05f * deltaTime * (i + 1);
+			model = glm::rotate(model, glm::radians(angle), glm::vec3(0.0, 1.0, 0.0));
+			model = glm::translate(model, planetPositions[i]);
+			camera.setView(camera.getView() * model);
+			renderer[i].present(camera);
 		}
 
 		std::cout << deltaTime << "\n";
-				
+
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glfwPollEvents();
@@ -153,6 +162,6 @@ int main(int argc, char* argv[])
 	}
 
 	utils::MeshLoader::clear();
-	graphics::Device::close();
+	graphics::Device::close();*/
 	return EXIT_SUCCESS;
 }
