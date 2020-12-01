@@ -17,7 +17,7 @@ void UpAndDown::update(float _time, float _deltaTime) {
 }
 
 void UpAndDown::draw(float _time, float _deltaTime) {
-	difference = difference;
+	difference = difference * glm::translate(glm::vec3(0.f, 0.f, -1.1f));
 	renderer->clear();
 	renderer->draw(*mesh, *texture, difference);
 	renderer->present(*camera);
