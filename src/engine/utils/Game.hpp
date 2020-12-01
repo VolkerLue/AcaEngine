@@ -15,13 +15,13 @@ public:
 	~Game();
 
 	//Start the game loop with _initialState on the stack
-	void run(std::unique_ptr<UpAndDown> _initialState);
+	void run(std::unique_ptr<GameState> _initialState);
 
-	void addState(std::unique_ptr<UpAndDown> _state);
+	void addState(std::unique_ptr<GameState> _state);
 
 	float maxDt;
 
 private:
 	GLFWwindow* window;
-	std::vector<UpAndDown> states;
+	std::vector<std::unique_ptr<GameState>> states;
 };
