@@ -23,6 +23,12 @@ public:
 	}
 
 	//TODO: Destruktor
+	~GameState() {
+		delete mesh;
+		delete renderer;
+		delete camera;
+		utils::MeshLoader::clear();
+	}
 
 
 	//has pure virtual functions for frame updates
