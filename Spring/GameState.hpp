@@ -10,10 +10,10 @@ public:
 	GameState() : finished(false), difference(glm::mat4(1.f)) {
 		using namespace graphics;
 		Sampler sampler(Sampler::Filter::LINEAR, Sampler::Filter::LINEAR, Sampler::Filter::LINEAR);
-		const Texture2D& texturePlanet = *Texture2DManager::get("C:/Users/justu/Source/Repos/AcaEngine/resources/textures/planet1.png", sampler);
+		const Texture2D& texturePlanet = *Texture2DManager::get("resources/textures/planet1.png", sampler);
 		texture = &texturePlanet;
 
-		Mesh* meshPlanet = new Mesh(*utils::MeshLoader::get("C:/Users/justu/Source/Repos/AcaEngine/resources/models/sphere.obj"));
+		Mesh* meshPlanet = new Mesh(*utils::MeshLoader::get("resources/models/sphere.obj"));
 		mesh = meshPlanet;
 
 		MeshRenderer* renderer = new MeshRenderer;
