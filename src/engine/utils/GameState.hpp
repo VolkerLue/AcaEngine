@@ -1,27 +1,28 @@
 #include <engine/graphics/renderer/meshrenderer.hpp>
+#pragma once
+#include <engine/graphics/core/texture.hpp>
+#include <engine/graphics/renderer/mesh.hpp>
+#include <engine/graphics/camera.hpp>
 
 class GameState {
 public:
-	GameState() : finished(false) {
+	GameState() : finished(false), difference(glm::mat4(1.f)) {
 		using namespace graphics;
-		
 		Sampler sampler(Sampler::Filter::LINEAR, Sampler::Filter::LINEAR, Sampler::Filter::LINEAR);
 		const Texture2D& texturePlanet = *Texture2DManager::get("textures/planet1.png", sampler);
 		texture = &texturePlanet;
-		
-		Mesh meshPlanet(*utils::MeshLoader::get("models/sphere.obj"));
-		mesh = &meshPlanet;
-		
-		MeshRenderer renderer;
-		this->renderer = &renderer;
-		
-		Camera camera(45.f, 0.1f, 10000.f);
-		this->camera = &camera;
-		
-		difference = glm::mat4(1.f);
-		finished = false;
+
+		Mesh* meshPlanet = new Mesh(*utils::MeshLoader::get("models/sphere.obj"));
+		mesh = meshPlanet;
+
+		MeshRenderer* renderer = new MeshRenderer;
+		this->renderer = renderer;
+
+		Camera* camera = new Camera(45.f, 0.1f, 10000.f);
+		this->camera = camera;
 	}
 
+	//TODO: Destruktor
 
 
 	//has pure virtual functions for frame updates
