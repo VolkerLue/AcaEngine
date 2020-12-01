@@ -2,7 +2,10 @@
 #include <engine\graphics\core\device.cpp>
 #include <engine\input\inputmanager.cpp>
 #include <chrono>
+#include <thread>
 #include <iostream>
+#include <engine/input/inputmanager.hpp>
+#pragma once
 
 Game::Game() : maxDt(1.f / 60.f) {
 	//acquires global resources
@@ -18,6 +21,10 @@ Game::~Game() {
 	graphics::Device::close();
 }
 
+void Game::addState(std::unique_ptr<GameState> _state) {
+	states.push_back(std::move(_state));
+}
+
 void Game::run(std::unique_ptr<GameState> _initialState) {
 	//manages game states with a stack invoking the appropriate events
 	//controls delta time to maintain a smooth frame rate without wasting to much CPU time
@@ -27,26 +34,28 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 	using duration_t = std::chrono::duration<float>;
 	states.push_back(std::move(_initialState));
 	std::cout << "in run methode" << std::endl;
+	bool b = true;
 
-	while (!states.empty()) {	//TODO: Mehrere States und Wechsel zwischen ihnen.
+	while (!states.empty() && !glfwWindowShouldClose(window)) {
 		GameState& current = *states.back();
 		float t = 0;
+		const float timeStep = 0.01;
+
 		auto currentTime = clock::now();
 		float dt = 0.f;
 
-		while (!current.isFinished()) {
+		while (!current.isFinished() && !glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
 			currentTime = newTime;
-			do {
-				dt = std::min(frameTime.count(), maxDt);
-				current.update(t, dt);
-				frameTime -= duration_t(dt);
-				t += dt;
-			} while (frameTime.count() > 0.0f);
-			current.draw(t, dt);
+			dt += frameTime.count();
+			while (dt >= timeStep) {
+				t += timeStep;
+				dt -= timeStep;
+				current.update(t, timeStep);
+			}
+			current.draw(t, dt/timeStep);
 
 			glfwPollEvents();
 			glfwSwapBuffers(window);
