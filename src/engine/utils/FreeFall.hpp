@@ -4,18 +4,18 @@ class FreeFall : public GameState {
 public:
 	FreeFall();
 	//has pure virtual functions for frame updates
-	void update(float _time, float _deltaTime);
-	void draw(float _time, float _deltaTime);
+	void update(float _time, float _deltaTime) override;
+	void draw(float _time, float _deltaTime) override;
 
 	//has virtual interface for state transition events
-	void onResume();
-	void onPause();
+	void onResume() override;
+	void onPause() override;
 
 	//interface to mark current state as finished and to provide a new state
-	void newState();
+	void newState() override;
 	bool isFinished();
 
 private:
-	float a = -0.01f;
-	float v = 0.f;
+	float a;
+	float v;
 };
