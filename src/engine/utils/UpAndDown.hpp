@@ -2,7 +2,7 @@
 #pragma once
 class UpAndDown : public GameState {
 public:
-
+	UpAndDown();
 	//has pure virtual functions for frame updates
 	void update(float _time, float _deltaTime);
 	void draw(float _time, float _deltaTime);
