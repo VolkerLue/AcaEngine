@@ -4,7 +4,9 @@
 #include <engine\graphics\renderer\meshrenderer.hpp>
 #include <iostream>
 
-
+UpAndDown::UpAndDown() : GameState() {
+	difference = glm::translate(glm::vec3(0.f, 0.f, -5.0f));
+}
 
 void UpAndDown::newState() {
 	difference = glm::mat4(1.f);
