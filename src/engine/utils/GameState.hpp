@@ -1,7 +1,28 @@
-#include <engine\graphics\renderer\meshrenderer.hpp>
+#include <engine/graphics/renderer/meshrenderer.hpp>
 
 class GameState {
 public:
+	GameState() : finished(false) {
+		using namespace graphics;
+		
+		Sampler sampler(Sampler::Filter::LINEAR, Sampler::Filter::LINEAR, Sampler::Filter::LINEAR);
+		const Texture2D& texturePlanet = *Texture2DManager::get("textures/planet1.png", sampler);
+		texture = &texturePlanet;
+
+		Mesh meshPlanet(*utils::MeshLoader::get("models/sphere.obj"));
+		mesh = &meshPlanet;
+
+		MeshRenderer renderer;
+		this->renderer = &renderer;
+
+		Camera camera(45.f, 0.1f, 10000.f);
+		this->camera = &camera;
+
+		difference = glm::mat4(1.f);
+		finished = false;
+	}
+
+
 
 	//has pure virtual functions for frame updates
 	virtual void update(float _time, float _deltaTime) = 0;
@@ -17,7 +38,10 @@ public:
 		return finished;
 	}
 
-private:
 	bool finished;
-	graphics::MeshRenderer renderer;
+	const graphics::Texture2D* texture;
+	graphics::Mesh* mesh;
+	graphics::Camera* camera;
+	graphics::MeshRenderer* renderer;
+	glm::mat4 difference;
 };
