@@ -1,19 +1,22 @@
-#include "FreeFall.hpp"
-#include <engine\graphics\core\texture.cpp>
-#include <engine\graphics\renderer\mesh.cpp>
-#include <engine\graphics\renderer\meshrenderer.hpp>
+#include <engine/utils/FreeFall.hpp>
+#include <engine/graphics/core/texture.cpp>
+#include <engine/graphics/renderer/mesh.cpp>
+#include <engine/graphics/renderer/meshrenderer.hpp>
 #include <iostream>
+#pragma once
 
-FreeFall::FreeFall() : GameState() {
+FreeFall::FreeFall() : GameState(), a(-0.01f), v(0.f) {
 	difference = glm::translate(glm::vec3(0.f, 10.f, -20.0f));
 }
 
 void FreeFall::newState() {
-	difference = glm::mat4(1.f);
+	difference = glm::translate(glm::vec3(0.f, 10.f, -20.0f));
 }
 
 void FreeFall::update(float _time, float _deltaTime) {
-	float t = _time * _deltaTime;
+	if (_time > 15) {
+		finished = true;
+	}
 }
 
 void FreeFall::draw(float _time, float _deltaTime) {
@@ -28,9 +31,12 @@ void FreeFall::draw(float _time, float _deltaTime) {
 }
 
 void FreeFall::onResume() {
-	float t = 0;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	renderer->clear();
+	renderer->draw(*mesh, *texture, difference);
+	renderer->present(*camera);
 }
 
 void FreeFall::onPause() {
-	float t = 0;
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
