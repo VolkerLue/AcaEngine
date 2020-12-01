@@ -1,7 +1,10 @@
+#pragma once
 #include <memory>
 #include "GameState.hpp"
-#include <GLFW\glfw3.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <memory>
+#include <engine\utils\UpAndDown.hpp>
 
 class Game {
 public:
@@ -12,13 +15,13 @@ public:
 	~Game();
 
 	//Start the game loop with _initialState on the stack
-	void run(std::unique_ptr<GameState> _initialState);
+	void run(std::unique_ptr<UpAndDown> _initialState);
 
-	void addState(std::unique_ptr<GameState> _State);
+	void addState(std::unique_ptr<UpAndDown> _state);
 
 	float maxDt;
 
 private:
 	GLFWwindow* window;
-	std::vector<std::unique_ptr<GameState>> states;
+	std::vector<UpAndDown> states;
 };
