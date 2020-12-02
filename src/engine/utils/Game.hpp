@@ -18,7 +18,7 @@ public:
 	void run(std::unique_ptr<GameState> _initialState);
 
 	void addState(std::unique_ptr<GameState> _state);
-	
+
 private:
 	GLFWwindow* window;
 	std::vector<std::unique_ptr<GameState>> states;
