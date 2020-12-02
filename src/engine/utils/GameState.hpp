@@ -1,5 +1,4 @@
 #pragma once
-
 #include <engine/graphics/renderer/meshrenderer.hpp>
 #include <engine/graphics/core/texture.hpp>
 #include <engine/graphics/renderer/mesh.hpp>
