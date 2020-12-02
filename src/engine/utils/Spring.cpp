@@ -1,10 +1,6 @@
-#include <engine/utils/Spring.hpp>
-#include <engine/graphics/core/texture.cpp>
-#include <engine/graphics/renderer/mesh.cpp>
-#include <engine/graphics/renderer/meshrenderer.hpp>
-#include <iostream>
 #pragma once
-
+#include <engine/utils/Spring.hpp>
+#include <GL/glew.h>
 
 Spring::Spring() : GameState(), times(0) {}
 
@@ -14,6 +10,9 @@ void Spring::newState() {
 
 void Spring::update(float _time, float _deltaTime) {
 	times = times + 1;
+	if (_time > 5) {
+		finished = true;
+	}
 
 }
 
