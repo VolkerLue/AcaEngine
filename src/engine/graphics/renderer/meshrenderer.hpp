@@ -38,5 +38,7 @@ namespace graphics {
 
 		Program program;
 
+		std::vector<unsigned> textureIds;
+
 	};
 }
