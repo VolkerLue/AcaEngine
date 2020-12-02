@@ -4,7 +4,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <memory>
-#include <engine\utils\UpAndDown.hpp>
+#include <engine/utils/UpAndDown.hpp>
 
 class Game {
 public:
