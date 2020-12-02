@@ -1,5 +1,6 @@
-#include <engine/utils/GameState.hpp>
 #pragma once
+#include <engine/utils/GameState.hpp>
+
 class UpAndDown : public GameState {
 public:
 	UpAndDown();
