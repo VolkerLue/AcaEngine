@@ -8,7 +8,7 @@
 #include <engine/input/inputmanager.hpp>
 
 
-Game::Game() : maxDt(1.f / 60.f) {
+Game::Game() {
 	//acquires global resources
 	graphics::Device::initialize(1366, 768, false);
 	window = graphics::Device::getWindow();
