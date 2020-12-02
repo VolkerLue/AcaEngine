@@ -1,54 +1,44 @@
-#include "meshrenderer.hpp"
-#include "../core/opengl.hpp"
-#include "../core/texture.hpp"
-#include "mesh.hpp"
-#include <engine/graphics/core/geometrybuffer.hpp>
+#pragma once
 
+#include "../core/shader.hpp"
+#include "../camera.hpp"
+#include "glm/glm.hpp"
+#include "mesh.hpp"
+#include <vector>
+#include <engine\graphics\core\geometrybuffer.hpp>
 
 namespace graphics {
 
-	MeshRenderer::MeshRenderer() {
-		program.attach(ShaderManager::get("shader/mesh.vert", ShaderType::VERTEX));
-		program.attach(ShaderManager::get("shader/mesh.frag", ShaderType::FRAGMENT));
-		program.link();
+	class Mesh;
+	class Texture2D;
 
-		graphics::VertexAttribute va[3];
-		va[0] = {graphics::PrimitiveFormat::FLOAT, 3, false, false};
-		va[1] = {graphics::PrimitiveFormat::FLOAT, 3, false, false};
-		va[2] = {graphics::PrimitiveFormat::FLOAT, 2, false, false};
-		geometryBuffer = new GeometryBuffer(graphics::GLPrimitiveType::TRIANGLES, va, 3, 0);
-	}
+	class MeshRenderer
+	{
+	public:
+		MeshRenderer();
 
-	MeshRenderer::~MeshRenderer() {
-		delete geometryBuffer;
-	}
+		~MeshRenderer();
 
-	void MeshRenderer::draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform) {
-		struct MeshInstance mi = {_mesh.vertices, _texture, _transform};
-		instances.push_back(mi);
-	}
+		void draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform);
 
-	void MeshRenderer::present(const Camera& _camera) {
-		if (instances.empty()) return;
-		program.use();
-		program.setUniform(program.getUniformLoc("Camera"), _camera.getViewProjection());
-		for (auto it = instances.begin(); it != instances.end(); it++) {
+		void present(const Camera& _camera);
+		void clear();
 
-			auto p = std::find(textureIds.begin(), textureIds.end(), it->texture.getID());
-			if (p != textureIds.end()) {
-				it->texture.bind(0);
-				textureIds.push_back(it->texture.getID());
-			}
-			
-			program.setUniform(program.getUniformLoc("Transform"),it->transform);
-			geometryBuffer->setData(&(it->meshVertices[0]), it->meshVertices.size() * sizeof(Mesh::Vertex));
-			geometryBuffer->draw();
-		}
-		
-	}
+	private:
 
-	void MeshRenderer::clear() {
-		instances.clear();
-	}
+		struct MeshInstance {
+			const std::vector<Mesh::Vertex>& meshVertices;
+			const Texture2D& texture;
+			glm::mat4 transform;
+		};
 
+		graphics::GeometryBuffer* geometryBuffer;
+
+		std::vector<MeshInstance> instances;
+
+		Program program;
+
+		std::vector<unsigned> textureIds;
+
+	};
 }
