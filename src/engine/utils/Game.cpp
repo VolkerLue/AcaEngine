@@ -1,11 +1,12 @@
+#pragma once
 #include "Game.hpp"
-#include <engine\graphics\core\device.cpp>
-#include <engine\input\inputmanager.cpp>
+#include <engine/graphics/core/device.cpp>
+#include <engine/input/inputmanager.cpp>
 #include <chrono>
 #include <thread>
 #include <iostream>
 #include <engine/input/inputmanager.hpp>
-#pragma once
+
 
 Game::Game() : maxDt(1.f / 60.f) {
 	//acquires global resources
