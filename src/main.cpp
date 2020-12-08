@@ -13,12 +13,13 @@
 #include <GLFW/glfw3.h>
 #include <thread>
 #include <glm/ext/matrix_transform.hpp>
-#include <engine/utils/Game.hpp>
-#include <engine/utils/Spring.hpp>
-#include <engine/utils/UpAndDown.hpp>
-#include <engine/utils/FreeFall.hpp>
+#include <engine/game/Game.hpp>
+#include <engine/game/Spring.hpp>
+#include <engine/game/UpAndDown.hpp>
+#include <engine/game/FreeFall.hpp>
 #include <memory>
 #include <chrono>
+#include <engine/game/Registry.cpp>
 
 
 // CRT's memory leak detection
@@ -41,6 +42,23 @@ int main(int argc, char* argv[])
 	//	_CrtSetBreakAlloc(2760);
 #endif
 #endif
+
+	Registry<int> registry;
+	Entity entity1 = registry.create();
+	registry.setData(entity1, 5);
+	Entity entity2 = registry.create();
+	registry.setData(entity2, 6);
+	Entity entity3 = registry.create();
+	registry.setData(entity3, 7);
+	registry.execute(Add2<int>());
+	registry.execute(Printer<int>());
+	std::cout << std::endl;
+	registry.execute(Sum<int>());
+	registry.erase(entity2);
+	std::cout << std::endl;
+	registry.execute(Printer<int>());
+
+	/*
 	Game game;
 	UpAndDown upanddown;
 	FreeFall freefall;
@@ -50,8 +68,6 @@ int main(int argc, char* argv[])
 	game.run(std::make_unique<UpAndDown>());
 	
 	
-
-	/*
 	glm::vec3 planetPositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),
