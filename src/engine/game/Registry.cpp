@@ -57,7 +57,6 @@ T& Registry<T>::getData(Entity _ent) {
 template<typename T>
 template<typename FN>
 void Registry<T>::execute(FN _fn) {
-	std::cout << numEntitys << std::endl;
 	int found = 0;
 	for (int i = 0; i < flags.size() && found < numEntitys; i++) {
 		if (flags[i]) {
