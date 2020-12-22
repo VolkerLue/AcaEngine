@@ -1,5 +1,5 @@
-#pragma once
 #include <engine/game/Registry2.hpp>
+#include <iostream>
 
 Entity Registry2::create() {
 	uint32_t i;
@@ -122,3 +122,56 @@ const Component& Registry2::getComponentUnsafe(Entity _ent) const {
 	auto& cS = componentMap[typeid(Component).name()];
 	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 }
+
+/*
+template<typename... Args, typename Action>
+void Registry2::execute(const Action& _action) {
+	using namespace std;
+	bool hasAllComponents;
+	vector<string> comp = { (0, unpack_one<Args>()) ... };
+	vector<int> ent;
+	for (int en = 0; en < flags.size(); en++) {						//gets all entities that have all components
+		if (!flags[en]) continue;
+		hasAllComponents = true;
+
+		for (auto it = comp.begin(); it != comp.end(); it++) {		//checks if entity has all components
+			if (componentMap[*it].sparse[en] == -1) {
+				hasAllComponents = false;
+				break;
+			}
+		}
+
+		if (hasAllComponents) {
+			ent.push_back(en);
+		}
+	}
+
+	for (auto it = ent.begin(); it != ent.end(); it++) {
+		for (auto it2 = co.begin(); it2 != co.end(); it2++) {
+			Component c = getComponent(ent);
+			if (it2 = co.begin()) auto f = curry(_action, c);
+			else auto f = curry(f, c);
+		}
+	}
+}
+
+template<typename Component, typename Action, typename ReturnType>
+ReturnType Registry2::call1(int ent, const Action& _action) {
+	Component c = getComponent<Component>(ent);
+	auto f = curry(_action, c);
+	return f;
+}
+
+
+template<typename Component>
+std::string unpack_one() {		
+	return typeid(Component).name();
+}
+
+
+template<typename Function, typename... Arguments>
+auto curry(Function function, Arguments... args) {
+	return [=](auto... rest) {
+		return function(args..., rest...);
+	};
+}*/
