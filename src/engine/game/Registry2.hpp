@@ -64,11 +64,14 @@ public:
 	// expected by Action::operator(component_type&...).
 	// In addition, the entity itself is provided if
 	// the first parameter is of type Entity.
-	//template<typename T, typename... Args, typename Action>
-	//void execute(const Action& _action);
+	/*template<typename... Args, typename Action>
+	void execute(const Action& _action);
+	template<typename Component, typename Action, typename ReturnType>
+	ReturnType call1(int ent, const Action& _action);*/
 
 	std::vector<bool> flags;
 	std::vector<uint32_t> generations;
 	int numEntitys = 0;
 	std::unordered_map<std::string, componentStruct<std::any>> componentMap;
+	std::vector<std::string> co;
 };
