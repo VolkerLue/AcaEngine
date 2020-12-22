@@ -1,77 +1,177 @@
-#pragma once
-#include <any>
-#include <optional>
-#include <vector>
-#include <unordered_map>
+#include <engine/game/Registry2.hpp>
+#include <iostream>
 
-template<typename T>
-concept component_type = std::movable<T>; // und trivial destructable
+Entity Registry2::create() {
+	uint32_t i;
+	numEntitys++;
+	for (i = 0; i < flags.size(); i++) {
+		if (!flags[i]) {
+			flags[i] = true;
+			generations[i]++;
+			return Entity{ i };
+		}
+	}
+	flags.push_back(true);
+	generations.push_back(1);
+	return Entity{ i };
+}
 
-struct Entity
-{
-	uint32_t id;
-};
+void Registry2::erase(Entity _ent) {
+	flags[_ent.id] = false;
+	numEntitys--;
+	for (auto it = componentMap.begin(); it != componentMap.end(); it++) {
+		auto cS = it->second;
+		if (cS.sparse[_ent.id] != -1) {
+			int pos = cS.sparse[_ent.id];
+			cS.sparse[_ent.id] = -1;
+			cS.entities[pos] = cS.entities[cS.entities.size() - 1];
+			cS.entities.pop_back();
+			cS.components[pos] = cS.components[cS.components.size() - 1];
+			cS.components.pop_back();
+			cS.sparse[cS.entities[pos].id] = pos;
+		}
+	}
+}
 
-struct EntityRef
-{
-	Entity ent;
-	uint32_t generation;
-};
+EntityRef Registry2::getRef(Entity _ent) const {
+	return { _ent, generations[_ent.id] };
+}
+
+std::optional<Entity> Registry2::getEntity(EntityRef _ent) const {
+	if (_ent.generation == generations[_ent.ent.id] && flags[_ent.ent.id]) {
+		return _ent.ent;
+	}
+	return std::nullopt;
+}
+
+
+template<component_type Component, typename... Args>
+Component& Registry2::addComponent(Entity _ent, Args&&... _args) {
+	if (componentMap.contains(typeid(Component).name())) {
+		auto& cS = componentMap[typeid(Component).name()];
+		if (cS.sparse[_ent.id] != -1) {
+			return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+		}
+	}
+	else {
+		std::vector<int> sparse(100, -1);
+		std::vector<Entity> entities;
+		std::vector<std::any> components;
+		componentStruct<std::any> comStr = { sparse, entities, components };
+		componentMap[typeid(Component).name()] = comStr;
+	}
+	auto& cS = componentMap[typeid(Component).name()];
+	cS.sparse[_ent.id] = cS.entities.size();
+	cS.entities.push_back(_ent);
+	cS.components.push_back(std::any(Component(_args...)));
+	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+}
 
 template<component_type Component>
-struct componentStruct {
-	std::vector<int> sparse;
-	std::vector<Entity> entities;
-	std::vector<Component> components;
-};
+void Registry2::removeComponent(Entity _ent) {
+	if (componentMap.contains(typeid(Component).name())) {
+		auto& cS = componentMap[typeid(Component).name()];
+		if (cS.sparse[_ent.id] != -1) {
+			int pos = cS.sparse[_ent.id];
+			cS.sparse[_ent.id] = -1;
+			cS.entities[pos] = cS.entities[cS.entities.size() - 1];
+			cS.entities.pop_back();
+			cS.components[pos] = cS.components[cS.components.size() - 1];
+			cS.components.pop_back();
+			cS.sparse[cS.entities[pos].id] = pos;
+		}
+		if (cS.entities.size() == 0) {
+			componentMap.erase(typeid(Component).name());
+		}
+	}
+}
 
-class Registry2
-{
-public:
+template<component_type Component>
+Component* Registry2::getComponent(Entity _ent) {
+	if (componentMap.contains(typeid(Component).name())) {
+		auto& cS = componentMap[typeid(Component).name()];
+		if (cS.sparse[_ent.id] != -1) {
+			return std::any_cast<Component>(&cS.components[cS.sparse[_ent.id]]);
+		}
+	}
+	return nullptr;
+}
 
-	Entity create();
-	void erase(Entity _ent);
 
-	EntityRef getRef(Entity _ent) const;
-	std::optional<Entity> getEntity(EntityRef _ent) const;
+template<component_type Component>
+const Component* Registry2::getComponent(Entity _ent) const {
+	if (componentMap.contains(typeid(Component).name())) {
+		auto& cS = componentMap[typeid(Component).name()];
+		if (cS.sparse[_ent.id] != -1) {
+			return &cS.components[cS.sparse[_ent.id]];
+		}
+	}
+	return nullptr;
+}
 
-	// Add a new component to an existing entity. No changes are done if Component
-	// if_ent already has a component of this type.
-	// @return A reference to the new component or the already existing component.
-	template<component_type Component, typename... Args>
-	Component& addComponent(Entity _ent, Args&&... _args);		
 
-	// Remove a component from an existing entity.
-	// Does not check whether it exists.
-	template<component_type Component>
-	void removeComponent(Entity _ent);
+template<component_type Component>
+Component& Registry2::getComponentUnsafe(Entity _ent) {
+	auto& cS = componentMap[typeid(Component).name()];
+	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+}
 
-	// Retrieve a component associated with an entity.
-	// @return The component or nullptr if the entity has no such component.
-	template<component_type Component>
-	Component* getComponent(Entity _ent);
-	template<component_type Component>
-	const Component* getComponent(Entity _ent) const;
 
-	// Retrieve a component associated with an entity.
-	// Does not check whether it exits.
-	template<component_type Component>
-	Component& getComponentUnsafe(Entity _ent);
-	template<component_type Component>
-	const Component& getComponentUnsafe(Entity _ent) const;
+template<component_type Component>
+const Component& Registry2::getComponentUnsafe(Entity _ent) const {
+	auto& cS = componentMap[typeid(Component).name()];
+	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+}
 
-	// Execute an Action on all entities having the components
-	// expected by Action::operator(component_type&...).
-	// In addition, the entity itself is provided if
-	// the first parameter is of type Entity.
-	/*template<typename... Args, typename Action>
-	void execute(const Action& _action);
-	template<typename Component, typename Action, typename ReturnType>
-	ReturnType call1(int ent, const Action& _action);*/
+/*
+template<typename... Args, typename Action>
+void Registry2::execute(const Action& _action) {
+	using namespace std;
+	bool hasAllComponents;
+	vector<string> comp = { (0, unpack_one<Args>()) ... };
+	vector<int> ent;
+	for (int en = 0; en < flags.size(); en++) {						//gets all entities that have all components
+		if (!flags[en]) continue;
+		hasAllComponents = true;
 
-	std::vector<bool> flags;
-	std::vector<uint32_t> generations;
-	int numEntitys = 0;
-	std::unordered_map<std::string, componentStruct<std::any>> componentMap;
-	std::vector<std::string> co;
-};
+		for (auto it = comp.begin(); it != comp.end(); it++) {		//checks if entity has all components
+			if (componentMap[*it].sparse[en] == -1) {
+				hasAllComponents = false;
+				break;
+			}
+		}
+
+		if (hasAllComponents) {
+			ent.push_back(en);
+		}
+	}
+
+	for (auto it = ent.begin(); it != ent.end(); it++) {
+		for (auto it2 = co.begin(); it2 != co.end(); it2++) {
+			Component c = getComponent(ent);
+			if (it2 = co.begin()) auto f = curry(_action, c);
+			else auto f = curry(f, c);
+		}
+	}
+}
+
+template<typename Component, typename Action, typename ReturnType>
+ReturnType Registry2::call1(int ent, const Action& _action) {
+	Component c = getComponent<Component>(ent);
+	auto f = curry(_action, c);
+	return f;
+}
+
+
+template<typename Component>
+std::string unpack_one() {		
+	return typeid(Component).name();
+}
+
+
+template<typename Function, typename... Arguments>
+auto curry(Function function, Arguments... args) {
+	return [=](auto... rest) {
+		return function(args..., rest...);
+	};
+}*/
