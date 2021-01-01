@@ -123,43 +123,51 @@ const Component& Registry2::getComponentUnsafe(Entity _ent) const {
 	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 }
 
-/*
 template<typename... Args, typename Action>
 void Registry2::execute(const Action& _action) {
 	using namespace std;
 	bool hasAllComponents;
 	vector<string> comp = { (0, unpack_one<Args>()) ... };
-	vector<int> ent;
-	for (int en = 0; en < flags.size(); en++) {						//gets all entities that have all components
+	if (comp[0] == typeid(Entity).name()) {
+		comp.erase(comp.begin());
+	}
+	vector<Entity> ent;
+	for (uint32_t en = 0; en < flags.size(); en++) {				//gets all entities that have all components
 		if (!flags[en]) continue;
 		hasAllComponents = true;
-
 		for (auto it = comp.begin(); it != comp.end(); it++) {		//checks if entity has all components
 			if (componentMap[*it].sparse[en] == -1) {
 				hasAllComponents = false;
 				break;
 			}
 		}
-
 		if (hasAllComponents) {
-			ent.push_back(en);
+			ent.push_back(Entity(en));
 		}
 	}
 
 	for (auto it = ent.begin(); it != ent.end(); it++) {
-		for (auto it2 = co.begin(); it2 != co.end(); it2++) {
-			Component c = getComponent(ent);
-			if (it2 = co.begin()) auto f = curry(_action, c);
-			else auto f = curry(f, c);
-		}
+		//func<Args...>(*it, _action);
+		func<Args...>(*it, _action, std::tie());
 	}
 }
 
-template<typename Component, typename Action, typename ReturnType>
-ReturnType Registry2::call1(int ent, const Action& _action) {
-	Component c = getComponent<Component>(ent);
-	auto f = curry(_action, c);
-	return f;
+
+
+template<typename Component, typename... Args, typename Action, typename Tuple>
+void Registry2::func(Entity ent, const Action& action, Tuple tuple) {
+	if constexpr (std::is_same<Entity, Component>::value) {
+		auto tu = std::tuple_cat(tuple, std::tie(ent));
+		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, action, tu);
+		else std::apply(action, tu);
+	}
+	else {
+		Component& c = getComponentUnsafe<Component>(ent);
+		auto tu = std::tuple_cat(tuple, std::tie(c));
+		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, action, tu);
+		else std::apply(action, tu);
+	}
+
 }
 
 
@@ -168,10 +176,25 @@ std::string unpack_one() {
 	return typeid(Component).name();
 }
 
+/*
+template<typename Component, typename... Args, typename Action>
+void Registry2::func(Entity ent, const Action& action) {
+	if constexpr (std::is_same<Entity, Component>::value) {
+		auto f = curry(action, ent);
+		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, f);
+		else f();
+	}
+	else {
+		Component& c = getComponentUnsafe<Component>(ent);
+		auto f = curry(action, c);
+		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, f);
+		else f();
+	}
+}
 
-template<typename Function, typename... Arguments>
-auto curry(Function function, Arguments... args) {
-	return [=](auto... rest) {
+template<typename Function, typename... Args>
+auto curry(Function function, Args&... args) {
+	return [=](auto&... rest) {
 		return function(args..., rest...);
 	};
 }*/
