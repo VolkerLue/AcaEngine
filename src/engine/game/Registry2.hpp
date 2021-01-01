@@ -64,10 +64,12 @@ public:
 	// expected by Action::operator(component_type&...).
 	// In addition, the entity itself is provided if
 	// the first parameter is of type Entity.
-	/*template<typename... Args, typename Action>
+	template<typename... Args, typename Action>
 	void execute(const Action& _action);
-	template<typename Component, typename Action, typename ReturnType>
-	ReturnType call1(int ent, const Action& _action);*/
+	//template<typename Component, typename... Args, typename Action>
+	//void func(Entity ent, const Action& action);
+	template<typename Component, typename... Args, typename Action, typename Tuple>
+	void func(Entity ent, const Action& action, Tuple tuple);
 
 	std::vector<bool> flags;
 	std::vector<uint32_t> generations;
