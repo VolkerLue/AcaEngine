@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.hpp"
+#include "Registry2.hpp"
 
 class FreeFall : public GameState {
 public:
@@ -18,10 +19,11 @@ public:
 
 private:
 	const graphics::Texture2D& texture;
-	graphics::Mesh mesh;
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
-	glm::mat4 difference;
 	float a;
 	float v;
+
+	Registry2 registry;
+	Entity planet1;
 };
