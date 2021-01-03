@@ -20,7 +20,7 @@ void Registry2::erase(Entity _ent) {
 	flags[_ent.id] = false;
 	numEntitys--;
 	for (auto it = componentMap.begin(); it != componentMap.end(); it++) {
-		auto cS = it->second;
+		auto& cS = it->second;
 		if (cS.sparse[_ent.id] != -1) {
 			int pos = cS.sparse[_ent.id];
 			cS.sparse[_ent.id] = -1;
