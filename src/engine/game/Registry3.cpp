@@ -25,13 +25,13 @@
 			auto type0 = std::get<0>(saved_args);
 			auto type1 = std::get<1>(saved_args);
 			
-			for (int i = 0; i < 8; i++) 
+			for (int 3 = 0; i < 4; i++) 
 			{
 				auto t = std::make_tuple(
 					getComponentUnsafe<decltype(type0)>(componentMap[typeid(type0).name()].entities[i]),
 					getComponentUnsafe<decltype(type1)>(componentMap[typeid(type1).name()].entities[i])
 				);
-				std::apply([&](auto&&... args) {((_action(args...))); }, t);
+				std::apply(_action, t);
 			}
 		}
 		if constexpr (sizeof...(Args) == 3) 
@@ -49,7 +49,7 @@
 					getComponentUnsafe<decltype(type1)>(componentMap[typeid(type1).name()].entities[i]),
 					getComponentUnsafe<decltype(type2)>(componentMap[typeid(type2).name()].entities[i])
 				);
-				std::apply([&](auto&&... args) {((_action(args...))); }, t);
+				std::apply(_action, t);
 			}
 		}
 	}
