@@ -127,7 +127,8 @@ template<typename... Args, typename Action>
 void Registry2::execute(const Action& _action) {
 	using namespace std;
 	bool hasAllComponents;
-	vector<string> comp = { (0, unpack_one<Args>()) ... };
+	//vector<string> comp = { (0, unpack_one<Args>()) ... };
+	vector<string> comp = { typeid(Args).name() ... };
 	if (comp[0] == typeid(Entity).name()) {
 		comp.erase(comp.begin());
 	}
