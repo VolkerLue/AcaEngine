@@ -1,5 +1,5 @@
-#include <engine/game/Registry2.hpp>
-#include <iostream>
+#include "Registry2.hpp"
+
 
 Entity Registry2::create() {
 	uint32_t i;
@@ -15,6 +15,7 @@ Entity Registry2::create() {
 	generations.push_back(1);
 	return Entity{ i };
 }
+
 
 void Registry2::erase(Entity _ent) {
 	flags[_ent.id] = false;
@@ -33,9 +34,11 @@ void Registry2::erase(Entity _ent) {
 	}
 }
 
+
 EntityRef Registry2::getRef(Entity _ent) const {
 	return { _ent, generations[_ent.id] };
 }
+
 
 std::optional<Entity> Registry2::getEntity(EntityRef _ent) const {
 	if (_ent.generation == generations[_ent.ent.id] && flags[_ent.ent.id]) {
@@ -67,6 +70,7 @@ Component& Registry2::addComponent(Entity _ent, Args&&... _args) {
 	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 }
 
+
 template<component_type Component>
 void Registry2::removeComponent(Entity _ent) {
 	if (componentMap.contains(typeid(Component).name())) {
@@ -85,6 +89,7 @@ void Registry2::removeComponent(Entity _ent) {
 		}
 	}
 }
+
 
 template<component_type Component>
 Component* Registry2::getComponent(Entity _ent) {
@@ -123,17 +128,17 @@ const Component& Registry2::getComponentUnsafe(Entity _ent) const {
 	return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 }
 
+
 template<typename... Args, typename Action>
 void Registry2::execute(const Action& _action) {
 	using namespace std;
 	bool hasAllComponents;
-	//vector<string> comp = { (0, unpack_one<Args>()) ... };
-	vector<string> comp = { typeid(Args).name() ... };
+	vector<string> comp = { (0, typeid(Args).name()) ... };
 	if (comp[0] == typeid(Entity).name()) {
 		comp.erase(comp.begin());
 	}
 	vector<Entity> ent;
-	for (uint32_t en = 0; en < flags.size(); en++) {				//gets all entities that have all components
+	for (uint32_t en = 0; en < flags.size(); en++) {				//gets all the entities that have all components
 		if (!flags[en]) continue;
 		hasAllComponents = true;
 		for (auto it = comp.begin(); it != comp.end(); it++) {		//checks if entity has all components
@@ -146,13 +151,10 @@ void Registry2::execute(const Action& _action) {
 			ent.push_back(Entity(en));
 		}
 	}
-
 	for (auto it = ent.begin(); it != ent.end(); it++) {
-		//func<Args...>(*it, _action);
 		func<Args...>(*it, _action, std::tie());
 	}
 }
-
 
 
 template<typename Component, typename... Args, typename Action, typename Tuple>
@@ -168,34 +170,4 @@ void Registry2::func(Entity ent, const Action& action, Tuple tuple) {
 		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, action, tu);
 		else std::apply(action, tu);
 	}
-
 }
-
-
-template<typename Component>
-std::string unpack_one() {		
-	return typeid(Component).name();
-}
-
-/*
-template<typename Component, typename... Args, typename Action>
-void Registry2::func(Entity ent, const Action& action) {
-	if constexpr (std::is_same<Entity, Component>::value) {
-		auto f = curry(action, ent);
-		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, f);
-		else f();
-	}
-	else {
-		Component& c = getComponentUnsafe<Component>(ent);
-		auto f = curry(action, c);
-		if constexpr (sizeof...(Args) > 0) func<Args...>(ent, f);
-		else f();
-	}
-}
-
-template<typename Function, typename... Args>
-auto curry(Function function, Args&... args) {
-	return [=](auto&... rest) {
-		return function(args..., rest...);
-	};
-}*/
