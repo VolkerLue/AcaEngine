@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 template<typename T>
-concept component_type = std::movable<T>; // und trivial destructable
+concept component_type = std::movable<T> && std::is_trivially_destructible<T>::value;
 
 struct Entity
 {
@@ -18,7 +18,7 @@ struct EntityRef
 	uint32_t generation;
 };
 
-template<component_type Component>
+template<typename Component>
 struct componentStruct {
 	std::vector<int> sparse;
 	std::vector<Entity> entities;
