@@ -42,7 +42,14 @@ int main(int argc, char* argv[])
 	//	_CrtSetBreakAlloc(2760);
 #endif
 #endif
-
+	
+	Game game;
+	game.addState(std::make_unique<FreeFall>());
+	game.addState(std::make_unique<Spring>());
+	game.run(std::make_unique<UpAndDown>());
+	
+	
+	/*
 	Registry<int> registry;
 	Entity entity1 = registry.create();
 	registry.setData(entity1, 5);
@@ -57,15 +64,7 @@ int main(int argc, char* argv[])
 	registry.erase(entity2);
 	std::cout << std::endl;
 	registry.execute(Printer<int>());
-
-	/*
-	Game game;
-	UpAndDown upanddown;
-	FreeFall freefall;
-	Spring spring;
-	game.addState(std::make_unique<FreeFall>());
-	game.addState(std::make_unique<Spring>());
-	game.run(std::make_unique<UpAndDown>());
+	
 	
 	
 	glm::vec3 planetPositions[] = {
