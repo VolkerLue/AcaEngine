@@ -1,6 +1,21 @@
-#pragma once
 #include "Spring.hpp"
 #include <GL/glew.h>
+
+
+struct Mesh {
+	graphics::Mesh mesh;
+};
+
+struct Transfrom {
+	glm::mat4 transfrom;
+};
+
+struct Velocity {
+	float velo;
+};
+
+
+
 
 Spring::Spring() : GameState(), times(0),
 	difference(glm::mat4(1.f)),
@@ -11,10 +26,16 @@ Spring::Spring() : GameState(), times(0),
 	renderer(graphics::MeshRenderer())
 {
 	utils::MeshLoader::clear();
+
+	planet1 = registry.create();
+	registry.addComponent<Mesh>(planet1, *utils::MeshLoader::get("models/sphere.obj"));
+	
 }
 
 void Spring::newState() {
-	difference = glm::mat4(1.f);
+	registry.addComponent<Transfrom>(planet1, glm::mat4(1.f));
+	registry.addComponent<Velocity>(planet1, 0);
+	
 }
 
 void Spring::update(float _time, float _deltaTime) {
@@ -26,18 +47,21 @@ void Spring::update(float _time, float _deltaTime) {
 }
 
 void Spring::draw(float _time, float _deltaTime) {
-	float velo = 300 * sin((_time) * 3.14 / 180) * _deltaTime;
+	
+	registry.execute<Velocity>([&](Velocity& velo) {velo.velo = 300 * sin((_time) * 3.14 / 180) * _deltaTime; });
 	if (times < 50) {
-		difference = difference * glm::translate(glm::vec3(0.f, 0.f, -1.1f));
+		
+		registry.execute<Transfrom>([&](Transfrom& trans) {trans.transfrom = trans.transfrom * glm::translate(glm::vec3(0.f, 0.f, -1.1f)); });
+		
 	}
 	else {
-
-		difference = difference * glm::translate(glm::vec3(velo, 0.f, 0.f));
+		registry.execute<Transfrom, Velocity>([&](Transfrom& trans, Velocity& velo) {trans.transfrom = trans.transfrom * glm::translate(glm::vec3(velo, 0.f, 0.f)); });
+		
 	}
 
 
 	renderer.clear();
-	renderer.draw(mesh, texture, difference);
+	renderer.draw(registry.getComponent<Mesh>(planet1)->mesh, texture, registry.getComponent<Transfrom>(planet1)->transfrom);
 	renderer.present(camera);
 }
 
