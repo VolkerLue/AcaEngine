@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.hpp"
+#include "Registry2.hpp"
 
 class Spring : public GameState {
 public:
@@ -22,4 +23,8 @@ public:
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
 	glm::mat4 difference;
+
+
+	Registry2 registry;
+	Entity planet1;
 };
