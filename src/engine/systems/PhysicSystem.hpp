@@ -26,8 +26,6 @@ public:
 	void setVelocity(Entity& _entity, glm::vec3 _velocity) {
 		Velocity& velocity = EntitySystem::registry.getComponentUnsafe<Velocity>(_entity);
 		velocity.velocity = _velocity;
-		//auto& cs = EntitySystem::registry.componentMap[typeid(Velocity).name()];
-		//cs.components[cs.sparse[_entity.id]] = velocity;
 	}
 
 	void addAccelaration(Entity& _entity, glm::vec3 _velocity) {
@@ -37,8 +35,6 @@ public:
 	void setAccelaration(Entity& _entity, glm::vec3 _accelaration) {
 		Accelaration& accelaration = EntitySystem::registry.getComponentUnsafe<Accelaration>(_entity);
 		accelaration.accelaration = _accelaration;
-		auto& cs = EntitySystem::registry.componentMap[typeid(Accelaration).name()];
-		cs.components[cs.sparse[_entity.id]] = accelaration;
 	}
 
 	void addMass(Entity& _entity, float _mass) {
@@ -48,8 +44,6 @@ public:
 	void setMass(Entity& _entity, float _mass) {
 		Mass& mass = EntitySystem::registry.getComponentUnsafe<Mass>(_entity);
 		mass.mass = _mass;
-		auto& cs = EntitySystem::registry.componentMap[typeid(Mass).name()];
-		cs.components[cs.sparse[_entity.id]] = mass;
 	}
 
 	void addAnchor(Entity& _entity, glm::vec3 _anchor) {
@@ -59,22 +53,16 @@ public:
 	void setAnchor(Entity& _entity, glm::vec3 _anchor) {
 		Anchor& anchor = EntitySystem::registry.getComponentUnsafe<Anchor>(_entity);
 		anchor.anchor = _anchor;
-		auto& cs = EntitySystem::registry.componentMap[typeid(Anchor).name()];
-		cs.components[cs.sparse[_entity.id]] = anchor;
 	}
 
 	void setTransform(Entity& _entity, glm::mat4 _transform) {
 		Transform& transform = EntitySystem::registry.getComponentUnsafe<Transform>(_entity);
 		transform.transform = _transform;
-		auto& cs = EntitySystem::registry.componentMap[typeid(Transform).name()];
-		cs.components[cs.sparse[_entity.id]] = transform;
 	}
 
 	void transfromMultiply(Entity& _entity, glm::mat4 _transform) {
 		Transform& transform = EntitySystem::registry.getComponentUnsafe<Transform>(_entity);
 		transform.transform *= _transform;
-		auto& cs = EntitySystem::registry.componentMap[typeid(Transform).name()];
-		cs.components[cs.sparse[_entity.id]] = transform;
 	}
 
 	void move(Entity& _entity, float _deltaTime) {
