@@ -1,6 +1,6 @@
 #pragma once
 #include "GameState.hpp"
-#include "Registry2.hpp"
+#include "../systems/System.hpp"
 
 class Spring : public GameState {
 public:
@@ -16,15 +16,9 @@ public:
 	//interface to mark current state as finished and to provide a new state
 	void newState() override;
 	bool isFinished();
-	float times;
 
+private:
+	Entity entity;
+	System system;
 	const graphics::Texture2D& texture;
-	graphics::Mesh mesh;
-	graphics::Camera camera;
-	graphics::MeshRenderer renderer;
-	glm::mat4 difference;
-
-
-	Registry2 registry;
-	Entity planet1;
 };
