@@ -31,8 +31,6 @@ public:
 	void setTransform(Entity& _entity, glm::mat4 _transform) {
 		Transform& transform = EntitySystem::registry.getComponentUnsafe<Transform>(_entity);
 		transform.transform = _transform;
-		auto& cs = EntitySystem::registry.componentMap[typeid(Transform).name()];
-		cs.components[cs.sparse[_entity.id]] = transform;
 	}
 
 	void draw(Entity& _entity, const graphics::Texture2D& _texture) {
