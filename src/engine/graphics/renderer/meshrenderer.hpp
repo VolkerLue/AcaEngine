@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 #include "mesh.hpp"
 #include <vector>
-#include <engine\graphics\core\geometrybuffer.hpp>
+#include <engine/graphics/core/geometrybuffer.hpp>
 
 namespace graphics {
 
