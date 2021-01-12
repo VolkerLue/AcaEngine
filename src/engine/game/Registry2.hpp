@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 template<typename T>
-concept component_type = std::movable<T>;
+concept component_type = std::movable<T>; //&& std::is_trivially_destructible<T>::value;
 
 struct Entity
 {
@@ -164,6 +164,13 @@ public:
 		using namespace std;
 		bool hasAllComponents;
 		vector<string> comp = { (0, typeid(Args).name()) ... };
+		if (comp.size() == 1 && comp[0] != typeid(Entity).name()) {		//special case: one component
+			auto& cS = componentMap[comp[0]];
+			for (auto it = cS.entities.begin(); it != cS.entities.end(); it++) {
+				func<Args...>(*it, _action, std::tie());
+			}
+			return;
+		}
 		if (comp[0] == typeid(Entity).name()) {
 			comp.erase(comp.begin());
 		}
