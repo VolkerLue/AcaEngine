@@ -5,7 +5,7 @@
 #include <unordered_map>
 
 template<typename T>
-concept component_type = std::movable<T>; //&& std::is_trivially_destructible<T>::value;
+concept component_type = std::movable<T>;
 
 struct Entity
 {
