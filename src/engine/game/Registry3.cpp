@@ -1,4 +1,4 @@
-	template<typename Args, typename Action>
+	/*template<typename Args, typename Action>
 	void executeOne(const Action& _action)
 	{
 		if (componentMap.contains(typeid(Args).name()))
@@ -53,3 +53,4 @@
 			}
 		}
 	}
+	*/
