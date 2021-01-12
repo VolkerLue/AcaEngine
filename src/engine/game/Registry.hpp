@@ -1,11 +1,10 @@
-#pragma once
+/*#pragma once
 #include <cstdint>
 #include <optional>
 #include <vector>
 
 struct Entity
 {
-	// copy/copy-assignment constructor
 	uint32_t id;
 };
 struct EntityRef
@@ -35,3 +34,4 @@ public:
 	int numEntitys = 0;
 };
 
+*/
