@@ -3,8 +3,6 @@
 #include "GameState.hpp"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <memory>
-#include "UpAndDown.hpp"
 
 class Game {
 public:
