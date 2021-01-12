@@ -24,7 +24,7 @@ namespace graphics {
 	}
 
 	void MeshRenderer::draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform) {
-		struct MeshInstance mi = {_mesh.vertices, _texture, _transform};
+		struct MeshInstance mi = {_mesh.vertices, _texture, _transform, glm::mat3(glm::transpose(glm::inverse(_transform)))};
 		instances.push_back(mi);
 	}
 
@@ -40,7 +40,9 @@ namespace graphics {
 				textureIds.push_back(it->texture.getID());
 			}
 			
-			program.setUniform(program.getUniformLoc("Transform"),it->transform);
+			program.setUniform(program.getUniformLoc("Transform"),it->transform);;
+			program.setUniform(program.getUniformLoc("invTraTransform"), it->invTraTransform);
+
 			geometryBuffer->setData(&(it->meshVertices[0]), it->meshVertices.size() * sizeof(Mesh::Vertex));
 			geometryBuffer->draw();
 		}
