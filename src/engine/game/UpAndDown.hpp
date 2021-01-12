@@ -1,5 +1,6 @@
 #pragma once
 #include "GameState.hpp"
+#include "../systems/System.hpp"
 
 class UpAndDown : public GameState {
 public:
@@ -16,9 +17,8 @@ public:
 	void newState() override;
 	bool isFinished();
 
+private:
+	Entity entity;
+	System system;
 	const graphics::Texture2D& texture;
-	graphics::Mesh mesh;
-	graphics::Camera camera;
-	graphics::MeshRenderer renderer;
-	glm::mat4 difference;
 };

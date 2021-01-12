@@ -1,4 +1,4 @@
-#pragma once
+/*#pragma once
 #include "Registry.hpp"
 #include <iostream>
 
@@ -98,3 +98,4 @@ struct Sum {
 		_data = sum;
 	}
 };
+*/
