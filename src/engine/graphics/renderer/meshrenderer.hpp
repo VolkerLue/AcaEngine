@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 #include "mesh.hpp"
 #include <vector>
-#include <engine\graphics\core\geometrybuffer.hpp>
+#include <engine/graphics/core/geometrybuffer.hpp>
 
 namespace graphics {
 
@@ -30,15 +30,13 @@ namespace graphics {
 			const std::vector<Mesh::Vertex>& meshVertices;
 			const Texture2D& texture;
 			glm::mat4 transform;
+			glm::mat3 invTraTransform;
 		};
 
 		graphics::GeometryBuffer* geometryBuffer;
-
 		std::vector<MeshInstance> instances;
-
 		Program program;
-
 		std::vector<unsigned> textureIds;
-
+		
 	};
 }
