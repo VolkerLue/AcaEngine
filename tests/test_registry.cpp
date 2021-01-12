@@ -1,7 +1,6 @@
 #pragma once
 #include "testutils.hpp"
-#include <engine/game/Registry2.hpp>
-#include <engine/game/Registry2.cpp>
+#include "../src/engine/game/Registry2.hpp"
 #include <vector>
 
 struct Foo {
@@ -64,20 +63,20 @@ int main()
 		EXPECT(registry.getComponent<Foo>(entities[i]), "Other components are untouched.");
 		EXPECT(registry.getComponentUnsafe<Foo>(entities[i]).i == i, "Other components are untouched.");
 	}
-	/*
+	
 	int sum = 0;
-	registry.execute([&sum](const Foo& foo) { sum += foo.i; });
+	//registry.execute([&sum](const Foo& foo) { sum += foo.i; });
 	// without auto deduction
-	// registry.execute<Foo>([&sum](const Foo& foo) { sum += foo.i; });
+	registry.execute<Foo>([&sum](const Foo& foo) { sum += foo.i; });
 	EXPECT(sum == 10 * 11 / 2 - 3, "Execute action on a single component type.");
 
 	sum = 0;
-	registry.execute([&sum](const Bar& bar, const Foo& foo) { sum += foo.i - 2 * static_cast<int>(bar.f); });
-	//registry.execute<Bar,Foo>([&sum](const Bar& bar, const Foo& foo) { sum += foo.i - 2 * static_cast<int>(bar.f); });
+	//registry.execute([&sum](const Bar& bar, const Foo& foo) { sum += foo.i - 2 * static_cast<int>(bar.f); });
+	registry.execute<Bar,Foo>([&sum](const Bar& bar, const Foo& foo) { sum += foo.i - 2 * static_cast<int>(bar.f); });
 	EXPECT(sum == -3 - 6 - 9, "Execute action on multiple component types.");
 
-	// registry.execute<Entity, Bar>([&](Entity ent, Bar& bar)
-	registry.execute([&](Entity ent, Bar& bar)
+	registry.execute<Entity, Bar>([&](Entity ent, Bar& bar)
+	//registry.execute([&](Entity ent, Bar& bar)
 		{
 			EXPECT(registry.getComponentUnsafe<Bar>(ent).f == bar.f, "Execute provides the correct entity.");
 			bar.f = -1.f;
@@ -86,5 +85,5 @@ int main()
 	for (size_t i = 3; i < entities.size(); i+=3)
 	{
 		EXPECT(registry.getComponentUnsafe<Bar>(entities[i]).f == -1.f, "Action can change components.");
-	}*/
+	}
 }
