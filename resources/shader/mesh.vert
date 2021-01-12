@@ -5,6 +5,7 @@ layout(location = 1) in vec3 vertexNormal;
 layout(location = 2) in vec2 vertexUv;
 
 uniform mat4 Transform;
+uniform mat3 invTraTransform;
 uniform mat4 Camera;
 
 out vec2 uv;
