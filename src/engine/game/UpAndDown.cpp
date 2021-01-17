@@ -1,7 +1,8 @@
 #include "UpAndDown.hpp"
 #include <GL/glew.h>
 
-UpAndDown::UpAndDown() : GameState(), system(), texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+UpAndDown::UpAndDown() : GameState(), system(), 
+texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	entity = system.createEntity(entity);
 	system.addMesh(entity, "models/sphere.obj");
@@ -28,12 +29,12 @@ void UpAndDown::update(float _time, float _deltaTime) {
 }
 
 void UpAndDown::draw(float _time, float _deltaTime) {
-	system.draw(entity, texture);
+	system.drawEntity(entity, texture);
 }
 
 void UpAndDown::onResume() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	system.draw(entity, texture);
+	system.drawEntity(entity, texture);
 }
 
 void UpAndDown::onPause() {
