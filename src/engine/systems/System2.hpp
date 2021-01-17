@@ -30,12 +30,7 @@ public:
 	void drawEntity(Entity& _entity, const graphics::Texture2D& _texture);
 
 	template<typename... Args>
-	void draw(const graphics::Texture2D& _texture) {
-		renderer.clear();
-		registry.execute<Args...>([&](const Mesh& mesh, const Transform& transform, const Args& arg) {
-			renderer.draw(mesh.mesh, _texture, transform.transform); });
-		renderer.present(camera);
-	}
+	void draw(const graphics::Texture2D& _texture);
 
 	void setCamera(float _fov, float _zNear, float zFar);
 
@@ -65,3 +60,11 @@ private:
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
 };
+
+template<typename... Args>
+void System2::draw(const graphics::Texture2D& _texture) {
+	renderer.clear();
+	registry.execute<Args...>([&](const Mesh& mesh, const Transform& transform, const Args& args) {
+		renderer.draw(mesh.mesh, _texture, transform.transform); });
+	renderer.present(camera);
+}
