@@ -1,6 +1,3 @@
-#include "FreeFall.hpp"
-#include <GL/glew.h>
-
 #include "Shooter.hpp"
 #include <GL/glew.h>
 
