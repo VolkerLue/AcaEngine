@@ -32,11 +32,8 @@ public:
 	template<typename... Args>
 	void draw(const graphics::Texture2D& _texture) {
 		renderer.clear();
-
-		registry.execute<Args...>([&](const Mesh& mesh, const Transform& transform) {
-			renderer.draw(mesh, _texture, transform);
-			});
-
+		registry.execute<Args...>([&](const Mesh& mesh, const Transform& transform, const Args& arg) {
+			renderer.draw(mesh.mesh, _texture, transform.transform); });
 		renderer.present(camera);
 	}
 
