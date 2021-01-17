@@ -1,6 +1,6 @@
 #pragma once
 #include "GameState.hpp"
-#include "../systems/System.hpp"
+#include "../systems/System2.hpp"
 
 
 class FreeFall : public GameState {
@@ -18,6 +18,8 @@ public:
 
 private:
 	Entity entity;
-	System system;
+	Entity entity2;
+	System2 system;
 	const graphics::Texture2D& texture;
+	const graphics::Texture2D& texture2;
 };
