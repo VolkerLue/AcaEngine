@@ -1,7 +1,8 @@
 #include "Spring.hpp"
 #include <GL/glew.h>
 
-Spring::Spring() : GameState(), system(), texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+Spring::Spring() : GameState(), system(), 
+texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	entity = system.createEntity(entity);
 	system.addMesh(entity, "models/sphere.obj");
@@ -23,12 +24,12 @@ void Spring::update(float _time, float _deltaTime) {
 }
 
 void Spring::draw(float _time, float _deltaTime) {
-	system.draw(entity, texture);
+	system.drawEntity(entity, texture);
 }
 
 void Spring::onResume() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	system.draw(entity, texture);
+	system.drawEntity(entity, texture);
 }
 
 void Spring::onPause() {
