@@ -13,7 +13,7 @@ texture2(*graphics::Texture2DManager::get("textures/cratetex.png", graphics::Sam
 		Entity entity;
 		entities.push_back(system.createEntity(entity));
 		system.addMesh(entities.back(), "models/sphere.obj");
-		system.addTransform(entities.back(), glm::translate(glm::vec3(0.f, 10.f, -50.f)));
+		system.addTransform(entities.back(), glm::translate(glm::vec3(1.f+i*3, 10.f, -50.f)));
 		system.addVelocity(entities.back(), glm::vec3(0.f, 0.13f, 0.f));
 		system.addAccelaration(entities.back(), glm::vec3(0.f, -0.1f, 0.f));
 		system.addMass(entities.back(), 1.f);
@@ -23,7 +23,7 @@ texture2(*graphics::Texture2DManager::get("textures/cratetex.png", graphics::Sam
 		Entity entity;
 		entities.push_back(system.createEntity(entity));
 		system.addMesh(entities.back(), "models/crate.obj");
-		system.addTransform(entities.back(), glm::translate(glm::vec3(0.f, 10.f, -50.f)));
+		system.addTransform(entities.back(), glm::translate(glm::vec3(-1.f-i*3, 10.f, -50.f)));
 		system.addVelocity(entities.back(), glm::vec3(0.f, 0.13f, 0.f));
 		system.addAccelaration(entities.back(), glm::vec3(0.f, -0.1f, 0.f));
 		system.addAnchor(entities.back(), glm::vec3(0.f, 0.f, 0.f));
