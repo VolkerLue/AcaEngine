@@ -49,17 +49,6 @@ void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
 	renderer.present(camera);
 }
 
-//template<typename... Args>
-//void System2::draw(const graphics::Texture2D& _texture) {
-//	renderer.clear();
-//
-//	registry.execute<Args...>([&](const Mesh& mesh, const Transform& transform) { 
-//		renderer.draw(mesh, _texture, transform);
-//		});
-//
-//	renderer.present(camera);
-//}
-
 void System2::setCamera(float _fov, float _zNear, float zFar) {
 	camera = graphics::Camera(_fov, _zNear, zFar);
 }
