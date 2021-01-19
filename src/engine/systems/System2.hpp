@@ -88,7 +88,7 @@ public:
 	int randomWithoutZero(int quantity, int start);
 
 	
-//private:
+private:
 	Registry2 registry;
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
