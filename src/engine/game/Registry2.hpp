@@ -83,7 +83,7 @@ public:
 			}
 		}
 		else {
-			std::vector<int> sparse(100, -1);
+			std::vector<int> sparse(1000, -1);
 			std::vector<Entity> entities;
 			std::vector<std::any> components;
 			componentStruct<std::any> comStr = { sparse, entities, components };
