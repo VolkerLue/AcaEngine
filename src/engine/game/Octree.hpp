@@ -1,66 +1,76 @@
-#pragma once
-#include <glm/glm.hpp>
-#include <limits>
-#include "../systems/Components.hpp"
-#include "Registry2.hpp"
+#include "Octree.hpp"
 
-struct AABB {
-	int type;	//1 = projectile, 2 = target, 3 = Octreebox
-	double minX;
-	double maxX;
-	double minY;
-	double maxY;
-	double minZ;
-	double maxZ;
+OctreeNode::OctreeNode(AABB box) {
+	this->box = box;
+	parent = nullptr;
+	isRoot = true;
+	hasChildren = false;
+	hasContent = false;
+	content = nullptr;
+	uint32_t e = -1;
+	ent = Entity{ e };
+}
 
-	AABB calculateAABB(const graphics::Mesh& mesh, const glm::mat4 transform, int type) {
-		glm::vec3 current;
-		double minX = std::numeric_limits<double>::min();
-		double maxX = std::numeric_limits<double>::max();
-		double minY = std::numeric_limits<double>::min();
-		double maxY = std::numeric_limits<double>::max();
-		double minZ = std::numeric_limits<double>::min();
-		double maxZ = std::numeric_limits<double>::max();
-		for (auto it = mesh.vertices.begin(); it != mesh.vertices.end(); it++) {
-			current = glm::vec3(transform * glm::vec4(it->Position, 1));
-			if (current.x < minX) minX = current.x;
-			if (current.x > maxX) maxX = current.x;
-			if (current.y < minY) minY = current.y;
-			if (current.y > maxY) maxY = current.x;
-			if (current.z < minZ) minZ = current.z;
-			if (current.z > maxZ) maxZ = current.z;
+OctreeNode::OctreeNode(OctreeNode* parent, AABB box) {
+	this->parent = parent;
+	this->box = box;
+	isRoot = false;
+	hasChildren = false;
+	hasContent = false;
+	uint32_t e = -1;
+	ent = Entity{ e };
+}
+
+OctreeNode::~OctreeNode()
+{
+	if (hasChildren) {
+		for (int i = 0; i < 8; i++) {
+			delete children[i];
 		}
-		return AABB{ type, minX, maxX, minY, maxY, minZ, maxZ };
 	}
-	bool intersect(AABB& a, AABB& b) {
-		return (a.minX <= b.maxX && a.maxX >= b.minX &&
-			a.minY <= b.maxY && a.maxY >= b.minY &&
-			a.minZ <= b.maxZ && a.maxZ >= b.minZ);
+}
+
+
+void OctreeNode::insert(AABB& other, Entity otherEnt, Registry2& registry) {
+	if (!this->box.contains(this->box, other)) return;
+	if (hasContent) {
+		if (this->content->type == 2 && other.type == 1) {
+			Alive& alive = registry.getComponentUnsafe<Alive>(this->ent);
+			alive.alive = false;
+		} else if (this->content->type == 1 && other.type == 2) {
+			Alive& alive = registry.getComponentUnsafe<Alive>(otherEnt);
+			alive.alive = false;
+		}
+		return;
 	}
-
-	bool contains(AABB& container, AABB& content) {
-		return (container.minX <= content.minX && container.maxX >= content.maxX &&
-			container.minY <= content.minY && container.maxY >= content.maxY &&
-			container.minZ <= content.minZ && container.maxZ >= content.maxZ);
+	glm::vec3 center((this->box.maxX - this->box.minX) / 2 + this->box.minX,
+		(this->box.maxY - this->box.minY) / 2 + this->box.minY,
+		(this->box.maxZ - this->box.minZ) / 2 + this->box.minZ);
+	int c = 0;
+	bool insertedChildren = false;
+	if (!hasChildren) {
+		children.push_back(new OctreeNode(this, AABB{ 3, center.x, this->box.maxX, center.y, this->box.maxY, center.z, this->box.maxZ }));
+		children.push_back(new OctreeNode(this, AABB{3, center.x, this->box.maxX, center.y, this->box.maxY, this->box.minZ, center.z }));
+		children.push_back(new OctreeNode(this, AABB{3, center.x, this->box.maxX, this->box.minY, center.y, center.z, this->box.maxZ }));
+		children.push_back(new OctreeNode(this, AABB{3, center.x, this->box.maxX, this->box.minY, center.y, this->box.minZ, center.z }));
+		children.push_back(new OctreeNode(this, AABB{3, this->box.minX, center.x, center.y, this->box.maxY, center.z, this->box.maxZ }));
+		children.push_back(new OctreeNode(this, AABB{3, this->box.minX, center.x, center.y, this->box.maxY, this->box.minZ, center.z }));
+		children.push_back(new OctreeNode(this, AABB{3, this->box.minX, center.x, this->box.minY, center.y, center.z, this->box.maxZ }));
+		children.push_back(new OctreeNode(this, AABB{3, this->box.minX, center.x, this->box.minY, center.y, this->box.minZ, center.z }));
+		hasChildren = true;
+		insertedChildren = true;
 	}
-};
-
-
-
-
-class OctreeNode {
-public:
-	OctreeNode(AABB box);
-	OctreeNode(OctreeNode* parent, AABB box);
-	~OctreeNode();
-	void insert(AABB& other, Entity ent, Registry2& registry);
-	
-	bool isRoot;
-	bool hasChildren;
-	bool hasContent;
-	Entity ent;
-	AABB* content;
-	AABB box;
-	std::vector<OctreeNode*> children;
-	OctreeNode* parent;
-};
+	for (int i = 0; i < 8; i++) {
+		if (this->content->contains(children[i]->box, other)) return children[i]->insert(other, otherEnt, registry);
+	}
+	if (insertedChildren) {
+		for (int i = 0; i < 8; i++) {
+			delete children[i];
+		}
+		children.clear();
+		hasChildren = false;
+	}
+	content = &other;
+	this->ent = otherEnt;
+	hasContent = true;
+}
