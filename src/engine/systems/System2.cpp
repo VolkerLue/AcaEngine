@@ -51,9 +51,9 @@ void System2::repositionCrate() {
 
 void System2::removeIntersecting() {
 	OctreeNode oN(AABB{ 3, -100, 100, -100, 100, -100, 100 });
-	EntitySystem::registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
+	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
 		{
-			oN.insert(aabb, ent, EntitySystem::registry);
+			oN.insert(aabb, ent, registry);
 		});
 }
 
@@ -154,10 +154,11 @@ void System2::updateShoot(std::vector<Entity> entities) {
 }
 
 void System2::updateAABB() {
-	EntitySystem::registry.execute<Entity, AABB>([&](Entity _ent, AABB& _aabb)
+	registry.execute<Entity, AABB>([&](Entity _ent, AABB& _aabb)
 		{
-			_aabb = _aabb.calculateAABB(EntitySystem::registry.getComponent<Mesh>(_ent)->mesh,
-				EntitySystem::registry.getComponent<Transform>(_ent)->transform, _aabb.type);
+			AABB aabb;
+			_aabb = aabb.calculateAABB(registry.getComponent<Mesh>(_ent)->mesh,
+				registry.getComponent<Transform>(_ent)->transform, _aabb.type);
 		});
 }
 
@@ -252,9 +253,9 @@ void System2::setAlive(Entity& _entity, bool _alive) {
 
 void System2::addAABB(Entity& ent, int type) {
 	AABB aabb;
-	aabb = aabb.calculateAABB(EntitySystem::registry.getComponent<Mesh>(ent)->mesh,
-		EntitySystem::registry.getComponent<Transform>(ent)->transform, type);
-	EntitySystem::registry.addComponent<AABB>(ent, type, aabb.minX, aabb.maxX, aabb.minY, aabb.maxY, aabb.minZ, aabb.maxZ);
+	aabb = aabb.calculateAABB(registry.getComponent<Mesh>(ent)->mesh,
+		registry.getComponent<Transform>(ent)->transform, type);
+	registry.addComponent<AABB>(ent, type, aabb.minX, aabb.maxX, aabb.minY, aabb.maxY, aabb.minZ, aabb.maxZ);
 }
 
 
