@@ -37,3 +37,14 @@ struct CursorPosition {
 struct Alive {
 	bool alive;
 };
+
+/*
+struct Rotation {
+	glm::vec3 EulerAngles;
+};
+
+struct AngularVelocity {
+	glm::vec3 angular_velocity;
+};
+
+*\
