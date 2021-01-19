@@ -23,3 +23,16 @@ struct Mass {
 struct Anchor {
 	glm::vec3 anchor;
 };
+
+struct Rotation {
+	float angleInRadians;
+	glm::vec3 axisOfRotation;
+};
+
+struct CursorPosition {
+	glm::vec3 curserPosition;
+};
+
+struct Alive {
+	bool alive;
+};
