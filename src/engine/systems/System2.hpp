@@ -51,6 +51,10 @@ public:
 	void updateShoot(std::vector<Entity> entities);
 
 	void updateAABB();
+	
+	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
+	
+	//void rotateMultiply(Entity& _entity);
 
 
 	/* ################ Component-System ################ */
@@ -77,6 +81,10 @@ public:
 	void setAnchor(Entity& _entity, glm::vec3 _anchor);
 
 	void addRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
+	
+	//void addRotation(Entity& _entity, glm::vec3 _eulerAngles);
+
+        //void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
 
 	void setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
 
