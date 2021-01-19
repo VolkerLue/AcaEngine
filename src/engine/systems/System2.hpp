@@ -6,6 +6,7 @@
 #include <engine/input/inputmanager.hpp>
 #include <glm/gtx/transform.hpp>
 #include <GL/glew.h>
+#include "../game/Octree.hpp"
 
 
 class System2
@@ -33,6 +34,8 @@ public:
 
 	void repositionCrate();
 
+	void removeIntersecting();
+
 	
 	/* ################ Physic-System ################ */	
 	void move(Entity& _entity, float _deltaTime);
@@ -46,6 +49,8 @@ public:
 	void updateTransformPlanet(float _deltaTime);
 
 	void updateShoot(std::vector<Entity> entities);
+
+	void updateAABB();
 
 
 	/* ################ Component-System ################ */
@@ -82,6 +87,8 @@ public:
 	void addAlive(Entity& _entity, bool _alive);
 
 	void setAlive(Entity& _entity, bool _alive);
+
+	void addAABB(Entity& ent, int type);
 
 
 	/* ################ Utils-System ################ */
