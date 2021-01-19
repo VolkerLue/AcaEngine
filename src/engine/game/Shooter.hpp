@@ -1,7 +1,8 @@
 #pragma once
 #include "GameState.hpp"
 #include "../systems/System2.hpp"
-
+#include <stdlib.h>
+#include <time.h> 
 
 class Shooter : public GameState {
 public:
@@ -17,8 +18,8 @@ public:
 	bool isFinished();
 
 private:
-	std::list<Entity> entities;
+	std::vector<Entity> entities;
 	System2 system;
-	const graphics::Texture2D& texture;
-	const graphics::Texture2D& texture2;
+	const graphics::Texture2D& texturePlanet;
+	const graphics::Texture2D& textureCratetex;
 };
