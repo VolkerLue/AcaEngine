@@ -32,13 +32,13 @@ struct AABB {
 		}
 		return AABB{ type, minX, maxX, minY, maxY, minZ, maxZ };
 	}
-	bool intersect(const AABB& a, const AABB& b) {
+	bool intersect(AABB& a, AABB& b) {
 		return (a.minX <= b.maxX && a.maxX >= b.minX &&
 			a.minY <= b.maxY && a.maxY >= b.minY &&
 			a.minZ <= b.maxZ && a.maxZ >= b.minZ);
 	}
 
-	bool contains(const AABB& container, const AABB& content) {
+	bool contains(AABB& container, AABB& content) {
 		return (container.minX <= content.minX && container.maxX >= content.maxX &&
 			container.minY <= content.minY && container.maxY >= content.maxY &&
 			container.minZ <= content.minZ && container.maxZ >= content.maxZ);
@@ -53,15 +53,13 @@ public:
 	OctreeNode(AABB box);
 	OctreeNode(OctreeNode* parent, AABB box);
 	~OctreeNode();
-	void insert(const AABB& other, Entity ent, Registry2& registry);
+	void insert(AABB& other, Entity ent, Registry2& registry);
 	
 	bool isRoot;
 	bool hasChildren;
 	bool hasContent;
 	Entity ent;
-
-private:
-	AABB& content;
+	AABB* content;
 	AABB box;
 	std::vector<OctreeNode*> children;
 	OctreeNode* parent;
