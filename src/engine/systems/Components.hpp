@@ -47,4 +47,4 @@ struct AngularVelocity {
 	glm::vec3 angular_velocity;
 };
 
-*\
+*/
