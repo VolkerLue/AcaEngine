@@ -1,4 +1,6 @@
 #include "System2.hpp"
+#include <glm/gtc/quaternion.hpp> 
+#include <glm/gtx/quaternion.hpp>
 
 System2::System2() : registry(),
 camera(graphics::Camera(45.f, 0.1f, 100.f)),
@@ -56,6 +58,26 @@ void System2::removeIntersecting() {
 }
 
 /* ################ Physic-System ################ */
+
+/*
+void  System2::rotate(Entity& _entity, float _deltatime) {
+	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
+	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
+	glm::quat Quat = glm::quat(glm::vec3(velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime));
+	glm::mat4 RotationMatrix = glm::toMat4(Quat);
+	transform.transform *= RotationMatrix;
+
+}
+
+
+void System2::move(Entity& _entity, float _deltaTime) {
+	glm::vec3 velocity = registry.getComponent<Velocity>(_entity)->velocity +
+		registry.getComponent<Accelaration>(_entity)->accelaration * _deltaTime;
+	setVelocity(_entity, velocity);
+	transfromMultiply(_entity, glm::translate(velocity));
+}
+*/
+
 void System2::move(Entity& _entity, float _deltaTime) {
 	glm::vec3 velocity = registry.getComponent<Velocity>(_entity)->velocity +
 		registry.getComponent<Accelaration>(_entity)->accelaration * _deltaTime;
@@ -193,6 +215,16 @@ void System2::setAnchor(Entity& _entity, glm::vec3 _anchor) {
 void System2::addRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation) {
 	registry.addComponent<Rotation>(_entity, _angleInRadians, _axisOfRotation);
 }
+
+/*
+void System2::addRotation(Entity& _entity, glm::vec3 _eulerAngles) {
+	registry.addComponent<Rotation>(_entity, _eulerAngles);
+}
+
+void System2::addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity) {
+	registry.addComponent<AngularVelocity>(_entity, _angular_velocity);
+}
+*/
 
 void System2::setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation) {
 	Rotation& rotation = registry.getComponentUnsafe<Rotation>(_entity);
