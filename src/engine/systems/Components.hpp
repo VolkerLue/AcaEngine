@@ -1,3 +1,4 @@
+#pragma once
 #include "../graphics/renderer/meshrenderer.hpp"
 
 struct Mesh {
