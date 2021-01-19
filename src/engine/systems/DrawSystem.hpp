@@ -1,14 +1,8 @@
 #pragma once
 #include "../graphics/renderer/meshrenderer.hpp"
 #include "../graphics/core/texture.hpp"
-
-struct Mesh {
-	graphics::Mesh mesh;
-};
-
-struct Transform {
-	glm::mat4 transform;
-};
+#include "../game/Octree.hpp"
+#include "Components.hpp"
 
 class DrawSystem
 {
