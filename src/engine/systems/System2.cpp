@@ -47,6 +47,14 @@ void System2::repositionCrate() {
 		}});
 };
 
+void System2::removeIntersecting() {
+	OctreeNode oN(AABB{ 3, -100, 100, -100, 100, -100, 100 });
+	EntitySystem::registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
+		{
+			oN.insert(aabb, ent, EntitySystem::registry);
+		});
+}
+
 /* ################ Physic-System ################ */
 void System2::move(Entity& _entity, float _deltaTime) {
 	glm::vec3 velocity = registry.getComponent<Velocity>(_entity)->velocity +
@@ -121,6 +129,14 @@ void System2::updateShoot(std::vector<Entity> entities) {
 			setVelocity(entities[i], glm::vec3(curserPosition[0] * 500, curserPosition[1] * 500, curserPosition[2] * 500));
 		}
 	}
+}
+
+void System2::updateAABB() {
+	EntitySystem::registry.execute<Entity, AABB>([&](Entity _ent, AABB& _aabb)
+		{
+			_aabb = _aabb.calculateAABB(EntitySystem::registry.getComponent<Mesh>(_ent)->mesh,
+				EntitySystem::registry.getComponent<Transform>(_ent)->transform, _aabb.type);
+		});
 }
 
 
@@ -200,6 +216,13 @@ void System2::addAlive(Entity& _entity, bool _alive) {
 void System2::setAlive(Entity& _entity, bool _alive) {
 	Alive& alive = registry.getComponentUnsafe<Alive>(_entity);
 	alive.alive = _alive;
+}
+
+void System2::addAABB(Entity& ent, int type) {
+	AABB aabb;
+	aabb = aabb.calculateAABB(EntitySystem::registry.getComponent<Mesh>(ent)->mesh,
+		EntitySystem::registry.getComponent<Transform>(ent)->transform, type);
+	EntitySystem::registry.addComponent<AABB>(ent, type, aabb.minX, aabb.maxX, aabb.minY, aabb.maxY, aabb.minZ, aabb.maxZ);
 }
 
 
