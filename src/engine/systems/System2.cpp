@@ -38,17 +38,6 @@ void System2::setCamera(float _fov, float _zNear, float zFar) {
 	camera = graphics::Camera(_fov, _zNear, zFar);
 }
 
-void System2::repositionCrate() {
-	registry.execute<Transform, Rotation>([&](Transform& transform, const Rotation& rotation) {
-		glm::vec3 position = glm::normalize(glm::vec3(transform.transform[3][0], transform.transform[3][1], transform.transform[3][2]));
-		if (position[0] < (-1) || position[0] > (1) ||
-			position[1] < (-1) || position[1] > (1) ||
-			position[2] < (-1) || position[2] > (0))
-		{
-			transform.transform = glm::translate(glm::vec3(0.f, 0.f, float(rand() % 30 + (-90))));
-		}});
-};
-
 void System2::removeIntersecting() {
 	OctreeNode oN(AABB{ 3, -100, 100, -100, 100, -100, 100 });
 	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
@@ -113,10 +102,22 @@ void System2::transfromMultiply(Entity& _entity, glm::mat4 _transform) {
 }
 
 void System2::updateTransformCrate(float _deltaTime) {
-	registry.execute<Transform, Velocity, Rotation>([&](
-		Transform& transform, const Velocity& velocity, const Rotation& rotation) {
-			transform.transform *= glm::translate(velocity.velocity * _deltaTime),
+	registry.execute<Transform, Velocity, Alive, Rotation>([&](
+		Transform& transform, const Velocity& velocity, const Alive& alive, const Rotation& rotation) {
+
+			glm::vec3 position = glm::vec3(transform.transform[3][0], transform.transform[3][1], transform.transform[3][2]);
+
+			if (position[0] < (-75.f) || position[0] > (75.f) ||
+				position[1] < (-50.f) || position[1] > (50.f) ||
+				position[2] < (-100.f) || position[2] > (0.f))
+			{
+				transform.transform = glm::translate(glm::vec3(0.f, 0.f, float(rand() % 30 + (-90))));
+			}
+
+			if (alive.alive) {
+				transform.transform *= glm::translate(velocity.velocity * _deltaTime),
 				transform.transform = glm::rotate(transform.transform, rotation.angleInRadians * _deltaTime, rotation.axisOfRotation);
+			}
 		});
 }
 
