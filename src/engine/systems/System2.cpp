@@ -121,36 +121,28 @@ void System2::updateTransformCrate(float _deltaTime) {
 }
 
 void System2::updateTransformPlanet(float _deltaTime) {
-	registry.execute<Transform, Velocity>([&](
-		Transform& transform, const Velocity& velocity) {
-			transform.transform *= glm::translate(velocity.velocity * _deltaTime);
-		});
-}
+	glm::vec3 curserPos = camera.toWorldSpace(inputManager.getCursorPos());
+	bool notFound = true;
+	bool buttonPressed = inputManager.isButtonPressed(input::MouseButton::LEFT);
+	registry.execute<Transform, Velocity, Alive, CursorPosition>([&curserPos, &notFound, &_deltaTime, &buttonPressed](
+		Transform& transform, Velocity& velocity, Alive& alive, const CursorPosition& cursorPosition) {
 
-void System2::updateShoot(std::vector<Entity> entities) {
-
-	registry.execute<Transform, Alive, CursorPosition>([&](Transform& transform, Alive& alive, const CursorPosition& cursorPosition) {
-		glm::vec3 position = glm::normalize(glm::vec3(transform.transform[3][0], transform.transform[3][1], transform.transform[3][2]));
-		if (position[0] < (-1) || position[0] > (1) ||
-			position[1] < (-1) || position[1] > (1) ||
-			position[2] < (-1) || position[2] > (0))
-		{
-			alive.alive = false;
-		}});
-
-	int i;
-	if (inputManager.isButtonPressed(input::MouseButton::LEFT)) {
-		glm::vec3 curserPosition = camera.toWorldSpace(inputManager.getCursorPos());		
-		for (i = 100; i < 200; i++) {
-			if (registry.getComponentUnsafe<Alive>(entities[i]).alive == false){ break; }	
-			if (i == 199) { i++; }
+			if (alive.alive == false && notFound && buttonPressed) {
+				notFound = alive.alive;
+				transform.transform = glm::translate(curserPos);
+				velocity.velocity = glm::vec3(curserPos[0] * 500, curserPos[1] * 500, curserPos[2] * 500);
+				alive.alive = true;
+			}
+			if (transform.transform[3][2] < (-100.f)) {
+				transform.transform = glm::translate(glm::vec3(-1.f, -1.f, -1.f));
+				velocity.velocity = glm::vec3(0.f, 0.f, 0.f);
+				alive.alive = false;
+			}
+			if (alive.alive) {
+				transform.transform *= glm::translate(velocity.velocity * _deltaTime);
+			}
 		}
-		if (i < 200) {
-			setAlive(entities[i], true);
-			setTransform(entities[i], glm::translate(curserPosition));
-			setVelocity(entities[i], glm::vec3(curserPosition[0] * 500, curserPosition[1] * 500, curserPosition[2] * 500));
-		}
-	}
+	);
 }
 
 void System2::updateAABB() {
