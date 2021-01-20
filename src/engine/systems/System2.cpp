@@ -39,7 +39,7 @@ void System2::setCamera(float _fov, float _zNear, float zFar) {
 }
 
 void System2::removeIntersecting() {
-	OctreeNode oN(AABB{ 3, -100, 100, -100, 100, -100, 100 });
+	OctreeNode oN(AABB{ 3, -1000, 1000, -1000, 1000 -1000, 1000 });
 	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
 		{
 			oN.insert(aabb, ent, registry);
