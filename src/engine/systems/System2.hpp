@@ -48,8 +48,6 @@ public:
 
 	void updateTransformPlanet(float _deltaTime);
 
-	void updateShoot(std::vector<Entity> entities);
-
 	void updateAABB();
 	
 	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
