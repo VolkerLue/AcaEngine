@@ -42,7 +42,6 @@ void Shooter::update(float _time, float _deltaTime) {
 	system.updateTransformCrate(_deltaTime);
 	system.repositionCrate();	
 	system.updateTransformPlanet(_deltaTime);
-	system.updateShoot(entities);
 	system.updateAABB();
 	system.removeIntersecting();
 }
