@@ -15,12 +15,12 @@ struct AABB {
 
 	AABB calculateAABB(const graphics::Mesh& mesh, const glm::mat4 transform, int type) {
 		glm::vec3 current;
-		double minX = std::numeric_limits<double>::min();
-		double maxX = std::numeric_limits<double>::max();
-		double minY = std::numeric_limits<double>::min();
-		double maxY = std::numeric_limits<double>::max();
-		double minZ = std::numeric_limits<double>::min();
-		double maxZ = std::numeric_limits<double>::max();
+		double minX = std::numeric_limits<double>::max();
+		double maxX = std::numeric_limits<double>::min();
+		double minY = std::numeric_limits<double>::max();
+		double maxY = std::numeric_limits<double>::min();
+		double minZ = std::numeric_limits<double>::max();
+		double maxZ = std::numeric_limits<double>::min();
 		for (auto it = mesh.vertices.begin(); it != mesh.vertices.end(); it++) {
 			current = glm::vec3(transform * glm::vec4(it->Position, 1));
 			if (current.x < minX) minX = current.x;
@@ -55,12 +55,12 @@ struct AABB {
 		corners.push_back(glm::vec3(aabb.maxX, aabb.maxY, aabb.minZ));
 		corners.push_back(glm::vec3(aabb.maxX, aabb.maxY, aabb.maxZ));
 		glm::vec3 current;
-		double minX = std::numeric_limits<double>::min();
-		double maxX = std::numeric_limits<double>::max();
-		double minY = std::numeric_limits<double>::min();
-		double maxY = std::numeric_limits<double>::max();
-		double minZ = std::numeric_limits<double>::min();
-		double maxZ = std::numeric_limits<double>::max();
+		double minX = std::numeric_limits<double>::max();
+		double maxX = std::numeric_limits<double>::min();
+		double minY = std::numeric_limits<double>::max();
+		double maxY = std::numeric_limits<double>::min();
+		double minZ = std::numeric_limits<double>::max();
+		double maxZ = std::numeric_limits<double>::min();
 		for (auto it = corners.begin(); it != corners.end(); it++) {
 			current = glm::vec3(transform * glm::vec4(*it, 1));
 			if (current.x < minX) minX = current.x;
