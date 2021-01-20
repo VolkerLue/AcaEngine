@@ -32,8 +32,6 @@ public:
 
 	void setCamera(float _fov, float _zNear, float zFar);
 
-	void repositionCrate();
-
 	void removeIntersecting();
 
 	
