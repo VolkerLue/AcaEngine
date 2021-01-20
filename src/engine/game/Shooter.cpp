@@ -39,8 +39,10 @@ void Shooter::update(float _time, float _deltaTime) {
 	if (_time > 100) {
 		finished = true;
 	}	
-	system.updateTransformCrate(_deltaTime);	
+	system.updateTransformCrate(_deltaTime);
+	system.repositionCrate();	
 	system.updateTransformPlanet(_deltaTime);
+	system.updateShoot(entities);
 	system.updateAABB();
 	system.removeIntersecting();
 }
