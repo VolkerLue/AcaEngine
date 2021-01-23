@@ -46,12 +46,10 @@ public:
 	int whichEntityIsNotInView();
 
 	void shootSphere(std::list<Entity>& _entities, float _velocity, const graphics::Texture2D& _texture);
+	
+	//void rotate(Entity& _entity, float _deltatime);
 
 	//void updateAABB();
-
-	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
-
-	//void rotateMultiply(Entity& _entity);
 
 
 	/* ################ Component-System ################ */
@@ -84,6 +82,10 @@ public:
 	void addRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
 
 	void setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
+
+	//void addRotation(Entity& _entity, glm::vec3 _eulerAngles);
+
+	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
 
 	//void addAABB(Entity& ent, int type);
 
