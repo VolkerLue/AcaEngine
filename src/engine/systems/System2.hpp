@@ -1,12 +1,10 @@
 #pragma once
-
 #include "Components.hpp"
 #include "../game/Registry2.hpp"
 #include "../graphics/core/texture.hpp"
 #include <engine/input/inputmanager.hpp>
 #include <glm/gtx/transform.hpp>
 #include <GL/glew.h>
-#include "../game/Octree.hpp"
 
 
 class System2
@@ -25,16 +23,15 @@ public:
 
 
 	/* ################ Draw-System ################ */	
-	template<typename... Args>
-	void draw(const graphics::Texture2D& _texture);
+	void draw();
 
 	void drawEntity(Entity& _entity, const graphics::Texture2D& _texture);
 
 	void setCamera(float _fov, float _zNear, float zFar);
 
-	void removeIntersecting();
+	//void removeIntersecting();
 
-	
+
 	/* ################ Physic-System ################ */	
 	void move(Entity& _entity, float _deltaTime);
 
@@ -42,14 +39,18 @@ public:
 
 	void transfromMultiply(Entity& _entity, glm::mat4 _transform);
 
-	void updateTransformCrate(float _deltaTime);
+	void updateTransform(float _deltaTime);
 
-	void updateTransformPlanet(float _deltaTime);
+	void removeEntityWhenNotInView(std::list<Entity>& entities);
 
-	void updateAABB();
-	
+	int whichEntityIsNotInView();
+
+	void shootSphere(std::list<Entity>& _entities, float _velocity, const graphics::Texture2D& _texture);
+
+	//void updateAABB();
+
 	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
-	
+
 	//void rotateMultiply(Entity& _entity);
 
 
@@ -59,6 +60,10 @@ public:
 	void addTransform(Entity& _entity, glm::mat4 _transfrom);
 
 	void setTransform(Entity& _entity, glm::mat4 _transform);
+
+	void addTexture(Entity& _entity, const graphics::Texture2D* _texture);
+
+	void setTexture(Entity& _entity, const graphics::Texture2D* _texture);
 
 	void addVelocity(Entity& _entity, glm::vec3 _velocity);
 
@@ -77,22 +82,10 @@ public:
 	void setAnchor(Entity& _entity, glm::vec3 _anchor);
 
 	void addRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
-	
-	//void addRotation(Entity& _entity, glm::vec3 _eulerAngles);
-
-        //void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
 
 	void setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
 
-	void addCursorPosition(Entity& _entity, glm::vec3 _curserPosition);
-
-	void setCursorPosition(Entity& _entity, glm::vec3 _curserPosition);
-
-	void addAlive(Entity& _entity, bool _alive);
-
-	void setAlive(Entity& _entity, bool _alive);
-
-	void addAABB(Entity& ent, int type);
+	//void addAABB(Entity& ent, int type);
 
 
 	/* ################ Utils-System ################ */
@@ -103,15 +96,9 @@ private:
 	Registry2 registry;
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
-	input::InputManager inputManager;
-	
+	input::InputManager inputManager;			
+
+	void executeVelocity(float _deltaTime);
+
+	void executeRotation(float _deltaTime);
 };
-
-
-template<typename... Args>
-void System2::draw(const graphics::Texture2D& _texture) {
-	renderer.clear();
-	registry.execute<Args...>([&](const Mesh& mesh, const Transform& transform, const Alive& alive, const Args& args) {
-		if (alive.alive) { renderer.draw(mesh.mesh, _texture, transform.transform); }});
-	renderer.present(camera);
-}
