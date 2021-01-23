@@ -52,11 +52,17 @@ public:
 			if (cS.sparse[_ent.id] != -1) {
 				int pos = cS.sparse[_ent.id];
 				cS.sparse[_ent.id] = -1;
-				cS.entities[pos] = cS.entities[cS.entities.size() - 1];
-				cS.entities.pop_back();
-				cS.components[pos] = cS.components[cS.components.size() - 1];
-				cS.components.pop_back();
-				cS.sparse[cS.entities[pos].id] = pos;
+				if (cS.entities[pos].id == cS.entities[cS.entities.size() - 1].id) {
+					cS.entities.pop_back();
+					cS.components.pop_back();
+				}
+				else {
+					cS.entities[pos] = cS.entities[cS.entities.size() - 1];
+					cS.entities.pop_back();
+					cS.components[pos] = cS.components[cS.components.size() - 1];
+					cS.components.pop_back();
+					cS.sparse[cS.entities[pos].id] = pos;
+				}
 			}
 		}
 	}
@@ -64,6 +70,7 @@ public:
 	EntityRef getRef(Entity _ent) const {
 		return { _ent, generations[_ent.id] };
 	}
+	
 	std::optional<Entity> getEntity(EntityRef _ent) const {
 		if (_ent.generation == generations[_ent.ent.id] && flags[_ent.ent.id]) {
 			return _ent.ent;
