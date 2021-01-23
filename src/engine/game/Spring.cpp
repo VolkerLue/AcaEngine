@@ -1,5 +1,5 @@
 #include "Spring.hpp"
-#include <GL/glew.h>
+
 
 Spring::Spring() : GameState(), system(), 
 texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
