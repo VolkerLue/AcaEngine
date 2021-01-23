@@ -2,6 +2,7 @@
 #include "GameState.hpp"
 #include "../systems/System2.hpp"
 
+
 class UpAndDown : public GameState {
 public:
 	UpAndDown();
