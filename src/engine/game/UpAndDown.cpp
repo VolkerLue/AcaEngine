@@ -1,5 +1,5 @@
 #include "UpAndDown.hpp"
-#include <GL/glew.h>
+
 
 UpAndDown::UpAndDown() : GameState(), system(), 
 texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
