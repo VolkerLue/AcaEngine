@@ -1,5 +1,5 @@
-#pragma once
 #include "../graphics/renderer/meshrenderer.hpp"
+
 
 struct Mesh {
 	graphics::Mesh mesh;
@@ -9,8 +9,17 @@ struct Transform {
 	glm::mat4 transform;
 };
 
+struct Texture {
+	const graphics::Texture2D* texture;
+};
+
 struct Velocity {
 	glm::vec3 velocity;
+};
+
+struct Rotation {
+	float angleInRadians;
+	glm::vec3 axisOfRotation;
 };
 
 struct Accelaration {
@@ -25,26 +34,20 @@ struct Anchor {
 	glm::vec3 anchor;
 };
 
-struct Rotation {
-	float angleInRadians;
-	glm::vec3 axisOfRotation;
-};
+//struct Rotation {
+//	glm::vec3 EulerAngles;
+//};
 
-struct CursorPosition {
-	glm::vec3 curserPosition;
-};
+//struct AngularVelocity {
+//	glm::vec3 angular_velocity;
+//};
 
-struct Alive {
-	bool alive;
-};
-
-/*
-struct Rotation {
-	glm::vec3 EulerAngles;
-};
-
-struct AngularVelocity {
-	glm::vec3 angular_velocity;
-};
-
-*/
+//struct AABB {
+//	int type;	//1 = projectile, 2 = target, 3 = Octreebox
+//	double minX;
+//	double maxX;
+//	double minY;
+//	double maxY;
+//	double minZ;
+//	double maxZ;
+//};
