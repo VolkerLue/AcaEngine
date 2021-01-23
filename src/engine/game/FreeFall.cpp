@@ -1,5 +1,5 @@
 #include "FreeFall.hpp"
-#include <GL/glew.h>
+
 
 FreeFall::FreeFall() : GameState(), system(),
 texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
@@ -10,7 +10,7 @@ texture2(*graphics::Texture2DManager::get("textures/cratetex.png", graphics::Sam
 	system.addTransform(entity, glm::translate(glm::vec3(0.f, 10.f, -50.f)));
 	system.addVelocity(entity, glm::vec3(0.f, 0.13f, 0.f));
 	system.addAccelaration(entity, glm::vec3(0.f, -0.1f, 0.f));
-
+	
 	entity2 = system.createEntity(entity2);
 	system.addMesh(entity2, "models/crate.obj");
 	system.addTransform(entity2, glm::translate(glm::vec3(5.f, 10.f, -50.f)));
@@ -22,7 +22,7 @@ void FreeFall::newState() {
 }
 
 void FreeFall::update(float _time, float _deltaTime) {
-	if (_time > 5) {
+	if (_time > 2) {
 		finished = true;
 	}
 	system.move(entity, _deltaTime);
