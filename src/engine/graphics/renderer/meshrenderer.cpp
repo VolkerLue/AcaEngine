@@ -33,14 +33,8 @@ namespace graphics {
 		program.use();
 		program.setUniform(program.getUniformLoc("Camera"), _camera.getViewProjection());
 		for (auto it = instances.begin(); it != instances.end(); it++) {
-
-			auto p = std::find(textureIds.begin(), textureIds.end(), it->texture.getID());
-			if (p != textureIds.end()) {
-				it->texture.bind(0);
-				textureIds.push_back(it->texture.getID());
-			}
-			
-			program.setUniform(program.getUniformLoc("Transform"),it->transform);
+			it->texture.bind(0);
+			program.setUniform(program.getUniformLoc("Transform"), it->transform);
 			geometryBuffer->setData(&(it->meshVertices[0]), it->meshVertices.size() * sizeof(Mesh::Vertex));
 			geometryBuffer->draw();
 		}
