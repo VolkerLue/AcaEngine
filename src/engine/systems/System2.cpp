@@ -1,6 +1,5 @@
 #include "System2.hpp"
-#include <glm/gtc/quaternion.hpp> 
-#include <glm/gtx/quaternion.hpp>
+
 
 System2::System2() : registry(),
 camera(graphics::Camera(45.f, 0.1f, 100.f)),
@@ -28,6 +27,15 @@ std::optional<Entity> System2::getEntity(EntityRef _entity) const {
 
 
 /* ################ Draw-System ################ */
+void System2::draw() {
+	renderer.clear();
+	registry.execute<Mesh, Texture, Transform>([&](
+		const Mesh& mesh, const Texture texture, const Transform& transform) {
+			renderer.draw(mesh.mesh, *texture.texture, transform.transform);
+		});
+	renderer.present(camera);
+}
+
 void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
 	renderer.clear();
 	renderer.draw(registry.getComponent<Mesh>(_entity)->mesh, _texture, registry.getComponent<Transform>(_entity)->transform);
@@ -38,35 +46,16 @@ void System2::setCamera(float _fov, float _zNear, float zFar) {
 	camera = graphics::Camera(_fov, _zNear, zFar);
 }
 
-void System2::removeIntersecting() {
-	OctreeNode oN(AABB{ 3, -1000, 1000, -1000, 1000 -1000, 1000 });
-	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
-		{
-			oN.insert(aabb, ent, registry);
-		});
-}
+//void System2::removeIntersecting() {
+//	OctreeNode oN(AABB{ 3, -1000, 1000, -1000, 1000 - 1000, 1000 });
+//	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
+//		{
+//			oN.insert(aabb, ent, registry);
+//		});
+//}
+
 
 /* ################ Physic-System ################ */
-
-/*
-void  System2::rotate(Entity& _entity, float _deltatime) {
-	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
-	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
-	glm::quat Quat = glm::quat(glm::vec3(velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime));
-	glm::mat4 RotationMatrix = glm::toMat4(Quat);
-	transform.transform *= RotationMatrix;
-
-}
-
-
-void System2::move(Entity& _entity, float _deltaTime) {
-	glm::vec3 velocity = registry.getComponent<Velocity>(_entity)->velocity +
-		registry.getComponent<Accelaration>(_entity)->accelaration * _deltaTime;
-	setVelocity(_entity, velocity);
-	transfromMultiply(_entity, glm::translate(velocity));
-}
-*/
-
 void System2::move(Entity& _entity, float _deltaTime) {
 	glm::vec3 velocity = registry.getComponent<Velocity>(_entity)->velocity +
 		registry.getComponent<Accelaration>(_entity)->accelaration * _deltaTime;
@@ -101,59 +90,73 @@ void System2::transfromMultiply(Entity& _entity, glm::mat4 _transform) {
 	transform.transform *= _transform;
 }
 
-void System2::updateTransformCrate(float _deltaTime) {
-	registry.execute<Transform, Velocity, Alive, Rotation>([&](
-		Transform& transform, const Velocity& velocity, const Alive& alive, const Rotation& rotation) {
+void System2::updateTransform(float _deltaTime) {
+	executeVelocity(_deltaTime);
+	executeRotation(_deltaTime);
+}
 
+void System2::executeVelocity(float _deltaTime) {
+	registry.execute<Transform, Velocity>([&](Transform& transform, Velocity& velocity) {
+		transform.transform *= glm::translate(velocity.velocity * _deltaTime); });
+}
+
+void System2::executeRotation(float _deltaTime) {
+	registry.execute<Transform, Rotation>([&](Transform& transform, Rotation& rotation) {
+		transform.transform = glm::rotate(transform.transform, rotation.angleInRadians * _deltaTime, rotation.axisOfRotation); });
+}
+
+void System2::removeEntityWhenNotInView(std::list<Entity>& entities){
+	int entityId = whichEntityIsNotInView();
+	if (entityId != -1) {
+		Entity entity{ static_cast<uint32_t>(entityId) };
+		eraseEntity(entity);
+		entities.remove_if([&entity](const Entity& _entity) { return _entity.id == entity.id; });
+	}
+}
+
+int System2::whichEntityIsNotInView() {
+	int found = -1;
+	registry.execute<Entity, Transform>([&found](Entity _entity, const Transform& transform) {
 			glm::vec3 position = glm::vec3(transform.transform[3][0], transform.transform[3][1], transform.transform[3][2]);
-
 			if (position[0] < (-75.f) || position[0] > (75.f) ||
 				position[1] < (-50.f) || position[1] > (50.f) ||
 				position[2] < (-100.f) || position[2] > (0.f))
-			{
-				transform.transform = glm::translate(glm::vec3(0.f, 0.f, float(rand() % 30 + (-90))));
-			}
-
-			if (alive.alive) {
-				transform.transform *= glm::translate(velocity.velocity * _deltaTime),
-				transform.transform = glm::rotate(transform.transform, rotation.angleInRadians * _deltaTime, rotation.axisOfRotation);
-			}
-		});
+			{ 
+				found = _entity.id;
+				return found;
+			}});	
+	return found;
 }
 
-void System2::updateTransformPlanet(float _deltaTime) {
-	glm::vec3 curserPos = camera.toWorldSpace(inputManager.getCursorPos());
-	bool notFound = true;
-	bool buttonPressed = inputManager.isButtonPressed(input::MouseButton::LEFT);
-	registry.execute<Transform, Velocity, Alive, CursorPosition>([&curserPos, &notFound, &_deltaTime, &buttonPressed](
-		Transform& transform, Velocity& velocity, Alive& alive, const CursorPosition& cursorPosition) {
-
-			if (alive.alive == false && notFound && buttonPressed) {
-				notFound = alive.alive;
-				transform.transform = glm::translate(curserPos);
-				velocity.velocity = glm::vec3(curserPos[0] * 500, curserPos[1] * 500, curserPos[2] * 500);
-				alive.alive = true;
-			}
-			if (transform.transform[3][2] < (-100.f)) {
-				transform.transform = glm::translate(glm::vec3(-1.f, -1.f, -1.f));
-				velocity.velocity = glm::vec3(0.f, 0.f, 0.f);
-				alive.alive = false;
-			}
-			if (alive.alive) {
-				transform.transform *= glm::translate(velocity.velocity * _deltaTime);
-			}
-		}
-	);
+void System2::shootSphere(std::list<Entity>& _entities, float _velocity, const graphics::Texture2D& _texture) {
+	if (inputManager.isButtonPressed(input::MouseButton::LEFT)) {
+		glm::vec3 curserPos = camera.toWorldSpace(inputManager.getCursorPos());
+		Entity entity;
+		_entities.push_back(createEntity(entity));
+		addTexture(_entities.back(), &_texture);
+		addMesh(_entities.back(), "models/sphere.obj");
+		addTransform(_entities.back(), glm::translate(curserPos));		
+		addVelocity(_entities.back(), glm::vec3(curserPos[0] * _velocity, curserPos[1] * _velocity, curserPos[2] * _velocity));
+		//system.addAABB(entities.back(), 1);
+	}
 }
 
-void System2::updateAABB() {
-	registry.execute<Entity, AABB>([&](Entity _ent, AABB& _aabb)
-		{
-			AABB aabb;
-			_aabb = aabb.calculateAABB(registry.getComponent<Mesh>(_ent)->mesh,
-				registry.getComponent<Transform>(_ent)->transform, _aabb.type);
-		});
-}
+//void System2::rotate(Entity& _entity, float _deltatime) {
+//	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
+//	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
+//	glm::quat Quat = glm::quat(glm::vec3(velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime));
+//	glm::mat4 RotationMatrix = glm::toMat4(Quat);
+//	transform.transform *= RotationMatrix;
+//}
+
+//void System2::updateAABB() {
+//	registry.execute<Entity, AABB>([&](Entity _ent, AABB& _aabb)
+//		{
+//			AABB aabb;
+//			_aabb = aabb.calculateAABB(registry.getComponent<Mesh>(_ent)->mesh,
+//				registry.getComponent<Transform>(_ent)->transform, _aabb.type);
+//		});
+//}
 
 
 /* ################ Component-System ################ */
@@ -168,6 +171,15 @@ void System2::addTransform(Entity& _entity, glm::mat4 _transfrom) {
 void System2::setTransform(Entity& _entity, glm::mat4 _transform) {
 	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
 	transform.transform = _transform;
+}
+
+void System2::addTexture(Entity& _entity, const graphics::Texture2D* _texture) {
+	registry.addComponent<Texture>(_entity, _texture);
+}
+
+void System2::setTexture(Entity& _entity, const graphics::Texture2D* _texture) {
+	auto texture = registry.getComponentUnsafe<Texture>(_entity);
+	texture.texture = _texture;
 }
 
 void System2::addVelocity(Entity& _entity, glm::vec3 _velocity) {
@@ -210,46 +222,26 @@ void System2::addRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axi
 	registry.addComponent<Rotation>(_entity, _angleInRadians, _axisOfRotation);
 }
 
-/*
-void System2::addRotation(Entity& _entity, glm::vec3 _eulerAngles) {
-	registry.addComponent<Rotation>(_entity, _eulerAngles);
-}
-
-void System2::addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity) {
-	registry.addComponent<AngularVelocity>(_entity, _angular_velocity);
-}
-*/
-
 void System2::setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation) {
 	Rotation& rotation = registry.getComponentUnsafe<Rotation>(_entity);
 	rotation.angleInRadians = _angleInRadians;
 	rotation.axisOfRotation = _axisOfRotation;
 }
 
-void System2::addCursorPosition(Entity& _entity, glm::vec3 _curserPosition) {
-	registry.addComponent<CursorPosition>(_entity, _curserPosition);
-}
+//void System2::addRotation(Entity& _entity, glm::vec3 _eulerAngles) {
+//	registry.addComponent<Rotation>(_entity, _eulerAngles);
+//}
 
-void System2::setCursorPosition(Entity& _entity, glm::vec3 _curserPosition) {
-	CursorPosition& curserPositon = registry.getComponentUnsafe<CursorPosition>(_entity);
-	curserPositon.curserPosition = _curserPosition;
-}
+//void System2::addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity) {
+//	registry.addComponent<AngularVelocity>(_entity, _angular_velocity);
+//}
 
-void System2::addAlive(Entity& _entity, bool _alive) {
-	registry.addComponent<Alive>(_entity, _alive);
-}
-
-void System2::setAlive(Entity& _entity, bool _alive) {
-	Alive& alive = registry.getComponentUnsafe<Alive>(_entity);
-	alive.alive = _alive;
-}
-
-void System2::addAABB(Entity& ent, int type) {
-	AABB aabb;
-	aabb = aabb.calculateAABB(registry.getComponent<Mesh>(ent)->mesh,
-		registry.getComponent<Transform>(ent)->transform, type);
-	registry.addComponent<AABB>(ent, type, aabb.minX, aabb.maxX, aabb.minY, aabb.maxY, aabb.minZ, aabb.maxZ);
-}
+//void System2::addAABB(Entity& ent, int type) {
+//	AABB aabb;
+//	aabb = aabb.calculateAABB(registry.getComponent<Mesh>(ent)->mesh,
+//		registry.getComponent<Transform>(ent)->transform, type);
+//	registry.addComponent<AABB>(ent, type, aabb.minX, aabb.maxX, aabb.minY, aabb.maxY, aabb.minZ, aabb.maxZ);
+//}
 
 
 /* ################ Utils-System ################ */
