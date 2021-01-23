@@ -1,8 +1,13 @@
 #pragma once
-#include <memory>
+
 #include "GameState.hpp"
+#include "../graphics/core/device.hpp"
+#include "../input/inputmanager.hpp"
+#include <chrono>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <memory>
+
 
 class Game {
 public:
