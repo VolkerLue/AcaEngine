@@ -22,7 +22,7 @@ void FreeFall::newState() {
 }
 
 void FreeFall::update(float _time, float _deltaTime) {
-	if (_time > 2) {
+	if (_time > 5) {
 		finished = true;
 	}
 	system.move(entity, _deltaTime);
