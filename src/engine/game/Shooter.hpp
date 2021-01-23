@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <time.h> 
 
+
 class Shooter : public GameState {
 public:
 	Shooter();
@@ -18,7 +19,7 @@ public:
 	bool isFinished();
 
 private:
-	std::vector<Entity> entities;
+	std::list<Entity> entities;
 	System2 system;
 	const graphics::Texture2D& texturePlanet;
 	const graphics::Texture2D& textureCratetex;
