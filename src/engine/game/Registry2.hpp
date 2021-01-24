@@ -13,6 +13,16 @@ struct Entity
 	uint32_t id;
 };
 
+inline bool operator==(const Entity& a, const Entity& b)
+{
+	return a.id == b.id;
+}
+
+inline bool operator<(const Entity& a, const Entity& b)
+{
+	return a.id < b.id;
+}
+
 struct EntityRef
 {
 	Entity ent;
