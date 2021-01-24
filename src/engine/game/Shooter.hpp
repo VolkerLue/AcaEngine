@@ -3,6 +3,7 @@
 #include "../systems/System2.hpp"
 #include <stdlib.h>
 #include <time.h> 
+#include "../input/inputmanager.hpp"
 
 
 class Shooter : public GameState {
@@ -23,4 +24,5 @@ private:
 	System2 system;
 	const graphics::Texture2D& texturePlanet;
 	const graphics::Texture2D& textureCratetex;
+	int shot;
 };
