@@ -1,4 +1,5 @@
 #include "../graphics/renderer/meshrenderer.hpp"
+#include "../math/geometrictypes.hpp"
 
 
 struct Mesh {
@@ -34,20 +35,16 @@ struct Anchor {
 	glm::vec3 anchor;
 };
 
+struct Box {
+	bool isProjectile;
+	math::AABB<3> aabb;
+	math::AABB<3> transformedAabb;
+};
+
 //struct Rotation {
 //	glm::vec3 EulerAngles;
 //};
 
 //struct AngularVelocity {
 //	glm::vec3 angular_velocity;
-//};
-
-//struct AABB {
-//	int type;	//1 = projectile, 2 = target, 3 = Octreebox
-//	double minX;
-//	double maxX;
-//	double minY;
-//	double maxY;
-//	double minZ;
-//	double maxZ;
 //};
