@@ -5,6 +5,10 @@
 #include <engine/input/inputmanager.hpp>
 #include <glm/gtx/transform.hpp>
 #include <GL/glew.h>
+#include <limits>
+#include "../math/geometrictypes.hpp"
+#include "../utils/containers/octree.hpp"
+#include <set>
 
 
 class System2
@@ -29,8 +33,6 @@ public:
 
 	void setCamera(float _fov, float _zNear, float zFar);
 
-	//void removeIntersecting();
-
 
 	/* ################ Physic-System ################ */	
 	void move(Entity& _entity, float _deltaTime);
@@ -49,7 +51,9 @@ public:
 	
 	//void rotate(Entity& _entity, float _deltatime);
 
-	//void updateAABB();
+	void updateAABB();
+
+	int removeIntersecting();
 
 
 	/* ################ Component-System ################ */
@@ -87,7 +91,7 @@ public:
 
 	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
 
-	//void addAABB(Entity& ent, int type);
+	void addAABB(Entity& ent, bool isProjectile);
 
 
 	/* ################ Utils-System ################ */
