@@ -20,6 +20,7 @@
 #include <engine/game/Shooter.hpp>
 #include <memory>
 #include <chrono>
+#include <engine/utils/resourcemanager.hpp>
 
 // CRT's memory leak detection
 #ifndef NDEBUG 
@@ -45,9 +46,13 @@ int main(int argc, char* argv[])
 	//game.addState(std::make_unique<FreeFall>());
 	//game.addState(std::make_unique<Spring>());
 	//game.run(std::make_unique<UpAndDown>());
+	
 
 	Game game;
 	game.run(std::make_unique<Shooter>());
+	utils::MeshLoader::clear();
+	graphics::ShaderManager::clear();
+	graphics::Texture2DManager::clear();
 
 	/*
 	Registry<int> registry;
