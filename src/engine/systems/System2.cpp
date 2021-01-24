@@ -1,6 +1,8 @@
 #include "System2.hpp"
 
 
+
+
 System2::System2() : registry(),
 camera(graphics::Camera(45.f, 0.1f, 100.f)),
 renderer(graphics::MeshRenderer())
@@ -45,14 +47,6 @@ void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
 void System2::setCamera(float _fov, float _zNear, float zFar) {
 	camera = graphics::Camera(_fov, _zNear, zFar);
 }
-
-//void System2::removeIntersecting() {
-//	OctreeNode oN(AABB{ 3, -1000, 1000, -1000, 1000 - 1000, 1000 });
-//	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
-//		{
-//			oN.insert(aabb, ent, registry);
-//		});
-//}
 
 
 /* ################ Physic-System ################ */
@@ -137,7 +131,7 @@ void System2::shootSphere(std::list<Entity>& _entities, float _velocity, const g
 		addMesh(_entities.back(), "models/sphere.obj");
 		addTransform(_entities.back(), glm::translate(curserPos));		
 		addVelocity(_entities.back(), glm::vec3(curserPos[0] * _velocity, curserPos[1] * _velocity, curserPos[2] * _velocity));
-		//system.addAABB(entities.back(), 1);
+		addAABB(_entities.back(), true);
 	}
 }
 
@@ -149,15 +143,58 @@ void System2::shootSphere(std::list<Entity>& _entities, float _velocity, const g
 //	transform.transform *= RotationMatrix;
 //}
 
-//void System2::updateAABB() {
-//	registry.execute<Entity, AABB>([&](Entity _ent, AABB& _aabb)
-//		{
-//			AABB aabb;
-//			_aabb = aabb.calculateAABB(registry.getComponent<Mesh>(_ent)->mesh,
-//				registry.getComponent<Transform>(_ent)->transform, _aabb.type);
-//		});
-//}
+void System2::updateAABB() {
+	registry.execute<Box, Transform>([&](Box& box, Transform transform) {
+		std::vector<glm::vec3> corners;
+		corners.push_back(glm::vec3(box.aabb.min.x, box.aabb.min.y, box.aabb.min.z));
+		corners.push_back(glm::vec3(box.aabb.min.x, box.aabb.min.y, box.aabb.max.z));
+		corners.push_back(glm::vec3(box.aabb.min.x, box.aabb.max.y, box.aabb.min.z));
+		corners.push_back(glm::vec3(box.aabb.min.x, box.aabb.max.y, box.aabb.max.z));
+		corners.push_back(glm::vec3(box.aabb.max.x, box.aabb.min.y, box.aabb.min.z));
+		corners.push_back(glm::vec3(box.aabb.max.x, box.aabb.min.y, box.aabb.max.z));
+		corners.push_back(glm::vec3(box.aabb.max.x, box.aabb.max.y, box.aabb.min.z));
+		corners.push_back(glm::vec3(box.aabb.max.x, box.aabb.max.y, box.aabb.max.z));
+		glm::vec3 current;
+		auto it = corners.begin();
+		glm::vec3 min(glm::vec3(camera.getViewProjection() * transform.transform * glm::vec4(*it, 1)));
+		glm::vec3 max(glm::vec3(camera.getViewProjection() * transform.transform * glm::vec4(*it, 1)));
+		it++;
+		for (; it != corners.end(); it++) {
+			current = glm::vec3(camera.getViewProjection() * transform.transform * glm::vec4(*it, 1));
+			if (current.x < min.x) min.x = current.x;
+			if (current.x > max.x) max.x = current.x;
+			if (current.y < min.y) min.y = current.y;
+			if (current.y > max.y) max.y = current.y;
+			if (current.z < min.z) min.z = current.z;
+			if (current.z > max.z) max.z = current.z;
+		}
+		box.transformedAabb.max = max;
+		box.transformedAabb.min = min;
+		});
+}
 
+
+int System2::removeIntersecting() {
+	utils::SparseOctree<Entity, 3, float> sparseOctree;
+	registry.execute<Entity, Box>([&](Entity ent, Box box) {
+		if (!box.isProjectile) sparseOctree.insert(box.transformedAabb, ent);
+		});
+	std::set<Entity> ent;
+	registry.execute<Box>([&](Box box) {
+		if (box.isProjectile) {
+			utils::SparseOctree<Entity, 3, float>::AABBQuery aabbQuery(box.transformedAabb);
+			sparseOctree.traverse(aabbQuery);
+			for (auto it = aabbQuery.hits.begin(); it != aabbQuery.hits.end(); it++) {
+				ent.insert(*it);
+			}
+		}
+		});
+	for (auto it = ent.begin(); it != ent.end(); it++) {
+		registry.erase(*it);
+	}
+	
+	return ent.size();
+}
 
 /* ################ Component-System ################ */
 void System2::addMesh(Entity& _entity, const char* _mesh) {
@@ -236,12 +273,35 @@ void System2::setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axi
 //	registry.addComponent<AngularVelocity>(_entity, _angular_velocity);
 //}
 
-//void System2::addAABB(Entity& ent, int type) {
-//	AABB aabb;
-//	aabb = aabb.calculateAABB(registry.getComponent<Mesh>(ent)->mesh,
-//		registry.getComponent<Transform>(ent)->transform, type);
-//	registry.addComponent<AABB>(ent, type, aabb.minX, aabb.maxX, aabb.minY, aabb.maxY, aabb.minZ, aabb.maxZ);
-//}
+void System2::addAABB(Entity& ent, bool isProjectile) {
+	graphics::Mesh& mesh = registry.getComponent<Mesh>(ent)->mesh;
+	glm::mat4 transform = camera.getViewProjection() * registry.getComponent<Transform>(ent)->transform;
+	auto it = mesh.vertices.begin();
+	glm::vec3 min(it->Position);
+	glm::vec3 max(it->Position);
+	glm::vec3 minTransformed(glm::vec3(transform * glm::vec4(it->Position, 1)));
+	glm::vec3 maxTransformed(glm::vec3(transform * glm::vec4(it->Position, 1)));
+	it++;
+	glm::vec3 current;
+	glm::vec3 currentTransformed;
+	for (; it != mesh.vertices.end(); it++) {
+		currentTransformed = glm::vec3(transform * glm::vec4(it->Position, 1));
+		if (currentTransformed.x < minTransformed.x) minTransformed.x = currentTransformed.x;
+		if (currentTransformed.x > maxTransformed.x) maxTransformed.x = currentTransformed.x;
+		if (currentTransformed.y < minTransformed.y) minTransformed.y = currentTransformed.y;
+		if (currentTransformed.y > maxTransformed.y) maxTransformed.y = currentTransformed.y;
+		if (currentTransformed.z < minTransformed.z) minTransformed.z = currentTransformed.z;
+		if (currentTransformed.z > maxTransformed.z) maxTransformed.z = currentTransformed.z;
+		current = it->Position;
+		if (current.x < min.x) min.x = current.x;
+		if (current.x > max.x) max.x = current.x;
+		if (current.y < min.y) min.y = current.y;
+		if (current.y > max.y) max.y = current.y;
+		if (current.z < min.z) min.z = current.z;
+		if (current.z > max.z) max.z = current.z;
+	}
+	registry.addComponent<Box>(ent, isProjectile, math::AABB<3>(min, max), math::AABB<3>(minTransformed, maxTransformed));
+}
 
 
 /* ################ Utils-System ################ */
