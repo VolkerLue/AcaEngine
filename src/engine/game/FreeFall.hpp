@@ -22,4 +22,6 @@ private:
 	System2 system;
 	const graphics::Texture2D& texture;
 	const graphics::Texture2D& texture2;
+	const graphics::Mesh meshSphere;
+	const graphics::Mesh meshCrate;
 };
