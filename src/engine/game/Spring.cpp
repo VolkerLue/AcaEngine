@@ -2,10 +2,11 @@
 
 
 Spring::Spring() : GameState(), system(), 
-texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+meshSphere(*utils::MeshLoader::get("models/sphere.obj"))
 {
 	entity = system.createEntity(entity);
-	system.addMesh(entity, "models/sphere.obj");
+	system.addMesh(entity, &meshSphere);
 	system.addTransform(entity, glm::translate(glm::vec3(0.f, 4.f, -10.0f)));
 	system.addVelocity(entity, glm::vec3(0.f, 0.f, 0.f));
 	system.addAccelaration(entity, glm::vec3(0.f, -10.f, 0.f));
