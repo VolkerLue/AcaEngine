@@ -1,9 +1,8 @@
 #include "../graphics/renderer/meshrenderer.hpp"
 #include "../math/geometrictypes.hpp"
 
-
 struct Mesh {
-	graphics::Mesh mesh;
+	const graphics::Mesh* mesh;
 };
 
 struct Transform {
