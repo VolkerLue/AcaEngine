@@ -1,8 +1,6 @@
 #include "System2.hpp"
 
 
-
-
 System2::System2() : registry(),
 camera(graphics::Camera(45.f, 0.1f, 100.f)),
 renderer(graphics::MeshRenderer())
@@ -32,21 +30,29 @@ std::optional<Entity> System2::getEntity(EntityRef _entity) const {
 void System2::draw() {
 	renderer.clear();
 	registry.execute<Mesh, Texture, Transform>([&](
-		const Mesh& mesh, const Texture texture, const Transform& transform) {
-			renderer.draw(mesh.mesh, *texture.texture, transform.transform);
+		const Mesh mesh, const Texture texture, const Transform& transform) {
+			renderer.draw(*mesh.mesh, *texture.texture, transform.transform);
 		});
 	renderer.present(camera);
 }
 
 void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
 	renderer.clear();
-	renderer.draw(registry.getComponent<Mesh>(_entity)->mesh, _texture, registry.getComponent<Transform>(_entity)->transform);
+	renderer.draw(*registry.getComponent<Mesh>(_entity)->mesh, _texture, registry.getComponent<Transform>(_entity)->transform);
 	renderer.present(camera);
 }
 
 void System2::setCamera(float _fov, float _zNear, float zFar) {
 	camera = graphics::Camera(_fov, _zNear, zFar);
 }
+
+//void System2::removeIntersecting() {
+//	OctreeNode oN(AABB{ 3, -1000, 1000, -1000, 1000 - 1000, 1000 });
+//	registry.execute<Entity, AABB>([&](Entity ent, AABB& aabb)
+//		{
+//			oN.insert(aabb, ent, registry);
+//		});
+//}
 
 
 /* ################ Physic-System ################ */
@@ -90,12 +96,12 @@ void System2::updateTransform(float _deltaTime) {
 }
 
 void System2::executeVelocity(float _deltaTime) {
-	registry.execute<Transform, Velocity>([&](Transform& transform, Velocity& velocity) {
+	registry.execute<Transform, Velocity>([&](Transform& transform, const Velocity& velocity) {
 		transform.transform *= glm::translate(velocity.velocity * _deltaTime); });
 }
 
 void System2::executeRotation(float _deltaTime) {
-	registry.execute<Transform, Rotation>([&](Transform& transform, Rotation& rotation) {
+	registry.execute<Transform, Rotation>([&](Transform& transform, const Rotation& rotation) {
 		transform.transform = glm::rotate(transform.transform, rotation.angleInRadians * _deltaTime, rotation.axisOfRotation); });
 }
 
@@ -122,26 +128,18 @@ int System2::whichEntityIsNotInView() {
 	return found;
 }
 
-void System2::shootSphere(std::list<Entity>& _entities, float _velocity, const graphics::Texture2D& _texture) {
+void System2::shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity) {
 	if (inputManager.isButtonPressed(input::MouseButton::LEFT)) {
 		glm::vec3 curserPos = camera.toWorldSpace(inputManager.getCursorPos());
 		Entity entity;
 		_entities.push_back(createEntity(entity));
 		addTexture(_entities.back(), &_texture);
-		addMesh(_entities.back(), "models/sphere.obj");
+		addMesh(_entities.back(), _mesh);
 		addTransform(_entities.back(), glm::translate(curserPos));		
 		addVelocity(_entities.back(), glm::vec3(curserPos[0] * _velocity, curserPos[1] * _velocity, curserPos[2] * _velocity));
 		addAABB(_entities.back(), true);
 	}
 }
-
-//void System2::rotate(Entity& _entity, float _deltatime) {
-//	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
-//	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
-//	glm::quat Quat = glm::quat(glm::vec3(velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime));
-//	glm::mat4 RotationMatrix = glm::toMat4(Quat);
-//	transform.transform *= RotationMatrix;
-//}
 
 void System2::updateAABB() {
 	registry.execute<Box, Transform>([&](Box& box, Transform transform) {
@@ -173,7 +171,6 @@ void System2::updateAABB() {
 		});
 }
 
-
 int System2::removeIntersecting() {
 	utils::SparseOctree<Entity, 3, float> sparseOctree;
 	registry.execute<Entity, Box>([&](Entity ent, Box box) {
@@ -192,13 +189,22 @@ int System2::removeIntersecting() {
 	for (auto it = ent.begin(); it != ent.end(); it++) {
 		registry.erase(*it);
 	}
-	
+
 	return ent.size();
 }
 
+//void System2::rotate(Entity& _entity, float _deltatime, glm::quat begin2, glm::quat end2 ,int zahler) {
+//	//Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
+//	//AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
+//	//glm::quat Quat = glm::quat(glm::vec3(velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime));
+//	//glm::mat4 RotationMatrix = glm::toMat4(Quat);
+//	//transform.transform *= RotationMatrix;
+//}
+
+
 /* ################ Component-System ################ */
-void System2::addMesh(Entity& _entity, const char* _mesh) {
-	registry.addComponent<Mesh>(_entity, *utils::MeshLoader::get(_mesh));
+void System2::addMesh(Entity& _entity, const graphics::Mesh* _mesh) {
+	registry.addComponent<Mesh>(_entity, _mesh);
 }
 
 void System2::addTransform(Entity& _entity, glm::mat4 _transfrom) {
@@ -265,16 +271,8 @@ void System2::setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axi
 	rotation.axisOfRotation = _axisOfRotation;
 }
 
-//void System2::addRotation(Entity& _entity, glm::vec3 _eulerAngles) {
-//	registry.addComponent<Rotation>(_entity, _eulerAngles);
-//}
-
-//void System2::addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity) {
-//	registry.addComponent<AngularVelocity>(_entity, _angular_velocity);
-//}
-
 void System2::addAABB(Entity& ent, bool isProjectile) {
-	graphics::Mesh& mesh = registry.getComponent<Mesh>(ent)->mesh;
+	const graphics::Mesh mesh = *(registry.getComponent<Mesh>(ent)->mesh);
 	glm::mat4 transform = camera.getViewProjection() * registry.getComponent<Transform>(ent)->transform;
 	auto it = mesh.vertices.begin();
 	glm::vec3 min(it->Position);
@@ -302,6 +300,14 @@ void System2::addAABB(Entity& ent, bool isProjectile) {
 	}
 	registry.addComponent<Box>(ent, isProjectile, math::AABB<3>(min, max), math::AABB<3>(minTransformed, maxTransformed));
 }
+
+//void System2::addRotation(Entity& _entity, glm::vec3 _eulerAngles) {
+//	registry.addComponent<Rotation>(_entity, _eulerAngles);
+//}
+
+//void System2::addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity) {
+//	registry.addComponent<AngularVelocity>(_entity, _angular_velocity);
+//}
 
 
 /* ################ Utils-System ################ */
