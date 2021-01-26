@@ -33,6 +33,8 @@ public:
 
 	void setCamera(float _fov, float _zNear, float zFar);
 
+	//void removeIntersecting();
+
 
 	/* ################ Physic-System ################ */	
 	void move(Entity& _entity, float _deltaTime);
@@ -47,17 +49,17 @@ public:
 
 	int whichEntityIsNotInView();
 
-	void shootSphere(std::list<Entity>& _entities, float _velocity, const graphics::Texture2D& _texture);
-	
-	//void rotate(Entity& _entity, float _deltatime);
+	void shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity);
 
 	void updateAABB();
 
 	int removeIntersecting();
 
+	//void rotate(Entity& _entity, float _deltatime, glm::quat begin, glm::quat end, int zahler);
+
 
 	/* ################ Component-System ################ */
-	void addMesh(Entity& _entity, const char* _mesh);
+	void addMesh(Entity& _entity, const graphics::Mesh* _mesh);
 
 	void addTransform(Entity& _entity, glm::mat4 _transfrom);
 
@@ -87,11 +89,11 @@ public:
 
 	void setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
 
+	void addAABB(Entity& ent, bool isProjectile);
+
 	//void addRotation(Entity& _entity, glm::vec3 _eulerAngles);
 
 	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
-
-	void addAABB(Entity& ent, bool isProjectile);
 
 
 	/* ################ Utils-System ################ */
@@ -107,4 +109,5 @@ private:
 	void executeVelocity(float _deltaTime);
 
 	void executeRotation(float _deltaTime);
+	
 };
