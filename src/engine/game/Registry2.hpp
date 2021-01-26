@@ -1,5 +1,4 @@
 #pragma once
-#include <any>
 #include <optional>
 #include <vector>
 #include <unordered_map>
@@ -29,11 +28,19 @@ struct EntityRef
 	uint32_t generation;
 };
 
+//template<typename Component>
+//struct componentStruct {
+//	std::vector<int> sparse;
+//	std::vector<Entity> entities;
+//	std::vector<Component> components;
+//};
+
 template<typename Component>
 struct componentStruct {
 	std::vector<int> sparse;
 	std::vector<Entity> entities;
 	std::vector<Component> components;
+	size_t componentSize;
 };
 
 class Registry2
@@ -65,8 +72,14 @@ public:
 				cS.sparse[_ent.id] = -1;
 				cS.entities[pos] = cS.entities[cS.entities.size() - 1];
 				cS.entities.pop_back();
-				cS.components[pos] = cS.components[cS.components.size() - 1];
-				cS.components.pop_back();
+
+				//cS.components[pos] = cS.components[cS.components.size() - 1];
+				//cS.components.pop_back();
+				char* remove = cS.components.data() + cS.componentSize * pos;
+				char* last = cS.components.data() + cS.componentSize * cS.entities.size();
+				memcpy(remove, last, cS.componentSize);
+				cS.components.resize(cS.componentSize * (cS.components.size() / cS.componentSize - 1));
+
 				if (pos < cS.entities.size())
 					cS.sparse[cS.entities[pos].id] = pos;
 			}
@@ -83,36 +96,73 @@ public:
 		return std::nullopt;
 	}
 
-	// Add a new component to an existing entity. No changes are done if Component
-	// if_ent already has a component of this type.
-	// @return A reference to the new component or the already existing component.
+	//// Add a new component to an existing entity. No changes are done if Component
+	//// if_ent already has a component of this type.
+	//// @return A reference to the new component or the already existing component.
+	//template<component_type Component, typename... Args>
+	//Component& addComponent(Entity _ent, Args&&... _args) {
+	//	if (componentMap.contains(std::type_index(typeid(Component)))) {
+	//		auto& cS = componentMap[std::type_index(typeid(Component))];
+	//		while (cS.sparse.size() <= _ent.id) {
+	//			cS.sparse.push_back(-1);
+	//		}
+	//		if (cS.sparse[_ent.id] != -1) {
+	//			//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+	//			return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
+	//		}
+	//	}
+	//	else {
+	//		std::vector<int> sparse;
+	//		std::vector<Entity> entities;
+
+	//		//std::vector<std::any> components;
+	//		//componentStruct<std::any> comStr = { sparse, entities, components };
+	//		std::vector<char> components;
+	//		size_t componentSize = sizeof(Component);
+	//		componentStruct<char> comStr = { sparse, entities, components, componentSize };
+
+	//		componentMap[std::type_index(typeid(Component))] = comStr;
+	//	}
+	//	auto& cS = componentMap[std::type_index(typeid(Component))];
+	//	do {
+	//		cS.sparse.push_back(-1);
+	//	} while (cS.sparse.size() <= _ent.id);
+	//	cS.sparse.push_back(-1);
+	//	cS.sparse[_ent.id] = cS.entities.size();
+	//	cS.entities.push_back(_ent);
+
+	//	//cS.components.push_back(std::any(Component(_args...)));
+	//	//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+	//	cS.components.resize(cS.componentSize * cS.entities.size());
+	//	Component component{ _args... };
+	//	memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
+	//	return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
+	//}
+
 	template<component_type Component, typename... Args>
 	Component& addComponent(Entity _ent, Args&&... _args) {
 		if (componentMap.contains(std::type_index(typeid(Component)))) {
 			auto& cS = componentMap[std::type_index(typeid(Component))];
-			while (cS.sparse.size() <= _ent.id) {
-				cS.sparse.push_back(-1);
-			}
 			if (cS.sparse[_ent.id] != -1) {
-				return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+				return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 			}
 		}
 		else {
-			std::vector<int> sparse;
+			std::vector<int> sparse(1000, -1);
 			std::vector<Entity> entities;
-			std::vector<std::any> components;
-			componentStruct<std::any> comStr = { sparse, entities, components };
+			std::vector<char> components;
+			size_t componentSize = sizeof(Component);
+			componentStruct<char> comStr = { sparse, entities, components, componentSize };
 			componentMap[std::type_index(typeid(Component))] = comStr;
 		}
 		auto& cS = componentMap[std::type_index(typeid(Component))];
-		do {
-			cS.sparse.push_back(-1);
-		} while (cS.sparse.size() <= _ent.id);
-		cS.sparse.push_back(-1);
 		cS.sparse[_ent.id] = cS.entities.size();
 		cS.entities.push_back(_ent);
-		cS.components.push_back(std::any(Component(_args...)));
-		return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+
+		cS.components.resize(cS.componentSize * cS.entities.size());
+		Component component{ _args... };
+		memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
+		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 	}
 
 	// Remove a component from an existing entity.
@@ -126,8 +176,14 @@ public:
 				cS.sparse[_ent.id] = -1;
 				cS.entities[pos] = cS.entities[cS.entities.size() - 1];
 				cS.entities.pop_back();
-				cS.components[pos] = cS.components[cS.components.size() - 1];
-				cS.components.pop_back();
+
+				//cS.components[pos] = cS.components[cS.components.size() - 1];
+				//cS.components.pop_back();
+				char* remove = cS.components.data() + cS.componentSize * pos;
+				char* last = cS.components.data() + cS.componentSize * cS.entities.size();
+				memcpy(remove, last, cS.componentSize);
+				cS.components.resize(cS.componentSize * (cS.components.size() / cS.componentSize - 1));
+
 				if (pos < cS.entities.size())
 					cS.sparse[cS.entities[pos].id] = pos;
 			}
@@ -144,18 +200,19 @@ public:
 		if (componentMap.contains(std::type_index(typeid(Component)))) {
 			auto& cS = componentMap[std::type_index(typeid(Component))];
 			if (cS.sparse.size() > _ent.id && cS.sparse[_ent.id] != -1) {
-				return std::any_cast<Component>(&cS.components[cS.sparse[_ent.id]]);
+				//return std::any_cast<Component>(&cS.components[cS.sparse[_ent.id]]);
+				return (Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 			}
 		}
 		return nullptr;
 	}
-
 	template<component_type Component>
 	const Component* getComponent(Entity _ent) const {
 		if (componentMap.contains(std::type_index(typeid(Component)))) {
 			auto& cS = componentMap[std::type_index(typeid(Component))];
 			if (cS.sparse.size() > _ent.id && cS.sparse[_ent.id] != -1) {
-				return &cS.components[cS.sparse[_ent.id]];
+				//return &cS.components[cS.sparse[_ent.id]];
+				return (Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 			}
 		}
 		return nullptr;
@@ -166,13 +223,14 @@ public:
 	template<component_type Component>
 	Component& getComponentUnsafe(Entity _ent) {
 		auto& cS = componentMap[std::type_index(typeid(Component))];
-		return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+		//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 	}
-
 	template<component_type Component>
 	const Component& getComponentUnsafe(Entity _ent) const {
 		auto& cS = componentMap[std::type_index(typeid(Component))];
-		return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+		//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 	}
 
 	// Execute an Action on all entities having the components
@@ -232,5 +290,6 @@ public:
 	std::vector<bool> flags;
 	std::vector<uint32_t> generations;
 	int numEntitys = 0;
-	std::unordered_map<std::type_index, componentStruct<std::any>> componentMap;
+	//std::unordered_map<std::type_index, componentStruct<std::any>> componentMap;
+	std::unordered_map<std::type_index, componentStruct<char>> componentMap;
 };
