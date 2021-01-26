@@ -203,8 +203,9 @@ namespace graphics {
 		// TODO: check binding to avoid rebinds
 		glCall(glActiveTexture, GL_TEXTURE0 + _slot);
 		glCall(glBindTexture, GL_TEXTURE_2D, m_textureID);
-		if (m_sampler->getID() == m_textureID)
+		if (m_sampler->getID() == getGPUHandle()) {
 			m_sampler->bind(_slot);
+		}
 	}
 
 	/*TextureAtlas::TextureAtlas(int _maxWidth, int _maxHeight) :
