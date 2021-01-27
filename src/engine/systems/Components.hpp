@@ -1,5 +1,7 @@
 #include "../graphics/renderer/meshrenderer.hpp"
 #include "../math/geometrictypes.hpp"
+#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 struct Mesh {
 	const graphics::Mesh* mesh;
@@ -13,13 +15,24 @@ struct Texture {
 	const graphics::Texture2D* texture;
 };
 
+struct Position {
+	glm::vec3 position;
+};
+
+struct Orientation {
+	glm::quat orientation;
+};
+
+struct Scale {
+	glm::vec3 scale;
+};
+
 struct Velocity {
 	glm::vec3 velocity;
 };
 
-struct Rotation {
-	float angleInRadians;
-	glm::vec3 axisOfRotation;
+struct AngularVelocity {
+	glm::vec3 angularVelocity;
 };
 
 struct Accelaration {
@@ -39,11 +52,3 @@ struct Box {
 	math::AABB<3> aabb;
 	math::AABB<3> transformedAabb;
 };
-
-//struct Rotation {
-//	glm::vec3 EulerAngles;
-//};
-
-//struct AngularVelocity {
-//	glm::vec3 angular_velocity;
-//};
