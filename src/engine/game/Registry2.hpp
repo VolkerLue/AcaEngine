@@ -96,50 +96,50 @@ public:
 		return std::nullopt;
 	}
 
-	//// Add a new component to an existing entity. No changes are done if Component
-	//// if_ent already has a component of this type.
-	//// @return A reference to the new component or the already existing component.
-	//template<component_type Component, typename... Args>
-	//Component& addComponent(Entity _ent, Args&&... _args) {
-	//	if (componentMap.contains(std::type_index(typeid(Component)))) {
-	//		auto& cS = componentMap[std::type_index(typeid(Component))];
-	//		while (cS.sparse.size() <= _ent.id) {
-	//			cS.sparse.push_back(-1);
-	//		}
-	//		if (cS.sparse[_ent.id] != -1) {
-	//			//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
-	//			return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
-	//		}
-	//	}
-	//	else {
-	//		std::vector<int> sparse;
-	//		std::vector<Entity> entities;
-
-	//		//std::vector<std::any> components;
-	//		//componentStruct<std::any> comStr = { sparse, entities, components };
-	//		std::vector<char> components;
-	//		size_t componentSize = sizeof(Component);
-	//		componentStruct<char> comStr = { sparse, entities, components, componentSize };
-
-	//		componentMap[std::type_index(typeid(Component))] = comStr;
-	//	}
-	//	auto& cS = componentMap[std::type_index(typeid(Component))];
-	//	do {
-	//		cS.sparse.push_back(-1);
-	//	} while (cS.sparse.size() <= _ent.id);
-	//	cS.sparse.push_back(-1);
-	//	cS.sparse[_ent.id] = cS.entities.size();
-	//	cS.entities.push_back(_ent);
-
-	//	//cS.components.push_back(std::any(Component(_args...)));
-	//	//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
-	//	cS.components.resize(cS.componentSize * cS.entities.size());
-	//	Component component{ _args... };
-	//	memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
-	//	return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
-	//}
-
+	// Add a new component to an existing entity. No changes are done if Component
+	// if_ent already has a component of this type.
+	// @return A reference to the new component or the already existing component.
 	template<component_type Component, typename... Args>
+	Component& addComponent(Entity _ent, Args&&... _args) {
+		if (componentMap.contains(std::type_index(typeid(Component)))) {
+			auto& cS = componentMap[std::type_index(typeid(Component))];
+			while (cS.sparse.size() <= _ent.id) {
+				cS.sparse.push_back(-1);
+			}
+			if (cS.sparse[_ent.id] != -1) {
+				//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+				return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
+			}
+		}
+		else {
+			std::vector<int> sparse;
+			std::vector<Entity> entities;
+
+			//std::vector<std::any> components;
+			//componentStruct<std::any> comStr = { sparse, entities, components };
+			std::vector<char> components;
+			size_t componentSize = sizeof(Component);
+			componentStruct<char> comStr = { sparse, entities, components, componentSize };
+
+			componentMap[std::type_index(typeid(Component))] = comStr;
+		}
+		auto& cS = componentMap[std::type_index(typeid(Component))];
+		do {
+			cS.sparse.push_back(-1);
+		} while (cS.sparse.size() <= _ent.id);
+		cS.sparse.push_back(-1);
+		cS.sparse[_ent.id] = cS.entities.size();
+		cS.entities.push_back(_ent);
+
+		//cS.components.push_back(std::any(Component(_args...)));
+		//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
+		cS.components.resize(cS.componentSize * cS.entities.size());
+		Component component{ _args... };
+		memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
+		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
+	}
+
+	/*template<component_type Component, typename... Args>
 	Component& addComponent(Entity _ent, Args&&... _args) {
 		if (componentMap.contains(std::type_index(typeid(Component)))) {
 			auto& cS = componentMap[std::type_index(typeid(Component))];
@@ -163,7 +163,7 @@ public:
 		Component component{ _args... };
 		memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
 		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
-	}
+	}*/
 
 	// Remove a component from an existing entity.
 	// Does not check whether it exists.
