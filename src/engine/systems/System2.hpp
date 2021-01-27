@@ -33,29 +33,23 @@ public:
 
 	void setCamera(float _fov, float _zNear, float zFar);
 
-	//void removeIntersecting();
-
 
 	/* ################ Physic-System ################ */	
-	void move(Entity& _entity, float _deltaTime);
-
-	void springY(Entity& _entity, float _deltaTime);
-
-	void transfromMultiply(Entity& _entity, glm::mat4 _transform);
-
 	void updateTransform(float _deltaTime);
 
-	void removeEntityWhenNotInView(std::list<Entity>& entities);
+	void updatePosition(float _deltaTime);
 
-	int whichEntityIsNotInView();
-
-	void shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity);
-
+	void updateOrientation(float _deltaTime);
+	
 	void updateAABB();
 
 	int removeIntersecting();
+	
+	void shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity);
+			
+	void move(Entity& _entity, float _deltaTime);
 
-	//void rotate(Entity& _entity, float _deltatime, glm::quat begin, glm::quat end, int zahler);
+	void springY(Entity& _entity, float _deltaTime);
 
 
 	/* ################ Component-System ################ */
@@ -69,9 +63,25 @@ public:
 
 	void setTexture(Entity& _entity, const graphics::Texture2D* _texture);
 
+	void addPosition(Entity& _entity, glm::vec3 _position);
+
+	void setPosition(Entity& _entity, glm::vec3 _position);
+
+	void addOrientation(Entity& _entity, glm::quat _orientation);
+
+	void setOrientation(Entity& _entity, glm::quat _orientation);
+
+	void addScale(Entity& _entity, glm::vec3 _scale);
+
+	void setScale(Entity& _entity, glm::vec3 _scale);
+
 	void addVelocity(Entity& _entity, glm::vec3 _velocity);
 
 	void setVelocity(Entity& _entity, glm::vec3 _velocity);
+
+	void addAngularVelocity(Entity& _entity, glm::vec3 _angularVelocity);	
+
+	void setAngularVelocity(Entity& _entity, glm::vec3 _angularVelocity);
 
 	void addAccelaration(Entity& _entity, glm::vec3 _velocity);
 
@@ -85,29 +95,23 @@ public:
 
 	void setAnchor(Entity& _entity, glm::vec3 _anchor);
 
-	void addRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
-
-	void setRotation(Entity& _entity, float _angleInRadians, glm::vec3 _axisOfRotation);
-
-	void addAABB(Entity& ent, bool isProjectile);
-
-	//void addRotation(Entity& _entity, glm::vec3 _eulerAngles);
-
-	//void addAngularVelocity(Entity& _entity, glm::vec3 _angular_velocity);
+	void addAABB(Entity& ent, bool isProjectile);	
 
 
 	/* ################ Utils-System ################ */
 	int randomWithoutZero(int quantity, int start);
+
+	int whichEntityIsNotInView();
+
+	template<typename Component>
+	bool hasComponent(Entity& _entity) {
+		return registry.getComponent<Component>(_entity) != nullptr;
+	};
 
 	
 private:
 	Registry2 registry;
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
-	input::InputManager inputManager;			
-
-	void executeVelocity(float _deltaTime);
-
-	void executeRotation(float _deltaTime);
-	
+	input::InputManager inputManager;	
 };
