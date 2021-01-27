@@ -42,6 +42,9 @@ int main(int argc, char* argv[])
 	//	_CrtSetBreakAlloc(2760);
 #endif
 #endif
+	
+	srand(time(NULL));
+	
 	//Game game;
 	//game.addState(std::make_unique<FreeFall>());
 	//game.addState(std::make_unique<Spring>());
