@@ -81,6 +81,22 @@ void System2::updateOrientation(float _deltaTime) {
 	);
 }
 
+/*
+void  System2::rotate(Entity& _entity, float _deltatime) {
+	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
+	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
+	Rotation& rotation = registry.getComponentUnsafe<Rotation>(_entity);
+
+
+	glm::vec3 angle = glm::vec3 (velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime);
+
+	glm::quat Quat = glm::quat(cos(angle.z / 2) * cos(angle.y / 2) * cos(angle.x / 2) + sin(angle.z / 2) * sin(angle.y / 2) * sin(angle.x / 2), sin(angle.z/2)*cos(angle.y/2)*cos(angle.x/2) - cos(angle.z / 2)*sin(angle.y / 2) * sin(angle.x / 2), cos(angle.z / 2) * sin(angle.y / 2) * cos(angle.x / 2) - sin(angle.z / 2) * cos(angle.y / 2) * sin(angle.x / 2), cos(angle.z / 2) * cos(angle.y / 2) * sin(angle.x / 2) - sin(angle.z / 2) * sin(angle.y / 2) * cos(angle.x / 2));
+	
+	glm::mat4 rot = glm::toMat4(Quat);
+	transform.transform *= rot;
+}
+*/
+
 void System2::updateAABB() {
 	registry.execute<Box, Transform>([&](Box& box, Transform transform) {
 		std::vector<glm::vec3> corners;
