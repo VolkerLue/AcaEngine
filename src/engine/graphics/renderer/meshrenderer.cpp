@@ -8,8 +8,8 @@
 namespace graphics {
 
 	MeshRenderer::MeshRenderer() {
-		program.attach(ShaderManager::get("shader/mesh.vert", ShaderType::VERTEX));
-		program.attach(ShaderManager::get("shader/mesh.frag", ShaderType::FRAGMENT));
+		program.attach(ShaderManager::get("shader/mesh2.vert", ShaderType::VERTEX));
+		program.attach(ShaderManager::get("shader/mesh2.frag", ShaderType::FRAGMENT));
 		program.link();
 
 		graphics::VertexAttribute va[3];
@@ -31,10 +31,12 @@ namespace graphics {
 	void MeshRenderer::present(const Camera& _camera) {
 		if (instances.empty()) return;
 		program.use();
-		program.setUniform(program.getUniformLoc("Camera"), _camera.getViewProjection());
+		program.setUniform(program.getUniformLoc("view"), _camera.getView());
+		program.setUniform(program.getUniformLoc("projection"), _camera.getProjection());
 		for (auto it = instances.begin(); it != instances.end(); it++) {
 			it->texture.bind(0);
-			program.setUniform(program.getUniformLoc("Transform"), it->transform);
+			program.setUniform(program.getUniformLoc("model"), it->transform);
+			program.setUniform(program.getUniformLoc("InvTransp"), glm::transpose(glm::inverse(_camera.getView() * it->transform)));
 			geometryBuffer->setData(&(it->meshVertices[0]), it->meshVertices.size() * sizeof(Mesh::Vertex));
 			geometryBuffer->draw();
 		}
