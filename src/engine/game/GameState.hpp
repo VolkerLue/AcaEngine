@@ -1,14 +1,9 @@
 #pragma once
-#include "../graphics/renderer/meshrenderer.hpp"
-#include "../graphics/core/texture.hpp"
-#include "../graphics/renderer/mesh.hpp"
-#include "../graphics/camera.hpp"
 
 class GameState {
 public:
 	GameState() : 
 		finished(false) {}
-
 
 	//has pure virtual functions for frame updates
 	virtual void update(float _time, float _deltaTime) = 0;

@@ -1,8 +1,10 @@
+#pragma once
 #include <engine/graphics/renderer/mesh.hpp>
 #include <engine/graphics/renderer/meshrenderer.hpp>
 #include <engine/utils/meshloader.hpp>
 #include <engine/graphics/core/device.hpp>
 #include <engine/input/inputmanager.hpp>
+#include <engine/utils/meshloader.hpp>
 #include <engine/graphics/core/opengl.hpp>
 #include <engine/graphics/core/geometrybuffer.hpp>
 #include <engine/graphics/core/vertexformat.hpp>
@@ -15,10 +17,10 @@
 #include <engine/game/Spring.hpp>
 #include <engine/game/UpAndDown.hpp>
 #include <engine/game/FreeFall.hpp>
+#include <engine/game/Shooter.hpp>
 #include <memory>
 #include <chrono>
-#include <engine/graphics/renderer/mesh.hpp>
-
+#include <engine/utils/resourcemanager.hpp>
 
 // CRT's memory leak detection
 #ifndef NDEBUG 
@@ -40,30 +42,44 @@ int main(int argc, char* argv[])
 	//	_CrtSetBreakAlloc(2760);
 #endif
 #endif
+	
+	srand(time(NULL));
+	
+	//Game game;
+	//game.addState(std::make_unique<FreeFall>());
+	//game.addState(std::make_unique<Spring>());
+	//game.run(std::make_unique<UpAndDown>());
+	
+
 	Game game;
-	game.addState(std::make_unique<FreeFall>());
-	game.addState(std::make_unique<Spring>());
-	game.run(std::make_unique<UpAndDown>());
-	
-	
+	game.run(std::make_unique<Shooter>());
+	utils::MeshLoader::clear();
+	graphics::ShaderManager::clear();
+	graphics::Texture2DManager::clear();
+
 	/*
 	Registry<int> registry;
 	Entity entity1 = registry.create();
-	registry.setData(entity1, 5);
+	registry.setData(entity1, 1);
 	Entity entity2 = registry.create();
-	registry.setData(entity2, 6);
+	registry.setData(entity2, 2);
 	Entity entity3 = registry.create();
-	registry.setData(entity3, 7);
+	registry.setData(entity3, 3);
+	registry.execute(Printer<int>());
+	std::cout << std::endl;
+
 	registry.execute(Add2<int>());
 	registry.execute(Printer<int>());
 	std::cout << std::endl;
-	registry.execute(Sum<int>());
+
+	int sum = 0;
+	registry.execute([&sum](int i) { sum += i; });
+	std::cout << sum << std::endl;
+
 	registry.erase(entity2);
-	std::cout << std::endl;
 	registry.execute(Printer<int>());
-	
-	
-	
+
+		
 	glm::vec3 planetPositions[] = {
 		glm::vec3(0.0f,  0.0f,  0.0f),
 		glm::vec3(2.0f,  5.0f, -15.0f),

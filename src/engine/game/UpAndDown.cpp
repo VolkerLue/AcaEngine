@@ -1,10 +1,12 @@
 #include "UpAndDown.hpp"
-#include <GL/glew.h>
 
-UpAndDown::UpAndDown() : GameState(), system(), texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+
+UpAndDown::UpAndDown() : GameState(), system(), 
+texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+meshSphere(*utils::MeshLoader::get("models/sphere.obj"))
 {
 	entity = system.createEntity(entity);
-	system.addMesh(entity, "models/sphere.obj");
+	system.addMesh(entity, &meshSphere);
 	system.addTransform(entity, glm::translate(glm::vec3(0.f, 4.f, -5.0f)));
 	system.addVelocity(entity, glm::vec3(0.f, 0.f, 0.f));
 	system.addAccelaration(entity, glm::vec3(0.f, 0.f, 0.f));
@@ -28,12 +30,12 @@ void UpAndDown::update(float _time, float _deltaTime) {
 }
 
 void UpAndDown::draw(float _time, float _deltaTime) {
-	system.draw(entity, texture);
+	system.drawEntity(entity, texture);
 }
 
 void UpAndDown::onResume() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	system.draw(entity, texture);
+	system.drawEntity(entity, texture);
 }
 
 void UpAndDown::onPause() {

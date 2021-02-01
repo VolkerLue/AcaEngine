@@ -1,11 +1,13 @@
 #pragma once
 #include "GameState.hpp"
 #include "../systems/System2.hpp"
+#include <stdlib.h>
+#include <time.h> 
 
 
-class FreeFall : public GameState {
+class Shooter : public GameState {
 public:
-	FreeFall();
+	Shooter();
 
 	void update(float _time, float _deltaTime) override;
 	void draw(float _time, float _deltaTime) override;
@@ -17,11 +19,11 @@ public:
 	bool isFinished();
 
 private:
-	Entity entity;
-	Entity entity2;
+	std::list<Entity> entities;
 	System2 system;
-	const graphics::Texture2D& texture;
-	const graphics::Texture2D& texture2;
+	const graphics::Texture2D& texturePlanet;
+	const graphics::Texture2D& textureCratetex;
 	const graphics::Mesh meshSphere;
 	const graphics::Mesh meshCrate;
+	int shot;
 };

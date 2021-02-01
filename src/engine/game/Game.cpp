@@ -1,11 +1,4 @@
-#pragma once
 #include "Game.hpp"
-#include "../graphics/core/device.cpp"
-#include "../input/inputmanager.cpp"
-#include <chrono>
-#include <thread>
-#include <iostream>
-
 
 Game::Game() {
 	//acquires global resources
@@ -15,6 +8,7 @@ Game::Game() {
 	glClearColor(0.f, 1.f, 0.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glfwSwapInterval(0); //VSync OFF
 }
 
 Game::~Game() {
@@ -33,7 +27,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
 	states.push_back(std::move(_initialState));
-	std::cout << "in run methode" << std::endl;
+
 	bool b = true;
 
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
