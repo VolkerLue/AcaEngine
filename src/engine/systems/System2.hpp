@@ -9,7 +9,7 @@
 #include "../math/geometrictypes.hpp"
 #include "../utils/containers/octree.hpp"
 #include <set>
-
+#include <engine/graphics/core/opengl.hpp>
 
 class System2
 {	
@@ -32,6 +32,8 @@ public:
 	void drawEntity(Entity& _entity, const graphics::Texture2D& _texture);
 
 	void setCamera(float _fov, float _zNear, float zFar);
+
+	void uploadLights(Entity ent);
 
 
 	/* ################ Physic-System ################ */	
@@ -95,7 +97,11 @@ public:
 
 	void setAnchor(Entity& _entity, glm::vec3 _anchor);
 
-	void addAABB(Entity& ent, bool isProjectile);	
+	void addAABB(Entity& ent, bool isProjectile);
+
+	void addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, float intensity);
+
+	void setLightConstants(float kc, float kq, float ke);
 
 
 	/* ################ Utils-System ################ */
