@@ -25,6 +25,17 @@ shot(0)
 
 		system.addAABB(entities.back(), false);
 	}
+	system.setLightConstants(0.1, 0.05, 0.01);
+	Entity entity;
+	system.addPointLight(system.createEntity(entity), glm::vec3(1.f, 1.f, 1.f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+	Entity entity2;
+	system.addPointLight(system.createEntity(entity2), glm::vec3(10.f, 1.f, 1.f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+	Entity entity3;
+	system.addPointLight(system.createEntity(entity3), glm::vec3(1.f, 10.f, 1.f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+	Entity entity4;
+	system.addPointLight(system.createEntity(entity4), glm::vec3(1.f, 1.f, 10.f), glm::vec3(1.f, 1.f, 1.f), 1.f);
+	Entity entity5;
+	system.addPointLight(system.createEntity(entity5), glm::vec3(10.f, 10.f, 10.f), glm::vec3(1.f, 1.f, 1.f), 1.f);
 }
 
 void Shooter::newState() {
