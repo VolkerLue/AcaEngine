@@ -52,3 +52,16 @@ struct Box {
 	math::AABB<3> aabb;
 	math::AABB<3> transformedAabb;
 };
+
+struct PointLight {
+	glm::vec3 position;
+	glm::vec3 color;
+	float intensity;
+	int AOE;
+};
+
+struct LightConstants {
+	float kc;
+	float kq;
+	float ke;
+};
