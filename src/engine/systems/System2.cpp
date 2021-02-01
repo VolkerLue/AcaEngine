@@ -1,4 +1,6 @@
 #include "System2.hpp"
+#include <map>
+
 
 
 System2::System2() : registry(),
@@ -29,8 +31,9 @@ std::optional<Entity> System2::getEntity(EntityRef _entity) const {
 /* ################ Draw-System ################ */
 void System2::draw() {
 	renderer.clear();
-	registry.execute<Mesh, Texture, Transform>([&](
-		const Mesh mesh, const Texture texture, const Transform& transform) {
+	registry.execute<Entity, Mesh, Texture, Transform>([&](
+		Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform) {
+			//uploadLights(ent);
 			renderer.draw(*mesh.mesh, *texture.texture, transform.transform);
 		});
 	renderer.present(camera);
@@ -44,6 +47,60 @@ void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
 
 void System2::setCamera(float _fov, float _zNear, float zFar) {
 	camera = graphics::Camera(_fov, _zNear, zFar);
+}
+
+void System2::uploadLights(Entity ent) {
+	//get Constants and upload them
+	float kc;
+	float kq;
+	float ke;
+	registry.execute<LightConstants>([&](LightConstants& lc) {
+		kc = lc.kc;
+		kq = lc.kq;
+		ke = lc.ke;
+		});
+	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("kc"), kc);
+	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("kq"), kq);
+	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("ke"), ke);
+	
+	//find nearest lights and upload them
+	Box& box = registry.getComponentUnsafe<Box>(ent);
+	glm::vec3 min = box.transformedAabb.min;
+	glm::vec3 max = box.transformedAabb.max;
+	float distance;
+	float intens;
+	std::map<float, Entity, std::greater<float>> lights;
+	registry.execute<Entity, PointLight>([&](Entity ent, PointLight& pl) { //and in AOE
+		distance = std::min(glm::distance(min, pl.position), glm::distance(max, pl.position));
+		if (distance < pl.AOE) {
+			intens = pl.intensity / (1 + kc * distance + kq * distance * distance + glm::exp(-ke * distance));
+			lights[intens] = ent;
+		}
+		});
+	unsigned numLights = lights.size();
+	if (numLights > 8) numLights = 8;
+	float *lightIntensity = new float[numLights];
+	float *lightColors = new float[numLights * 3];
+	float *lightPositions = new float[numLights * 3];
+	int i = 0;
+	for (auto it = lights.begin(); it != lights.end() && i < numLights; it++) {
+		PointLight& pl = registry.getComponentUnsafe<PointLight>(it->second);
+		lightIntensity[i] = pl.intensity;
+		lightColors[i * 3] = pl.color.x;
+		lightColors[i * 3 + 1] = pl.color.y;
+		lightColors[i * 3 + 2] = pl.color.z;
+		lightPositions[i * 3] = pl.position.x;
+		lightPositions[i * 3 + 1] = pl.position.y;
+		lightPositions[i * 3 + 2] = pl.position.z;
+		i++;
+	}
+	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("numPointsLights"), numLights);
+	graphics::glCall(glUniform1fv, renderer.program.getUniformLoc("pointLightIntensity"), numLights, lightIntensity);
+	graphics::glCall(glUniform3fv, renderer.program.getUniformLoc("pointLightColor"), numLights, lightColors);
+	graphics::glCall(glUniform3fv, renderer.program.getUniformLoc("pointLightPos"), numLights, lightPositions);
+	delete[] lightIntensity;
+	delete[] lightColors;
+	delete[] lightPositions;
 }
 
 
@@ -80,22 +137,6 @@ void System2::updateOrientation(float _deltaTime) {
 		}
 	);
 }
-
-/*
-void  System2::rotate(Entity& _entity, float _deltatime) {
-	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
-	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
-	Rotation& rotation = registry.getComponentUnsafe<Rotation>(_entity);
-
-
-	glm::vec3 angle = glm::vec3 (velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime);
-
-	glm::quat Quat = glm::quat(cos(angle.z / 2) * cos(angle.y / 2) * cos(angle.x / 2) + sin(angle.z / 2) * sin(angle.y / 2) * sin(angle.x / 2), sin(angle.z/2)*cos(angle.y/2)*cos(angle.x/2) - cos(angle.z / 2)*sin(angle.y / 2) * sin(angle.x / 2), cos(angle.z / 2) * sin(angle.y / 2) * cos(angle.x / 2) - sin(angle.z / 2) * cos(angle.y / 2) * sin(angle.x / 2), cos(angle.z / 2) * cos(angle.y / 2) * sin(angle.x / 2) - sin(angle.z / 2) * sin(angle.y / 2) * cos(angle.x / 2));
-	
-	glm::mat4 rot = glm::toMat4(Quat);
-	transform.transform *= rot;
-}
-*/
 
 void System2::updateAABB() {
 	registry.execute<Box, Transform>([&](Box& box, Transform transform) {
@@ -318,6 +359,41 @@ void System2::addAABB(Entity& ent, bool isProjectile) {
 		if (current.z > max.z) max.z = current.z;
 	}
 	registry.addComponent<Box>(ent, isProjectile, math::AABB<3>(min, max), math::AABB<3>(minTransformed, maxTransformed));
+}
+
+void System2::addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, float intensity)
+{
+	float kc;
+	float kq;
+	float ke;
+	registry.execute<LightConstants>([&](LightConstants& lc) {
+		kc = lc.kc;
+		kq = lc.kq;
+		ke = lc.ke;
+		});
+	float intens = 0.0f;
+	int d = 0;
+	for (; d < 100; d++) {
+		intens = intensity / (1 + kc * d + kq * d * d + glm::exp(-ke * d));
+		if (intens < 0.01) {
+			d = d - 1;
+			break;
+		}
+	}
+	registry.addComponent<PointLight>(ent, position, color, intensity, d);
+}
+
+void System2::setLightConstants(float kc, float kq, float ke)
+{
+	bool hasComponent = false;
+	registry.execute<LightConstants>([&](LightConstants& lc) {
+		lc.kc = kc;
+		lc.kq = kq;
+		lc.ke = ke;
+		hasComponent = true;
+		});
+	if (hasComponent) return;
+	registry.addComponent<LightConstants>(registry.create(), kc, kq, ke);
 }
 
 
