@@ -1,5 +1,6 @@
 #include "System2.hpp"
 #include <map>
+#include <iostream>
 
 
 
@@ -30,13 +31,14 @@ std::optional<Entity> System2::getEntity(EntityRef _entity) const {
 
 /* ################ Draw-System ################ */
 void System2::draw() {
-	renderer.clear();
 	registry.execute<Entity, Mesh, Texture, Transform>([&](
 		Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform) {
-			//uploadLights(ent);
+			renderer.clear();
+			uploadLights(ent);
 			renderer.draw(*mesh.mesh, *texture.texture, transform.transform);
+			renderer.present(camera);
 		});
-	renderer.present(camera);
+	
 }
 
 void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
@@ -70,7 +72,7 @@ void System2::uploadLights(Entity ent) {
 	float distance;
 	float intens;
 	std::map<float, Entity, std::greater<float>> lights;
-	registry.execute<Entity, PointLight>([&](Entity ent, PointLight& pl) { //and in AOE
+	registry.execute<Entity, PointLight>([&](Entity ent, PointLight& pl) {
 		distance = std::min(glm::distance(min, pl.position), glm::distance(max, pl.position));
 		if (distance < pl.AOE) {
 			intens = pl.intensity / (1 + kc * distance + kq * distance * distance + glm::exp(-ke * distance));
@@ -78,10 +80,11 @@ void System2::uploadLights(Entity ent) {
 		}
 		});
 	unsigned numLights = lights.size();
-	if (numLights > 8) numLights = 8;
-	float *lightIntensity = new float[numLights];
-	float *lightColors = new float[numLights * 3];
-	float *lightPositions = new float[numLights * 3];
+	const int maxLights = 8;
+	if (numLights > maxLights) numLights = maxLights;
+	float lightIntensity[maxLights];
+	float lightColors[maxLights * 3];
+	float lightPositions[maxLights * 3];
 	int i = 0;
 	for (auto it = lights.begin(); it != lights.end() && i < numLights; it++) {
 		PointLight& pl = registry.getComponentUnsafe<PointLight>(it->second);
@@ -94,13 +97,10 @@ void System2::uploadLights(Entity ent) {
 		lightPositions[i * 3 + 2] = pl.position.z;
 		i++;
 	}
-	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("numPointsLights"), numLights);
+	graphics::glCall(glUniform1i, renderer.program.getUniformLoc("numPointsLights"), numLights);
 	graphics::glCall(glUniform1fv, renderer.program.getUniformLoc("pointLightIntensity"), numLights, lightIntensity);
 	graphics::glCall(glUniform3fv, renderer.program.getUniformLoc("pointLightColor"), numLights, lightColors);
 	graphics::glCall(glUniform3fv, renderer.program.getUniformLoc("pointLightPos"), numLights, lightPositions);
-	delete[] lightIntensity;
-	delete[] lightColors;
-	delete[] lightPositions;
 }
 
 
@@ -373,7 +373,7 @@ void System2::addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, fl
 		});
 	float intens = 0.0f;
 	int d = 0;
-	for (; d < 100; d++) {
+	for (; d < 1000; d++) {
 		intens = intensity / (1 + kc * d + kq * d * d + glm::exp(-ke * d));
 		if (intens < 0.01) {
 			d = d - 1;
@@ -383,17 +383,18 @@ void System2::addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, fl
 	registry.addComponent<PointLight>(ent, position, color, intensity, d);
 }
 
+void System2::addLightConstants(float kc, float kq, float ke)
+{
+	registry.addComponent<LightConstants>(registry.create(), kc, kq, ke);
+}
+
 void System2::setLightConstants(float kc, float kq, float ke)
 {
-	bool hasComponent = false;
 	registry.execute<LightConstants>([&](LightConstants& lc) {
 		lc.kc = kc;
 		lc.kq = kq;
 		lc.ke = ke;
-		hasComponent = true;
 		});
-	if (hasComponent) return;
-	registry.addComponent<LightConstants>(registry.create(), kc, kq, ke);
 }
 
 
