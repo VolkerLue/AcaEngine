@@ -35,7 +35,7 @@ shot(0)
 	Entity entity4;
 	system.addPointLight(system.createEntity(entity4), glm::vec3(1.f, 1.f, 10.f), glm::vec3(1.f, 1.f, 1.f), 2.f);
 	Entity entity5;
-	system.addPointLight(system.createEntity(entity5), glm::vec3(0.f, 0.f, -50.f), glm::vec3(1.f, 0.f, 0.f), 7.f);
+	system.addPointLight(system.createEntity(entity5), glm::vec3(0.f, 0.f, -100.f), glm::vec3(1.f, 0.f, 0.f), 20.f);
 	Entity entity6;
 	system.addPointLight(system.createEntity(entity5), glm::vec3(20.f, 20.f, -50.f), glm::vec3(0.f, 1.f, 0.f), 10.f);
 	Entity entity7;
@@ -45,7 +45,7 @@ shot(0)
 	Entity entity9;
 	system.addPointLight(system.createEntity(entity5), glm::vec3(-20.f, -20.f, -50.f), glm::vec3(0.f, 0.f, 1.f), 10.f);
 	Entity entity10;
-	system.addPointLight(system.createEntity(entity5), glm::vec3(0.f, 0.f, -100.f), glm::vec3(1.f, 1.f, 1.f), 10.f);
+	system.addPointLight(system.createEntity(entity), glm::vec3(0.f, 0.f, 0.f), glm::vec3(1.f, 1.f, 1.f), 2.f);
 }
 
 void Shooter::newState() {
