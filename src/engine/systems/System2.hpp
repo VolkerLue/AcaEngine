@@ -101,6 +101,8 @@ public:
 
 	void addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, float intensity);
 
+	void addLightConstants(float kc, float kq, float ke);
+
 	void setLightConstants(float kc, float kq, float ke);
 
 
