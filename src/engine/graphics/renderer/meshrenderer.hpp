@@ -26,6 +26,7 @@ namespace graphics {
 			const std::vector<Mesh::Vertex>& meshVertices;
 			const Texture2D& texture;
 			glm::mat4 transform;
+			glm::mat3 invTraTransform;
 		};
 		graphics::GeometryBuffer* geometryBuffer;
 		std::vector<MeshInstance> instances;

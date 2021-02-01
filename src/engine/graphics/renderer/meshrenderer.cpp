@@ -24,7 +24,7 @@ namespace graphics {
 	}
 
 	void MeshRenderer::draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform) {
-		struct MeshInstance mi = {_mesh.vertices, _texture, _transform};
+		struct MeshInstance mi = {_mesh.vertices, _texture, _transform, glm::mat3(glm::transpose(glm::inverse(_transform)))};
 		instances.push_back(mi);
 	}
 
