@@ -8,6 +8,10 @@
 #include <engine/graphics/core/geometrybuffer.hpp>
 
 namespace graphics {
+
+	class Mesh;
+	class Texture2D;
+
 	class MeshRenderer
 	{
 	public:
