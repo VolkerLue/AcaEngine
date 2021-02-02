@@ -34,8 +34,8 @@ void System2::draw() {
 	registry.execute<Entity, Mesh, Texture, Transform>([&](
 		Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform) {
 			renderer.clear();
-			uploadLights(ent);
 			renderer.draw(*mesh.mesh, *texture.texture, transform.transform);
+			uploadLights(ent);
 			renderer.present(camera);
 		});
 	
@@ -52,6 +52,7 @@ void System2::setCamera(float _fov, float _zNear, float zFar) {
 }
 
 void System2::uploadLights(Entity ent) {
+	renderer.program.use();
 	//get Constants and upload them
 	float kc;
 	float kq;
