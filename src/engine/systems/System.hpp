@@ -1,6 +1,6 @@
 #pragma once
 #include "Components.hpp"
-#include "../game/Registry.hpp"
+#include "Registry.hpp"
 #include "../graphics/core/texture.hpp"
 #include <engine/input/inputmanager.hpp>
 #include <glm/gtx/transform.hpp>
