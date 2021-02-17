@@ -41,6 +41,8 @@ public:
 
 	void updatePosition(float _deltaTime);
 
+	void updateVelocity(float _deltaTime);
+
 	void updateOrientation(float _deltaTime);
 	
 	void updateAABB();

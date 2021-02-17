@@ -37,8 +37,7 @@ void System2::draw() {
 			renderer.draw(*mesh.mesh, *texture.texture, transform.transform);
 			uploadLights(ent);
 			renderer.present(camera);
-		});
-	
+		});	
 }
 
 void System2::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
@@ -130,6 +129,15 @@ void System2::updatePosition(float _deltaTime) {
 	);
 }
 
+void System2::updateVelocity(float _deltaTime) {
+
+	registry.execute<Velocity, Accelaration>([&](Velocity& _velocity, const Accelaration& _accelaration)
+		{
+			_velocity.velocity += _accelaration.accelaration * _deltaTime;
+		}
+	);
+}
+
 void System2::updateOrientation(float _deltaTime) {
 
 	registry.execute<Orientation, AngularVelocity>([&](Orientation& _orientation, const AngularVelocity& _angularVelocity)
@@ -138,19 +146,6 @@ void System2::updateOrientation(float _deltaTime) {
 		}
 	);
 }
-
-/*
-void  System2::rotate(Entity& _entity, float _deltatime) {
-	Transform& transform = registry.getComponentUnsafe<Transform>(_entity);
-	AngularVelocity& velo = registry.getComponentUnsafe<AngularVelocity>(_entity);
-	Rotation& rotation = registry.getComponentUnsafe<Rotation>(_entity);
-	glm::vec3 angle = glm::vec3 (velo.angular_velocity.x * _deltatime, velo.angular_velocity.y * _deltatime, velo.angular_velocity.z * _deltatime);
-	glm::quat Quat = glm::quat(cos(angle.z / 2) * cos(angle.y / 2) * cos(angle.x / 2) + sin(angle.z / 2) * sin(angle.y / 2) * sin(angle.x / 2), sin(angle.z/2)*cos(angle.y/2)*cos(angle.x/2) - cos(angle.z / 2)*sin(angle.y / 2) * sin(angle.x / 2), cos(angle.z / 2) * sin(angle.y / 2) * cos(angle.x / 2) - sin(angle.z / 2) * cos(angle.y / 2) * sin(angle.x / 2), cos(angle.z / 2) * cos(angle.y / 2) * sin(angle.x / 2) - sin(angle.z / 2) * sin(angle.y / 2) * cos(angle.x / 2));
-
-	glm::mat4 rot = glm::toMat4(Quat);
-	transform.transform *= rot;
-}
-*/
 
 void System2::updateAABB() {
 	registry.execute<Box, Transform>([&](Box& box, Transform transform) {
@@ -228,25 +223,17 @@ void System2::move(Entity& _entity, float _deltaTime) {
 }
 
 void System2::springY(Entity& _entity, float _deltaTime) {
-	float k = 20.f;
+	float springConstant = 1.f;
+	float gravity = -1.f;
 
-	glm::mat4 transfrom = registry.getComponent<Transform>(_entity)->transform;
-	float positionEntityY = transfrom[3][1];
-	float positionAnchorY = registry.getComponent<Anchor>(_entity)->anchor[1];
-	float springForceY = -k * (positionEntityY - positionAnchorY);
+	glm::vec3& accelaration = registry.getComponent<Accelaration>(_entity)->accelaration;
+	glm::vec3 position = registry.getComponent<Position>(_entity)->position;	
+	glm::vec3 anchor = registry.getComponent<Anchor>(_entity)->anchor;
+	float mass = registry.getComponent<Mass>(_entity)->mass;	
 
-	float mass = registry.getComponent<Mass>(_entity)->mass;
-	float gravity = registry.getComponent<Accelaration>(_entity)->accelaration[0];
+	float springForceY = -springConstant * (position[1] - anchor[1]);
 	float forceY = springForceY + mass * gravity;
-
-	float accelerationY = forceY / mass;
-	float velocityY = registry.getComponent<Velocity>(_entity)->velocity[1];
-	velocityY += accelerationY * _deltaTime;
-	setVelocity(_entity, glm::vec3(0.f, velocityY, 0.f));
-	positionEntityY += velocityY * _deltaTime;
-
-	transfrom[3][1] = positionEntityY;
-	setTransform(_entity, transfrom);
+	accelaration[1] = forceY / mass;
 }
 
 

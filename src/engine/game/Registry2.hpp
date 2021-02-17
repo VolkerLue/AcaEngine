@@ -28,13 +28,6 @@ struct EntityRef
 	uint32_t generation;
 };
 
-//template<typename Component>
-//struct componentStruct {
-//	std::vector<int> sparse;
-//	std::vector<Entity> entities;
-//	std::vector<Component> components;
-//};
-
 template<typename Component>
 struct componentStruct {
 	std::vector<int> sparse;
@@ -49,7 +42,6 @@ public:
 
 	Entity create() {
 		uint32_t i;
-		numEntitys++;
 		for (i = 0; i < flags.size(); i++) {
 			if (!flags[i]) {
 				flags[i] = true;
@@ -64,7 +56,6 @@ public:
 
 	void erase(Entity _ent) {
 		flags[_ent.id] = false;
-		numEntitys--;
 		for (auto it = componentMap.begin(); it != componentMap.end(); it++) {
 			auto& cS = it->second;
 			if (cS.sparse.size() > _ent.id && cS.sparse[_ent.id] != -1) {
@@ -72,16 +63,14 @@ public:
 				cS.sparse[_ent.id] = -1;
 				cS.entities[pos] = cS.entities[cS.entities.size() - 1];
 				cS.entities.pop_back();
-
-				//cS.components[pos] = cS.components[cS.components.size() - 1];
-				//cS.components.pop_back();
 				char* remove = cS.components.data() + cS.componentSize * pos;
 				char* last = cS.components.data() + cS.componentSize * cS.entities.size();
 				memcpy(remove, last, cS.componentSize);
 				cS.components.resize(cS.componentSize * (cS.components.size() / cS.componentSize - 1));
 
-				if (pos < cS.entities.size())
+				if (pos < cS.entities.size()) {
 					cS.sparse[cS.entities[pos].id] = pos;
+				}					
 			}
 		}
 	}
@@ -107,16 +96,12 @@ public:
 				cS.sparse.push_back(-1);
 			}
 			if (cS.sparse[_ent.id] != -1) {
-				//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 				return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 			}
 		}
 		else {
 			std::vector<int> sparse;
 			std::vector<Entity> entities;
-
-			//std::vector<std::any> components;
-			//componentStruct<std::any> comStr = { sparse, entities, components };
 			std::vector<char> components;
 			size_t componentSize = sizeof(Component);
 			componentStruct<char> comStr = { sparse, entities, components, componentSize };
@@ -130,40 +115,11 @@ public:
 		cS.sparse.push_back(-1);
 		cS.sparse[_ent.id] = cS.entities.size();
 		cS.entities.push_back(_ent);
-
-		//cS.components.push_back(std::any(Component(_args...)));
-		//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 		cS.components.resize(cS.componentSize * cS.entities.size());
 		Component component{ _args... };
 		memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
 		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 	}
-
-	/*template<component_type Component, typename... Args>
-	Component& addComponent(Entity _ent, Args&&... _args) {
-		if (componentMap.contains(std::type_index(typeid(Component)))) {
-			auto& cS = componentMap[std::type_index(typeid(Component))];
-			if (cS.sparse[_ent.id] != -1) {
-				return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
-			}
-		}
-		else {
-			std::vector<int> sparse(1000, -1);
-			std::vector<Entity> entities;
-			std::vector<char> components;
-			size_t componentSize = sizeof(Component);
-			componentStruct<char> comStr = { sparse, entities, components, componentSize };
-			componentMap[std::type_index(typeid(Component))] = comStr;
-		}
-		auto& cS = componentMap[std::type_index(typeid(Component))];
-		cS.sparse[_ent.id] = cS.entities.size();
-		cS.entities.push_back(_ent);
-
-		cS.components.resize(cS.componentSize * cS.entities.size());
-		Component component{ _args... };
-		memcpy(cS.components.data() + cS.componentSize * cS.sparse[_ent.id], &component, cS.componentSize);
-		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
-	}*/
 
 	// Remove a component from an existing entity.
 	// Does not check whether it exists.
@@ -176,9 +132,6 @@ public:
 				cS.sparse[_ent.id] = -1;
 				cS.entities[pos] = cS.entities[cS.entities.size() - 1];
 				cS.entities.pop_back();
-
-				//cS.components[pos] = cS.components[cS.components.size() - 1];
-				//cS.components.pop_back();
 				char* remove = cS.components.data() + cS.componentSize * pos;
 				char* last = cS.components.data() + cS.componentSize * cS.entities.size();
 				memcpy(remove, last, cS.componentSize);
@@ -200,7 +153,6 @@ public:
 		if (componentMap.contains(std::type_index(typeid(Component)))) {
 			auto& cS = componentMap[std::type_index(typeid(Component))];
 			if (cS.sparse.size() > _ent.id && cS.sparse[_ent.id] != -1) {
-				//return std::any_cast<Component>(&cS.components[cS.sparse[_ent.id]]);
 				return (Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 			}
 		}
@@ -211,7 +163,6 @@ public:
 		if (componentMap.contains(std::type_index(typeid(Component)))) {
 			auto& cS = componentMap[std::type_index(typeid(Component))];
 			if (cS.sparse.size() > _ent.id && cS.sparse[_ent.id] != -1) {
-				//return &cS.components[cS.sparse[_ent.id]];
 				return (Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 			}
 		}
@@ -223,13 +174,11 @@ public:
 	template<component_type Component>
 	Component& getComponentUnsafe(Entity _ent) {
 		auto& cS = componentMap[std::type_index(typeid(Component))];
-		//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 	}
 	template<component_type Component>
 	const Component& getComponentUnsafe(Entity _ent) const {
 		auto& cS = componentMap[std::type_index(typeid(Component))];
-		//return std::any_cast<Component&>(cS.components[cS.sparse[_ent.id]]);
 		return *(Component*)(cS.components.data() + cS.componentSize * cS.sparse[_ent.id]);
 	}
 
@@ -252,11 +201,13 @@ public:
 		if (comp[0] == std::type_index(typeid(Entity))) {
 			comp.erase(comp.begin());
 		}
-
+		for (int i = 0; i < comp.size(); i++) {
+			if (componentMap.find(comp.at(i)) == componentMap.end()) return;
+		}
 		vector<Entity> ent = componentMap[comp[0]].entities;
 		for (int i = 1; i < comp.size(); i++) {
 			for (auto it = ent.begin(); it != ent.end();) {
-				if (componentMap[comp[i]].sparse.size() > it->id && componentMap[comp[i]].sparse[it->id] == -1) {
+				if (componentMap[comp[i]].sparse.size() < it->id || componentMap[comp[i]].sparse[it->id] == -1) {
 					it = ent.erase(it);
 				}
 				else {
@@ -264,7 +215,6 @@ public:
 				}
 			}
 		}
-
 		for (auto it = ent.begin(); it != ent.end(); it++) {
 			func<Args...>(*it, _action, std::tie());
 		}
@@ -289,7 +239,5 @@ public:
 
 	std::vector<bool> flags;
 	std::vector<uint32_t> generations;
-	int numEntitys = 0;
-	//std::unordered_map<std::type_index, componentStruct<std::any>> componentMap;
 	std::unordered_map<std::type_index, componentStruct<char>> componentMap;
 };
