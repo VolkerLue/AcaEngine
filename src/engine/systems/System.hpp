@@ -1,6 +1,6 @@
 #pragma once
 #include "Components.hpp"
-#include "../game/Registry2.hpp"
+#include "../game/Registry.hpp"
 #include "../graphics/core/texture.hpp"
 #include <engine/input/inputmanager.hpp>
 #include <glm/gtx/transform.hpp>
@@ -120,7 +120,7 @@ public:
 
 	
 private:
-	Registry2 registry;
+	Registry registry;
 	graphics::Camera camera;
 	graphics::MeshRenderer renderer;
 	input::InputManager inputManager;	
