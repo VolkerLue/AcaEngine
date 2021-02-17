@@ -1,6 +1,6 @@
 #pragma once
 #include "GameState.hpp"
-#include "../entity_component_system/System.hpp"
+#include "../entity_component_system/system.hpp"
 #include <stdlib.h>
 #include <time.h> 
 
