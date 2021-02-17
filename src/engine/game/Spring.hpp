@@ -1,6 +1,6 @@
 #pragma once
 #include "GameState.hpp"
-#include "../systems/System2.hpp"
+#include "../systems/System.hpp"
 
 
 class Spring : public GameState {
@@ -20,7 +20,7 @@ public:
 
 private:
 	Entity entity;
-	System2 system;
+	System system;
 	const graphics::Texture2D& texture;
 	const graphics::Mesh meshSphere;
 };
