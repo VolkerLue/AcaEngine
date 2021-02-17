@@ -1,6 +1,6 @@
 #pragma once
 #include "GameState.hpp"
-#include "../systems/System.hpp"
+#include "../entity_component_system/System.hpp"
 
 
 class Spring : public GameState {
