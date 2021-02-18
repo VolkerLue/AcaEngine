@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameState.hpp"
+#include "gamestate.hpp"
 #include "../graphics/core/device.hpp"
 #include "../input/inputmanager.hpp"
 #include <chrono>

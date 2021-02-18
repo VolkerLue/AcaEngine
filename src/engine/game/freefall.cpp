@@ -1,4 +1,4 @@
-#include "FreeFall.hpp"
+#include "freefall.hpp"
 
 
 FreeFall::FreeFall() : GameState(), system(),

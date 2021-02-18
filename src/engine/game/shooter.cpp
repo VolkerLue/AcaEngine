@@ -1,4 +1,4 @@
-#include "Shooter.hpp"
+#include "shooter.hpp"
 
 
 Shooter::Shooter() : GameState(), system(),

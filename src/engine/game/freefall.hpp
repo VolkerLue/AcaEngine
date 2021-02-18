@@ -1,5 +1,5 @@
 #pragma once
-#include "GameState.hpp"
+#include "gamestate.hpp"
 #include "../entity_component_system/system.hpp"
 
 

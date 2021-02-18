@@ -1,4 +1,4 @@
-#include "Spring.hpp"
+#include "spring.hpp"
 
 
 Spring::Spring() : GameState(), system(), 

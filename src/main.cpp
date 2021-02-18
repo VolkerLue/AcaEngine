@@ -13,11 +13,11 @@
 #include <GLFW/glfw3.h>
 #include <thread>
 #include <glm/ext/matrix_transform.hpp>
-#include <engine/game/Game.hpp>
-#include <engine/game/Spring.hpp>
-#include <engine/game/UpAndDown.hpp>
-#include <engine/game/FreeFall.hpp>
-#include <engine/game/Shooter.hpp>
+#include <engine/game/game.hpp>
+#include <engine/game/spring.hpp>
+#include <engine/game/upanddown.hpp>
+#include <engine/game/freefall.hpp>
+#include <engine/game/shooter.hpp>
 #include <memory>
 #include <chrono>
 #include <engine/utils/resourcemanager.hpp>
@@ -44,7 +44,7 @@ int main(int argc, char* argv[])
 	srand(time(NULL));
 	
 	//Game game;
-	//game.addState(std::make_unique<FreeFall>());
+	//game.addState(std::make_unique<FreeFall());
 	//game.addState(std::make_unique<Spring>());
 	//game.addState(std::make_unique<UpAndDown>());
 	//game.run(std::make_unique<Shooter>());	
