@@ -1,26 +1,27 @@
 #pragma once
-#include "GameState.hpp"
-#include "../systems/System2.hpp"
+#include "gamestate.hpp"
+#include "../entity_component_system/system.hpp"
 
 
-class Spring : public GameState {
+class FreeFall : public GameState {
 public:
-	Spring();
-	//has pure virtual functions for frame updates
+	FreeFall();
+
 	void update(float _time, float _deltaTime) override;
 	void draw(float _time, float _deltaTime) override;
 
-	//has virtual interface for state transition events
 	void onResume() override;
 	void onPause() override;
 
-	//interface to mark current state as finished and to provide a new state
 	void newState() override;
 	bool isFinished();
 
 private:
 	Entity entity;
-	System2 system;
+	Entity entity2;
+	System system;
 	const graphics::Texture2D& texture;
+	const graphics::Texture2D& texture2;
 	const graphics::Mesh meshSphere;
+	const graphics::Mesh meshCrate;
 };

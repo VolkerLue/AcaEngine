@@ -1,4 +1,4 @@
-#include "UpAndDown.hpp"
+#include "upanddown.hpp"
 
 
 UpAndDown::UpAndDown() : GameState(), system(), 

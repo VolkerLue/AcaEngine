@@ -1,4 +1,4 @@
-#include "Game.hpp"
+#include "game.hpp"
 
 Game::Game() {
 	//acquires global resources
@@ -8,7 +8,7 @@ Game::Game() {
 	glClearColor(0.f, 1.f, 0.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glfwSwapInterval(0); //VSync OFF
+	glfwSwapInterval(1); //VSync ON->(1) , OFF->(0)
 }
 
 Game::~Game() {

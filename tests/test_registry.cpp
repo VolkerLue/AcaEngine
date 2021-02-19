@@ -14,7 +14,7 @@ struct Bar {
 int main()
 {
 
-	Registry2 registry;
+	Registry registry;
 
 	std::vector<Entity> entities;
 
