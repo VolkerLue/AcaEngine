@@ -1,6 +1,6 @@
 #pragma once
 #include "testutils.hpp"
-#include "../src/engine/game/Registry2.hpp"
+#include "../src/engine/entity_component_system/registry.hpp"
 #include <vector>
 
 struct Foo {

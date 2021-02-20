@@ -2,9 +2,7 @@
 #include <map>
 
 
-System::System() : registry(),
-camera(graphics::Camera(45.f, 1.f, 150.f)),
-renderer(graphics::MeshRenderer())
+System::System() : registry(), meshRenderer(), camera(graphics::Camera(45.f, 1.f, 150.f)) 
 {
 	utils::MeshLoader::clear();
 }
@@ -31,17 +29,17 @@ std::optional<Entity> System::getEntity(EntityRef _entity) const {
 void System::draw() {
 	registry.execute<Entity, Mesh, Texture, Transform>([&](
 		Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform) {
-			renderer.clear();
-			renderer.draw(*mesh.mesh, *texture.texture, transform.transform);
+			meshRenderer.clear();
+			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
 			uploadLights(ent);
-			renderer.present(camera);
+			meshRenderer.present(camera);
 		});	
 }
 
 void System::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
-	renderer.clear();
-	renderer.draw(*registry.getComponent<Mesh>(_entity)->mesh, _texture, registry.getComponent<Transform>(_entity)->transform);
-	renderer.present(camera);
+	meshRenderer.clear();
+	meshRenderer.draw(*registry.getComponent<Mesh>(_entity)->mesh, _texture, registry.getComponent<Transform>(_entity)->transform);
+	meshRenderer.present(camera);
 }
 
 void System::setCamera(float _fov, float _zNear, float zFar) {
@@ -49,7 +47,7 @@ void System::setCamera(float _fov, float _zNear, float zFar) {
 }
 
 void System::uploadLights(Entity ent) {
-	renderer.program.use();
+	meshRenderer.program.use();
 	//get Constants and upload them
 	float kc;
 	float kq;
@@ -59,9 +57,9 @@ void System::uploadLights(Entity ent) {
 		kq = lc.kq;
 		ke = lc.ke;
 		});
-	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("kc"), kc);
-	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("kq"), kq);
-	graphics::glCall(glUniform1f, renderer.program.getUniformLoc("ke"), ke);
+	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("kc"), kc);
+	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("kq"), kq);
+	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("ke"), ke);
 	
 	//find nearest lights and upload them
 	Box& box = registry.getComponentUnsafe<Box>(ent);
@@ -95,10 +93,10 @@ void System::uploadLights(Entity ent) {
 		lightPositions[i * 3 + 2] = pl.position.z;
 		i++;
 	}
-	graphics::glCall(glUniform1i, renderer.program.getUniformLoc("numPointsLights"), numLights);
-	graphics::glCall(glUniform1fv, renderer.program.getUniformLoc("pointLightIntensity"), numLights, lightIntensity);
-	graphics::glCall(glUniform3fv, renderer.program.getUniformLoc("pointLightColor"), numLights, lightColors);
-	graphics::glCall(glUniform3fv, renderer.program.getUniformLoc("pointLightPos"), numLights, lightPositions);
+	graphics::glCall(glUniform1i, meshRenderer.program.getUniformLoc("numPointsLights"), numLights);
+	graphics::glCall(glUniform1fv, meshRenderer.program.getUniformLoc("pointLightIntensity"), numLights, lightIntensity);
+	graphics::glCall(glUniform3fv, meshRenderer.program.getUniformLoc("pointLightColor"), numLights, lightColors);
+	graphics::glCall(glUniform3fv, meshRenderer.program.getUniformLoc("pointLightPos"), numLights, lightPositions);
 }
 
 

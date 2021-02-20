@@ -122,6 +122,6 @@ public:
 private:
 	Registry registry;
 	graphics::Camera camera;
-	graphics::MeshRenderer renderer;
+	graphics::MeshRenderer meshRenderer;
 	input::InputManager inputManager;	
 };
