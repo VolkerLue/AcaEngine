@@ -15,11 +15,11 @@ Game::~Game() {
 	graphics::Device::close();
 }
 
-void Game::addState(std::unique_ptr<GameState> _state) {
+void Game::addState(std::shared_ptr<GameState> _state) {
 	states.push_back(std::move(_state));
 }
 
-void Game::run(std::unique_ptr<GameState> _initialState) {
+void Game::run(std::shared_ptr<GameState> _initialState) {
 	//manages game states with a stack invoking the appropriate events
 	//controls delta time to maintain a smooth frame rate without wasting to much CPU time
 	//performs state update + rendering
@@ -31,14 +31,14 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 	bool b = true;
 
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
-		GameState& current = *states.back();
+		std::shared_ptr<GameState> current = std::move(states.back());
 		float t = 0;
 		const float timeStep = 0.01;
 
 		auto currentTime = clock::now();
 		float dt = 0.f;
 
-		while (!current.isFinished() && !glfwWindowShouldClose(window)) {
+		while (!current->isFinished() && !glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -47,9 +47,9 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			while (dt >= timeStep) {
 				t += timeStep;
 				dt -= timeStep;
-				current.update(t, timeStep);
+				current->update(t, timeStep);
 			}
-			current.draw(t, dt/timeStep);
+			current->draw(t, dt/timeStep);
 
 			glfwPollEvents();
 			glfwSwapBuffers(window);

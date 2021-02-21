@@ -189,7 +189,6 @@ public:
 	template<typename... Args, typename Action>
 	void execute(const Action& _action) {
 		using namespace std;
-		bool hasAllComponents;
 		vector<std::type_index> comp = { (0, std::type_index(typeid(Args))) ... };
 		if (comp.size() == 1 && comp[0] != std::type_index(typeid(Entity))) {		//special case: one component
 			auto& cS = componentMap[comp[0]];

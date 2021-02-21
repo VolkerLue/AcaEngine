@@ -5,6 +5,7 @@ ButtonDemo::ButtonDemo() :
 	guiToolkit(),
 	planeTexture(*graphics::Texture2DManager::get("textures/blue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
+	finished = false;
 	guiToolkit.addButton(glm::vec3(-0.365f, -0.1f, -1.1f), glm::vec3(0.7f, 0.2f, 1.0f), planeTexture);
 	text = "click me!";
 	count = 0;
@@ -16,7 +17,7 @@ void ButtonDemo::newState() {
 
 void ButtonDemo::update(float _time, float _deltaTime) {
 
-	if (_time > 50) {
+	if (_time > 10) {
 		finished = true;
 	}
 
@@ -43,11 +44,13 @@ void ButtonDemo::draw(float _time, float _deltaTime) {
 }
 
 void ButtonDemo::onResume() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void ButtonDemo::onPause() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 bool ButtonDemo::isFinished() {
-	return false;
+	return finished;
 }

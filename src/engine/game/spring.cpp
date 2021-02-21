@@ -5,6 +5,7 @@ Spring::Spring() : GameState(), system(),
 texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
 meshSphere(*utils::MeshLoader::get("models/sphere.obj"))
 {	
+	finished = false;
 	entity = system.createEntity(entity);
 	system.addMesh(entity, &meshSphere);
 	system.addTexture(entity, &texture);
@@ -51,5 +52,5 @@ void Spring::onPause() {
 }
 
 bool Spring::isFinished() {
-	return false;
+	return finished;
 }

@@ -2,7 +2,7 @@
 #include <map>
 
 
-System::System() : registry(), meshRenderer(), camera(graphics::Camera(45.f, 1.f, 150.f)) 
+System::System() : registry(), meshRenderer(), camera(graphics::Camera(45.f, 1.f, 150.f))
 {
 	utils::MeshLoader::clear();
 }
