@@ -1,5 +1,6 @@
 #include "game.hpp"
 
+
 Game::Game() {
 	//acquires global resources
 	graphics::Device::initialize(1366, 768, false);
@@ -12,26 +13,25 @@ Game::Game() {
 }
 
 Game::~Game() {
-	graphics::Device::close();
+	graphics::Device::close(); 
 }
 
-void Game::addState(std::shared_ptr<GameState> _state) {
+void Game::addState(std::unique_ptr<GameState> _state) {
 	states.push_back(std::move(_state));
 }
 
-void Game::run(std::shared_ptr<GameState> _initialState) {
+void Game::run(std::unique_ptr<GameState> _initialState) {
 	//manages game states with a stack invoking the appropriate events
 	//controls delta time to maintain a smooth frame rate without wasting to much CPU time
 	//performs state update + rendering
 
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
+
 	states.push_back(std::move(_initialState));
 
-	bool b = true;
-
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
-		std::shared_ptr<GameState> current = std::move(states.back());
+		std::unique_ptr<GameState> current = std::move(states.back());
 		float t = 0;
 		const float timeStep = 0.01;
 

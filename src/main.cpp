@@ -50,12 +50,13 @@ int main(int argc, char* argv[])
 	//game.addState(std::make_unique<UpAndDown>());
 	//game.addState(std::make_unique<ButtonDemo>());
 	//game.run(std::make_unique<Shooter>());	
-
+	
 	Game game;
-	game.run(std::make_shared<ButtonDemo>());
+	game.run(std::make_unique<ButtonDemo>());
 	utils::MeshLoader::clear();
 	graphics::ShaderManager::clear();
 	graphics::Texture2DManager::clear();
+
 
 	return EXIT_SUCCESS;
 }

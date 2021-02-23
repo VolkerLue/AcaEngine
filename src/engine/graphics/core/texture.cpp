@@ -134,13 +134,13 @@ namespace graphics {
 
 	Texture2D::~Texture2D()
 	{
-		if(m_bindlessHandle) 
-		{
-			if ( GLEW_ARB_bindless_texture )
-			{
-				glCall(glMakeTextureHandleNonResidentARB, m_bindlessHandle);
-			}
-		}
+		//if(m_bindlessHandle) 
+		//{
+		//	if ( GLEW_ARB_bindless_texture )
+		//	{
+		//		glCall(glMakeTextureHandleNonResidentARB, m_bindlessHandle);
+		//	}
+		//}
 		glCall(glBindTexture, GL_TEXTURE_2D, 0);
 		glCall(glDeleteTextures, 1, &m_textureID);
 		spdlog::info("[graphics] Deleted texture {} .", m_textureID);

@@ -18,11 +18,11 @@ public:
 	~Game();
 
 	//Start the game loop with _initialState on the stack
-	void run(std::shared_ptr<GameState> _initialState);
+	void run(std::unique_ptr<GameState> _initialState);
 
-	void addState(std::shared_ptr<GameState> _state);
+	void addState(std::unique_ptr<GameState> _state);
 
 private:
 	GLFWwindow* window;
-	std::vector<std::shared_ptr<GameState>> states;
+	std::vector<std::unique_ptr<GameState>> states;
 };
