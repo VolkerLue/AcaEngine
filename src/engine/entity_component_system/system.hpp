@@ -1,4 +1,5 @@
 #pragma once
+
 #include "components.hpp"
 #include "registry.hpp"
 #include "../graphics/core/texture.hpp"
@@ -10,6 +11,7 @@
 #include "../utils/containers/octree.hpp"
 #include <set>
 #include <engine/graphics/core/opengl.hpp>
+
 
 class System
 {	
@@ -118,7 +120,6 @@ public:
 		return registry.getComponent<Component>(_entity) != nullptr;
 	};
 
-	
 private:
 	Registry registry;
 	graphics::Camera camera;

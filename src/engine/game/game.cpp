@@ -1,5 +1,6 @@
 #include "game.hpp"
 
+
 Game::Game() {
 	//acquires global resources
 	graphics::Device::initialize(1366, 768, false);
@@ -12,7 +13,7 @@ Game::Game() {
 }
 
 Game::~Game() {
-	graphics::Device::close();
+	graphics::Device::close(); 
 }
 
 void Game::addState(std::unique_ptr<GameState> _state) {
@@ -26,19 +27,18 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
+
 	states.push_back(std::move(_initialState));
 
-	bool b = true;
-
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
-		GameState& current = *states.back();
+		std::unique_ptr<GameState> current = std::move(states.back());
 		float t = 0;
 		const float timeStep = 0.01;
 
 		auto currentTime = clock::now();
 		float dt = 0.f;
 
-		while (!current.isFinished() && !glfwWindowShouldClose(window)) {
+		while (!current->isFinished() && !glfwWindowShouldClose(window)) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -47,9 +47,9 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			while (dt >= timeStep) {
 				t += timeStep;
 				dt -= timeStep;
-				current.update(t, timeStep);
+				current->update(t, timeStep);
 			}
-			current.draw(t, dt/timeStep);
+			current->draw(t, dt/timeStep);
 
 			glfwPollEvents();
 			glfwSwapBuffers(window);

@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 #ifndef NDEBUG 
 #if defined(_MSC_VER)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//	_CrtSetBreakAlloc(2760);
+		//_CrtSetBreakAlloc(1038);
 #endif
 #endif
 	
@@ -48,13 +48,15 @@ int main(int argc, char* argv[])
 	//game.addState(std::make_unique<FreeFall());
 	//game.addState(std::make_unique<Spring>());
 	//game.addState(std::make_unique<UpAndDown>());
+	//game.addState(std::make_unique<ButtonDemo>());
 	//game.run(std::make_unique<Shooter>());	
-
+	
 	Game game;
 	game.run(std::make_unique<ButtonDemo>());
 	utils::MeshLoader::clear();
 	graphics::ShaderManager::clear();
 	graphics::Texture2DManager::clear();
+
 
 	return EXIT_SUCCESS;
 }

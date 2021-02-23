@@ -5,6 +5,7 @@
 class ButtonDemo : public GameState {
 public:
 	ButtonDemo();
+
 	void update(float _time, float _deltaTime) override;
 	void draw(float _time, float _deltaTime) override;
 

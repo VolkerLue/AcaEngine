@@ -5,6 +5,8 @@ public:
 	GameState() : 
 		finished(false) {}
 
+	virtual ~GameState() {}
+
 	//has pure virtual functions for frame updates
 	virtual void update(float _time, float _deltaTime) = 0;
 	virtual void draw(float _time, float _deltaTime) = 0;

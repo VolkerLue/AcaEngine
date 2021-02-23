@@ -1,18 +1,18 @@
 #include "guitoolkit.hpp"
 
-GuiToolkit::GuiToolkit(): system(), fontRenderer(), 
-camera(graphics::Camera(45.f, 1.f, 150.f)),
-planeMesh(*utils::MeshLoader::get("models/plane.obj"))
+GuiToolkit::GuiToolkit() :
+	system(),
+	fontRenderer(graphics::FontManager::get("fonts/AnonymousPro.caf")),
+	planeMesh(*utils::MeshLoader::get("models/plane.obj")),
+	camera(graphics::Camera(45.f, 1.f, 150.f))	
 {
-	fontRenderer.clearText();
-	fontRenderer.load("C:/Users/r3v0/source/repos/AcaEngine/resources/fonts/AnonymousPro.ttf", true);
-	fontRenderer.loadCaf("C:/Users/r3v0/source/repos/AcaEngine/resources/fonts/AnonymousPro.caf");
+	
 }
 
 void GuiToolkit::drawText(std::string _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel) {
-	fontRenderer.clearText();
-	fontRenderer.draw(_position, _text.c_str(), _size, _color, _rotation, _alignX, _alignY, _roundToPixel);
-	fontRenderer.present(camera);
+	fontRenderer->clearText();
+	fontRenderer->draw(_position, _text.c_str(), _size, _color, _rotation, _alignX, _alignY, _roundToPixel);
+	fontRenderer->present(camera);
 }
 
 void GuiToolkit::addButton(glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _planeTexture) {
