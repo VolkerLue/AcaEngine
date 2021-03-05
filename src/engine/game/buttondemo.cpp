@@ -1,15 +1,27 @@
 #include "buttondemo.hpp"
+#include <iostream>
+
+void displayMessage() {
+	std::cout << "click" << "\n";
+};
+
+void writeText() {
+
+}
 
 ButtonDemo::ButtonDemo() :
 	GameState(),
-	guiToolkit(),
-	planeTexture(*graphics::Texture2DManager::get("textures/blue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+	system(),
+	guiToolkit(system),
+	darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	lightGrayTexture(*graphics::Texture2DManager::get("textures/lightGray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	finished = false;
-	guiToolkit.addButton(glm::vec3(-0.365f, -0.1f, -1.1f), glm::vec3(0.7f, 0.2f, 1.0f), planeTexture);
-	text = "click me!";
-	count = 0;
-	pressed = false;
+	guiToolkit.addButton(glm::vec3(0.35f, 0.1f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightBlueTexture, darkBlueTexture, displayMessage, (char*)"click me!");
+
+	guiToolkit.addTextField(glm::vec3(0.f, 0.3f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightGrayTexture, whiteTexture, displayMessage, (char*)"write here");
 }
 
 void ButtonDemo::newState() {
@@ -17,30 +29,16 @@ void ButtonDemo::newState() {
 
 void ButtonDemo::update(float _time, float _deltaTime) {
 
-	if (_time > 10) {
+	if (_time > 50) {
 		finished = true;
 	}
 
-	if (input::InputManager::isButtonPressed(input::MouseButton::LEFT) == true &&
-		input::InputManager::getCursorPos().x > 376 && 
-		input::InputManager::getCursorPos().x < 963 && 
-		input::InputManager::getCursorPos().y < 468 && 
-		input::InputManager::getCursorPos().y > 300 &&
-		pressed == false)
-	{
-		pressed = true;
-		count++;
-		text = std::to_string(count);
-	}
-
-	if (input::InputManager::isButtonPressed(input::MouseButton::LEFT) == false) {
-		pressed = false;
-	}
+	system.updateTransform(_deltaTime);
+	guiToolkit.update();
 }
 
 void ButtonDemo::draw(float _time, float _deltaTime) {
-	guiToolkit.drawButtons(_deltaTime);
-	guiToolkit.drawText(text, glm::vec3(0.f, 0.f, -1.0f), 0.1f, glm::vec4(1.f, 1.f, 1.f, 1.f), 0.f, 0.5f, 0.5f, false);
+	system.draw();
 }
 
 void ButtonDemo::onResume() {

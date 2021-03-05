@@ -3,7 +3,7 @@
 
 Game::Game() {
 	//acquires global resources
-	graphics::Device::initialize(1366, 768, false);
+	graphics::Device::initialize(1000, 1000, false);
 	window = graphics::Device::getWindow();
 	input::InputManager::initialize(window);
 	glClearColor(0.f, 1.f, 0.f, 1.f);

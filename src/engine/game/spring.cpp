@@ -15,6 +15,7 @@ meshSphere(*utils::MeshLoader::get("models/sphere.obj"))
 	system.addAccelaration(entity, glm::vec3(0.f, 0.f, 0.f));
 	system.addMass(entity, 1.f);
 	system.addAnchor(entity, glm::vec3(0.f, 1.f, -15.f));
+	system.addPerspective(entity);
 	system.addAABB(entity, false);
 
 	system.addLightConstants(0.1, 0.05, 0.01);

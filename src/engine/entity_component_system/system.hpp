@@ -1,16 +1,17 @@
 #pragma once
 
-#include "components.hpp"
-#include "registry.hpp"
-#include "../graphics/core/texture.hpp"
-#include <engine/input/inputmanager.hpp>
 #include <glm/gtx/transform.hpp>
 #include <GL/glew.h>
 #include <limits>
-#include "../math/geometrictypes.hpp"
-#include "../utils/containers/octree.hpp"
 #include <set>
-#include <engine/graphics/core/opengl.hpp>
+
+#include "components.hpp"
+#include "registry.hpp"
+#include "../graphics/renderer/meshrenderer.hpp"
+#include "../graphics/renderer/fontrenderer.hpp"
+#include "../graphics/core/opengl.hpp"
+#include "../input/inputmanager.hpp"
+#include "../utils/containers/octree.hpp"
 
 
 class System
@@ -33,9 +34,11 @@ public:
 
 	void drawEntity(Entity& _entity, const graphics::Texture2D& _texture);
 
-	void setCamera(float _fov, float _zNear, float zFar);
+	void setCameraPerspective(float _fov, float _zNear, float zFar);
 
 	void uploadLights(Entity ent);
+
+	void drawText(std::string _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel);
 
 
 	/* ################ Physic-System ################ */	
@@ -109,6 +112,22 @@ public:
 
 	void setLightConstants(float kc, float kq, float ke);
 
+	void addText(Entity& _entity, char* _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel);
+
+	void setText(Entity& _entity, char* _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel);
+
+	void addOrthogonal(Entity& _entity);
+
+	void addPerspective(Entity& _entity);
+
+	void addAlternativeTexture(Entity& _entity, const graphics::Texture2D* _texture, bool _inUse);
+
+	void addButton(Entity& _entity);
+
+	void addTextField(Entity& _entity);
+
+	void addFunction(Entity& _entity, void (*_function)());
+
 
 	/* ################ Utils-System ################ */
 	int randomWithoutZero(int quantity, int start);
@@ -120,9 +139,11 @@ public:
 		return registry.getComponent<Component>(_entity) != nullptr;
 	};
 
+	std::unique_ptr<graphics::FontRenderer> fontRenderer;
+	Registry registry;		
+	graphics::Camera cameraOrthogonal;
 private:
-	Registry registry;
-	graphics::Camera camera;
-	graphics::MeshRenderer meshRenderer;
+	graphics::Camera cameraPerspective;
+	graphics::MeshRenderer meshRenderer;	
 	input::InputManager inputManager;	
 };
