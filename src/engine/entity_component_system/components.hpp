@@ -1,7 +1,12 @@
-#include "../graphics/renderer/meshrenderer.hpp"
+#pragma once
+
+#include "../graphics/renderer/mesh.hpp"
+#include "../graphics/core/texture.hpp"
 #include "../math/geometrictypes.hpp"
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <functional>
+
 
 struct Mesh {
 	const graphics::Mesh* mesh;
@@ -64,4 +69,32 @@ struct LightConstants {
 	float kc;
 	float kq;
 	float ke;
+};
+
+struct Text {
+	char* text;
+	glm::vec3 position;
+	float size;
+	glm::vec4 color;
+	float rotation;
+	float alignX;
+	float alignY;
+	bool roundToPixel;
+};
+
+struct Orthogonal {};
+
+struct Perspective {};
+
+struct AlternativeTexture {
+	const graphics::Texture2D* texture;
+	bool inUse;
+};
+
+struct Button {};
+
+struct TextField {};
+
+struct Function {
+	void (*function)() {};
 };

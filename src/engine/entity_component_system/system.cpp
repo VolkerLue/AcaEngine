@@ -1,8 +1,14 @@
 #include "system.hpp"
 #include <map>
+#include <GLFW/glfw3.h>
+#include <iostream>
 
-
-System::System() : registry(), meshRenderer(), camera(graphics::Camera(45.f, 1.f, 150.f))
+System::System() : 
+	registry(),
+	meshRenderer(),
+	fontRenderer(graphics::FontManager::get("fonts/AnonymousPro.caf")),
+	cameraPerspective(graphics::Camera(90.f, 1.f, 150.f)),
+	cameraOrthogonal(graphics::Camera(glm::vec2(1.f)))
 {
 	utils::MeshLoader::clear();
 }
@@ -26,24 +32,64 @@ std::optional<Entity> System::getEntity(EntityRef _entity) const {
 
 
 /* ################ Draw-System ################ */
+std::string toUtf8(const std::wstring& str)
+{
+	std::string ret;
+	int len = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0, NULL, NULL);
+	if (len > 0)
+	{
+		ret.resize(len);
+		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), &ret[0], len, NULL, NULL);
+	}
+	return ret;
+}
+
+int StringToWString(std::wstring& ws, const std::string& s)
+{
+	std::wstring wsTmp(s.begin(), s.end());
+
+	ws = wsTmp;
+
+	return 0;
+}
+
 void System::draw() {
-	registry.execute<Entity, Mesh, Texture, Transform>([&](
-		Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform) {
-			meshRenderer.clear();
+	// Perspective draw
+	glEnable(GL_DEPTH_TEST);
+	meshRenderer.clear();
+	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
+		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Perspective& perspective) {
 			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
-			uploadLights(ent);
-			meshRenderer.present(camera);
-		});	
+			uploadLights(ent);			
+		});
+	meshRenderer.present(cameraPerspective);
+
+	// Orthogonal draw
+	glDisable(GL_DEPTH_TEST);
+	meshRenderer.clear();
+	registry.execute<Entity, Mesh, Texture, Transform, Orthogonal>([&](
+		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Orthogonal& orthogonal) {
+			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
+			//uploadLights(ent);
+		});
+	meshRenderer.present(cameraOrthogonal);
+
+	// Text draw
+	fontRenderer->clearText(); 
+	registry.execute<Text>([&](Text _text) {	
+			fontRenderer->draw(_text.position, _text.text, _text.size, _text.color, _text.rotation, _text.alignX, _text.alignY, _text.roundToPixel);
+	});	
+	fontRenderer->present(cameraOrthogonal);
 }
 
 void System::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
 	meshRenderer.clear();
 	meshRenderer.draw(*registry.getComponent<Mesh>(_entity)->mesh, _texture, registry.getComponent<Transform>(_entity)->transform);
-	meshRenderer.present(camera);
+	meshRenderer.present(cameraPerspective);
 }
 
-void System::setCamera(float _fov, float _zNear, float zFar) {
-	camera = graphics::Camera(_fov, _zNear, zFar);
+void System::setCameraPerspective(float _fov, float _zNear, float zFar) {
+	cameraPerspective = graphics::Camera(_fov, _zNear, zFar);
 }
 
 void System::uploadLights(Entity ent) {
@@ -97,6 +143,12 @@ void System::uploadLights(Entity ent) {
 	graphics::glCall(glUniform1fv, meshRenderer.program.getUniformLoc("pointLightIntensity"), numLights, lightIntensity);
 	graphics::glCall(glUniform3fv, meshRenderer.program.getUniformLoc("pointLightColor"), numLights, lightColors);
 	graphics::glCall(glUniform3fv, meshRenderer.program.getUniformLoc("pointLightPos"), numLights, lightPositions);
+}
+
+void System::drawText(std::string _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel) {
+	fontRenderer->clearText();
+	fontRenderer->draw(_position, _text.c_str(), _size, _color, _rotation, _alignX, _alignY, _roundToPixel);
+	fontRenderer->present(cameraOrthogonal);
 }
 
 
@@ -156,11 +208,11 @@ void System::updateAABB() {
 		corners.push_back(glm::vec3(box.aabb.max.x, box.aabb.max.y, box.aabb.max.z));
 		glm::vec3 current;
 		auto it = corners.begin();
-		glm::vec3 min(glm::vec3(camera.getViewProjection() * transform.transform * glm::vec4(*it, 1)));
-		glm::vec3 max(glm::vec3(camera.getViewProjection() * transform.transform * glm::vec4(*it, 1)));
+		glm::vec3 min(glm::vec3(cameraPerspective.getViewProjection() * transform.transform * glm::vec4(*it, 1)));
+		glm::vec3 max(glm::vec3(cameraPerspective.getViewProjection() * transform.transform * glm::vec4(*it, 1)));
 		it++;
 		for (; it != corners.end(); it++) {
-			current = glm::vec3(camera.getViewProjection() * transform.transform * glm::vec4(*it, 1));
+			current = glm::vec3(cameraPerspective.getViewProjection() * transform.transform * glm::vec4(*it, 1));
 			if (current.x < min.x) min.x = current.x;
 			if (current.x > max.x) max.x = current.x;
 			if (current.y < min.y) min.y = current.y;
@@ -197,7 +249,7 @@ int System::removeIntersecting() {
 
 void System::shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity) {
 	if (inputManager.isButtonPressed(input::MouseButton::LEFT)) {
-		glm::vec3 curserPos = camera.toWorldSpace(inputManager.getCursorPos());
+		glm::vec3 curserPos = cameraPerspective.toWorldSpace(inputManager.getCursorPos());
 		Entity entity;
 		_entities.push_back(createEntity(entity));
 		addTexture(_entities.back(), &_texture);
@@ -330,7 +382,7 @@ void System::setAnchor(Entity& _entity, glm::vec3 _anchor) {
 
 void System::addAABB(Entity& ent, bool isProjectile) {
 	const graphics::Mesh mesh = *(registry.getComponent<Mesh>(ent)->mesh);
-	glm::mat4 transform = camera.getViewProjection() * registry.getComponent<Transform>(ent)->transform;
+	glm::mat4 transform = cameraPerspective.getViewProjection() * registry.getComponent<Transform>(ent)->transform;
 	auto it = mesh.vertices.begin();
 	glm::vec3 min(it->Position);
 	glm::vec3 max(it->Position);
@@ -392,6 +444,46 @@ void System::setLightConstants(float kc, float kq, float ke)
 		lc.kq = kq;
 		lc.ke = ke;
 		});
+}
+
+void System::addText(Entity& _entity, char* _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel) {
+	registry.addComponent<Text>(_entity, _text, _position, _size, _color, _rotation, _alignX, _alignY, _roundToPixel);
+}
+
+void System::setText(Entity& _entity, char* _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel) {
+	Text& text = registry.getComponentUnsafe<Text>(_entity);
+	text.text = _text;
+	text.position = _position;
+	text.size = _size;
+	text.color = _color;
+	text.rotation = _rotation;
+	text.alignX = _alignX;
+	text.alignY = _alignY;
+	text.roundToPixel = _roundToPixel;
+}
+
+void System::addOrthogonal(Entity& _entity) {
+	registry.addComponent<Orthogonal>(_entity);
+}
+
+void System::addPerspective(Entity& _entity) {
+	registry.addComponent<Perspective>(_entity);
+}
+
+void System::addAlternativeTexture(Entity& _entity, const graphics::Texture2D* _texture, bool _inUse) {
+	registry.addComponent<AlternativeTexture>(_entity, _texture, _inUse);
+}
+
+void System::addButton(Entity& _entity) {
+	registry.addComponent<Button>(_entity);
+}
+
+void System::addTextField(Entity& _entity) {
+	registry.addComponent<TextField>(_entity);
+}
+
+void System::addFunction(Entity& _entity, void (*_function)()) {
+	registry.addComponent<Function>(_entity, _function);
 }
 
 
