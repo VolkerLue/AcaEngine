@@ -60,4 +60,18 @@ private:
 	bool pressedKey_x;
 	bool pressedKey_y;
 	bool pressedKey_z;
+
+	bool pressedKey_0;
+	bool pressedKey_1;
+	bool pressedKey_2;
+	bool pressedKey_3;
+	bool pressedKey_4;
+	bool pressedKey_5;
+	bool pressedKey_6;
+	bool pressedKey_7;
+	bool pressedKey_8;
+	bool pressedKey_9;
+
+	bool pressedKey_backspace;
+	bool pressedKey_space;
 };

@@ -11,32 +11,13 @@ GuiToolkit::GuiToolkit(System& _system) :
 	textFieldText = "";
 	textFieldTextPointer = (char*)textFieldText.c_str();
 
-	pressedKey_a = false;
-	pressedKey_b = false;
-	pressedKey_c = false;
-	pressedKey_d = false;
-	pressedKey_e = false;
-	pressedKey_f = false;
-	pressedKey_g = false;
-	pressedKey_h = false;
-	pressedKey_i = false;
-	pressedKey_j = false;
-	pressedKey_k = false;
-	pressedKey_l = false;
-	pressedKey_m = false;
-	pressedKey_n = false;
-	pressedKey_o = false;
-	pressedKey_p = false;
-	pressedKey_q = false;
-	pressedKey_r = false;
-	pressedKey_s = false;
-	pressedKey_t = false;
-	pressedKey_u = false;
-	pressedKey_v = false;
-	pressedKey_w = false;
-	pressedKey_x = false;
-	pressedKey_y = false;
-	pressedKey_z = false;
+	pressedKey_a = pressedKey_b = pressedKey_c = pressedKey_d =	pressedKey_e = pressedKey_f = pressedKey_g = pressedKey_h = pressedKey_i = pressedKey_j = 
+	pressedKey_k = pressedKey_l = pressedKey_m = pressedKey_n = pressedKey_o = pressedKey_p = pressedKey_q = pressedKey_r = pressedKey_s = pressedKey_t = 
+	pressedKey_u = pressedKey_v = pressedKey_w = pressedKey_x = pressedKey_y = pressedKey_z = false;
+
+	pressedKey_0 = pressedKey_1 = pressedKey_2 = pressedKey_3 = pressedKey_4 = pressedKey_5 = pressedKey_6 = pressedKey_7 = pressedKey_8 = pressedKey_9 = false;
+
+	pressedKey_backspace = pressedKey_space = false;
 }
 
 void GuiToolkit::addButton(glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(), char* _text) {
@@ -162,7 +143,12 @@ void GuiToolkit::updateTextField() {
 				
 				if (InputManager::isKeyPressed(Key::A) && pressedKey_a == false) {
 					pressedKey_a = true;
-					textFieldText.append("a");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("A");
+					}
+					else {
+						textFieldText.append("a");
+					}					
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}	
 				if (InputManager::isKeyPressed(Key::A) == false) {
@@ -171,7 +157,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::B) && pressedKey_b == false) {
 					pressedKey_b = true;
-					textFieldText.append("b");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("B");
+					}
+					else {
+						textFieldText.append("b");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::B) == false) {
@@ -180,7 +171,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::C) && pressedKey_c == false) {
 					pressedKey_c = true;
-					textFieldText.append("c");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("C");
+					}
+					else {
+						textFieldText.append("c");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::C) == false) {
@@ -189,7 +185,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::D) && pressedKey_d == false) {
 					pressedKey_d = true;
-					textFieldText.append("d");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("D");
+					}
+					else {
+						textFieldText.append("d");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::D) == false) {
@@ -198,7 +199,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::E) && pressedKey_e == false) {
 					pressedKey_e = true;
-					textFieldText.append("e");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("E");
+					}
+					else {
+						textFieldText.append("e");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::E) == false) {
@@ -207,7 +213,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::F) && pressedKey_f == false) {
 					pressedKey_f = true;
-					textFieldText.append("f");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("F");
+					}
+					else {
+						textFieldText.append("f");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::F) == false) {
@@ -216,7 +227,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::G) && pressedKey_g == false) {
 					pressedKey_g = true;
-					textFieldText.append("g");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("G");
+					}
+					else {
+						textFieldText.append("g");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::G) == false) {
@@ -225,7 +241,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::H) && pressedKey_h == false) {
 					pressedKey_h = true;
-					textFieldText.append("h");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("H");
+					}
+					else {
+						textFieldText.append("h");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::H) == false) {
@@ -234,7 +255,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::I) && pressedKey_i == false) {
 					pressedKey_i = true;
-					textFieldText.append("i");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("I");
+					}
+					else {
+						textFieldText.append("i");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::I) == false) {
@@ -243,7 +269,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::J) && pressedKey_j == false) {
 					pressedKey_j = true;
-					textFieldText.append("j");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("J");
+					}
+					else {
+						textFieldText.append("j");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::J) == false) {
@@ -252,7 +283,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::K) && pressedKey_k == false) {
 					pressedKey_k = true;
-					textFieldText.append("k");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("K");
+					}
+					else {
+						textFieldText.append("k");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::K) == false) {
@@ -261,7 +297,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::L) && pressedKey_l == false) {
 					pressedKey_l = true;
-					textFieldText.append("l");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("L");
+					}
+					else {
+						textFieldText.append("l");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::L) == false) {
@@ -270,7 +311,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::M) && pressedKey_m == false) {
 					pressedKey_m = true;
-					textFieldText.append("m");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("M");
+					}
+					else {
+						textFieldText.append("m");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::M) == false) {
@@ -279,7 +325,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::N) && pressedKey_n == false) {
 					pressedKey_n = true;
-					textFieldText.append("n");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("N");
+					}
+					else {
+						textFieldText.append("n");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::N) == false) {
@@ -288,7 +339,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::O) && pressedKey_o == false) {
 					pressedKey_o = true;
-					textFieldText.append("o");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("O");
+					}
+					else {
+						textFieldText.append("o");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::O) == false) {
@@ -297,7 +353,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::P) && pressedKey_p == false) {
 					pressedKey_p = true;
-					textFieldText.append("p");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("P");
+					}
+					else {
+						textFieldText.append("p");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::P) == false) {
@@ -306,7 +367,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::Q) && pressedKey_q == false) {
 					pressedKey_q = true;
-					textFieldText.append("q");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("Q");
+					}
+					else {
+						textFieldText.append("q");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::Q) == false) {
@@ -315,7 +381,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::R) && pressedKey_r == false) {
 					pressedKey_r = true;
-					textFieldText.append("r");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("R");
+					}
+					else {
+						textFieldText.append("r");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::R) == false) {
@@ -324,7 +395,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::S) && pressedKey_s == false) {
 					pressedKey_s = true;
-					textFieldText.append("s");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("S");
+					}
+					else {
+						textFieldText.append("s");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::S) == false) {
@@ -333,7 +409,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::T) && pressedKey_t == false) {
 					pressedKey_t = true;
-					textFieldText.append("t");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("T");
+					}
+					else {
+						textFieldText.append("t");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::T) == false) {
@@ -342,7 +423,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::U) && pressedKey_u == false) {
 					pressedKey_u = true;
-					textFieldText.append("u");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("U");
+					}
+					else {
+						textFieldText.append("u");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::U) == false) {
@@ -351,7 +437,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::V) && pressedKey_v == false) {
 					pressedKey_v = true;
-					textFieldText.append("v");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("V");
+					}
+					else {
+						textFieldText.append("v");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::V) == false) {
@@ -360,7 +451,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::W) && pressedKey_w == false) {
 					pressedKey_w = true;
-					textFieldText.append("w");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("W");
+					}
+					else {
+						textFieldText.append("w");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::W) == false) {
@@ -369,7 +465,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::X) && pressedKey_x == false) {
 					pressedKey_x = true;
-					textFieldText.append("x");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("X");
+					}
+					else {
+						textFieldText.append("x");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::X) == false) {
@@ -378,7 +479,12 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::Y) && pressedKey_y == false) {
 					pressedKey_y = true;
-					textFieldText.append("y");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("Y");
+					}
+					else {
+						textFieldText.append("y");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::Y) == false) {
@@ -387,21 +493,134 @@ void GuiToolkit::updateTextField() {
 
 				if (InputManager::isKeyPressed(Key::Z) && pressedKey_z == false) {
 					pressedKey_z = true;
-					textFieldText.append("z");
+					if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
+						textFieldText.append("Z");
+					}
+					else {
+						textFieldText.append("z");
+					}
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::Z) == false) {
 					pressedKey_z = false;
 				}
 
-				if (InputManager::isKeyPressed(Key::Num0) && pressedKey_z == false) {
-					pressedKey_z = true;
+				if (InputManager::isKeyPressed(Key::Num0) && pressedKey_0 == false) {
+					pressedKey_0 = true;
 					textFieldText.append("0");
 					textFieldTextPointer = (char*)textFieldText.c_str();
 				}
 				if (InputManager::isKeyPressed(Key::Num0) == false) {
-					pressedKey_z = false;
+					pressedKey_0 = false;
 				}
+
+				if (InputManager::isKeyPressed(Key::Num1) && pressedKey_1 == false) {
+					pressedKey_1 = true;
+					textFieldText.append("1");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num1) == false) {
+					pressedKey_1 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num2) && pressedKey_2 == false) {
+					pressedKey_2 = true;
+					textFieldText.append("2");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num2) == false) {
+					pressedKey_2 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num3) && pressedKey_3 == false) {
+					pressedKey_3 = true;
+					textFieldText.append("3");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num3) == false) {
+					pressedKey_3 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num4) && pressedKey_4 == false) {
+					pressedKey_4 = true;
+					textFieldText.append("4");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num4) == false) {
+					pressedKey_4 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num5) && pressedKey_5 == false) {
+					pressedKey_5 = true;
+					textFieldText.append("5");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num5) == false) {
+					pressedKey_5 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num6) && pressedKey_6 == false) {
+					pressedKey_6 = true;
+					textFieldText.append("6");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num6) == false) {
+					pressedKey_6 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num7) && pressedKey_7 == false) {
+					pressedKey_7 = true;
+					textFieldText.append("7");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num7) == false) {
+					pressedKey_7 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num8) && pressedKey_8 == false) {
+					pressedKey_8 = true;
+					textFieldText.append("8");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num8) == false) {
+					pressedKey_8 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::Num9) && pressedKey_9 == false) {
+					pressedKey_9 = true;
+					textFieldText.append("9");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::Num9) == false) {
+					pressedKey_9 = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::BACKSPACE) && pressedKey_backspace == false) {
+					pressedKey_backspace = true;
+					textFieldText.pop_back();
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::BACKSPACE) == false) {
+					pressedKey_backspace = false;
+				}
+
+				if (InputManager::isKeyPressed(Key::SPACE) && pressedKey_space == false) {
+					pressedKey_space = true;
+					textFieldText.append(" ");
+					textFieldTextPointer = (char*)textFieldText.c_str();
+				}
+				if (InputManager::isKeyPressed(Key::SPACE) == false) {
+					pressedKey_space = false;
+				}
+
+				//if (InputManager::isKeyPressed(Key::) && pressedKey_space == false) {
+				//	pressedKey_space = true;
+				//	textFieldText.append(" ");
+				//	textFieldTextPointer = (char*)textFieldText.c_str();
+				//}
+				//if (InputManager::isKeyPressed(Key::SPACE) == false) {
+				//	pressedKey_space = false;
+				//}
 
 				// correct position and scale for text on button
 				float scaleY = scale.scale[1];
