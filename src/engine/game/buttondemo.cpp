@@ -1,12 +1,13 @@
 #include "buttondemo.hpp"
 #include <iostream>
 
-void displayMessage() {
+void displayClick(Entity& _entity, System& _system) {
 	std::cout << "click" << "\n";
 };
 
-void writeText() {
-
+void displayText(Entity& _entity, System& _system) {
+	std::string text = _system.registry.getComponentUnsafe<Text>(_entity).text;
+	std::cout << text << "\n";
 }
 
 ButtonDemo::ButtonDemo() :
@@ -19,9 +20,20 @@ ButtonDemo::ButtonDemo() :
 	lightGrayTexture(*graphics::Texture2DManager::get("textures/lightGray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	finished = false;
-	guiToolkit.addButton(glm::vec3(0.35f, 0.1f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightBlueTexture, darkBlueTexture, displayMessage, (char*)"click me!");
+	
+	entities.push_back(system.createEntity(entity));
+	text1 = "click me!";
+	guiToolkit.addButton(entities.back(), glm::vec3(0.35f, 0.1f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightBlueTexture, darkBlueTexture, displayClick, text1);
 
-	guiToolkit.addTextField(glm::vec3(0.f, 0.3f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightGrayTexture, whiteTexture, displayMessage, (char*)"write here");
+	entities.push_back(system.createEntity(entity));
+	guiToolkit.addButton(entities.back(), glm::vec3(0.35f, 0.3f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightBlueTexture, darkBlueTexture, displayClick, text1);
+		
+	entities.push_back(system.createEntity(entity));
+	text2 = "write here!";
+	guiToolkit.addTextField(entities.back(), glm::vec3(0.35f, 0.5f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightGrayTexture, whiteTexture, displayText, text2);
+
+	entities.push_back(system.createEntity(entity));
+	guiToolkit.addTextField(entities.back(), glm::vec3(0.35f, 0.7f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightGrayTexture, whiteTexture, displayText, text2);
 }
 
 void ButtonDemo::newState() {

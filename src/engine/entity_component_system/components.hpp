@@ -93,8 +93,6 @@ struct AlternativeTexture {
 
 struct Button {};
 
-struct TextField {};
-
-struct Function {
-	void (*function)() {};
+struct TextField {
+	bool pressed;
 };
