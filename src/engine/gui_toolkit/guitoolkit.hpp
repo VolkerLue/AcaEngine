@@ -2,36 +2,52 @@
 
 #include "../entity_component_system/system.hpp"
 #include "../graphics/renderer/fontrenderer.hpp"
+#include "../graphics/core/device.hpp"
 
-
-//char* defaultText = (char*)"hallo";
 
 class GuiToolkit
 {
 public:
 	GuiToolkit(System& _system);
 	
-	void addButton(glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(), char* _text);
-	
-	inline void addButton(glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, void (*_function)(), char* _text) {
-		addButton(_position, _scale, _defaultTexture, _defaultTexture, _function, _text);
+	/* ################ Button ################ */
+	void addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text);
+		
+	inline void addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, void (*_function)(Entity& _entity, System& _system)) {
+		addButton(_entity, _position, _scale, _defaultTexture, _defaultTexture, _function, nullString);
 	}
 
 	void updateButton();
+	
 
-	void addTextField(glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(), char* _text);
-
-	void update();
+	/* ################ TextField ################ */
+	void addTextField(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text);
 	
 	void updateTextField();
+		
+
+	/* ################ GUI-Update ################ */
+	void update();	
+
+
+	/* ################ GUI-Utils ################ */
+	void findPositionAndScaleForAddText(float& scale, glm::vec3& _scale, glm::vec3& _position, std::string _text, float& positionTextX, float& positionTextY);
+	
+	bool findPositionAndScaleForTextFieldText(Entity& _entity, float& scaleY, Scale& scale, Position& position, float& positionTextX, float& positionTextY);
+
+	void swapTextureWhenCursorOnIt(Texture& texture, AlternativeTexture& alternativeTexture, math::Rectangle& buttonBox, const glm::vec2& cursorPos);
+
+	void updateKeyInputActions(Entity& _entity, System::Function& _function, TextField& _textField);
+
 
 private:
 	System& system;
 	const graphics::Mesh planeMesh;
 	bool pressedButton;
-	bool pressedTextField;
 
-	std::string textFieldText;
+	std::string nullString = "";
+	std::map<uint32_t, std::string> textFieldsDefaults;
+	std::map<uint32_t, std::string> textFieldsTexts;
 	char* textFieldTextPointer;
 
 	bool pressedKey_a;
@@ -74,4 +90,6 @@ private:
 
 	bool pressedKey_backspace;
 	bool pressedKey_space;
+	bool pressedKey_escape;
+	bool pressedKey_enter;
 };

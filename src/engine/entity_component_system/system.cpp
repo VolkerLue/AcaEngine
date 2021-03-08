@@ -1,14 +1,12 @@
 #include "system.hpp"
-#include <map>
-#include <GLFW/glfw3.h>
-#include <iostream>
+
 
 System::System() : 
 	registry(),
 	meshRenderer(),
 	fontRenderer(graphics::FontManager::get("fonts/AnonymousPro.caf")),
 	cameraPerspective(graphics::Camera(90.f, 1.f, 150.f)),
-	cameraOrthogonal(graphics::Camera(glm::vec2(1.f)))
+	cameraOrthogonal(graphics::Camera(glm::vec2(1.f * graphics::Device::getAspectRatio(), 1.f)))
 {
 	utils::MeshLoader::clear();
 }
@@ -478,11 +476,11 @@ void System::addButton(Entity& _entity) {
 	registry.addComponent<Button>(_entity);
 }
 
-void System::addTextField(Entity& _entity) {
-	registry.addComponent<TextField>(_entity);
+void System::addTextField(Entity& _entity, bool _pressed) {
+	registry.addComponent<TextField>(_entity, _pressed);
 }
 
-void System::addFunction(Entity& _entity, void (*_function)()) {
+void System::addFunction(Entity& _entity, void (*_function)(Entity& _entity, System& _system)) {
 	registry.addComponent<Function>(_entity, _function);
 }
 

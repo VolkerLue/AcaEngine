@@ -2,16 +2,20 @@
 
 #include <glm/gtx/transform.hpp>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <limits>
 #include <set>
+#include <map>
 
 #include "components.hpp"
 #include "registry.hpp"
 #include "../graphics/renderer/meshrenderer.hpp"
 #include "../graphics/renderer/fontrenderer.hpp"
+#include "../graphics/core/device.hpp"
 #include "../graphics/core/opengl.hpp"
 #include "../input/inputmanager.hpp"
 #include "../utils/containers/octree.hpp"
+
 
 
 class System
@@ -124,9 +128,9 @@ public:
 
 	void addButton(Entity& _entity);
 
-	void addTextField(Entity& _entity);
+	void addTextField(Entity& _entity, bool _pressed);
 
-	void addFunction(Entity& _entity, void (*_function)());
+	void addFunction(Entity& _entity, void (*_function)(Entity& _entity, System& _system));
 
 
 	/* ################ Utils-System ################ */
@@ -142,6 +146,10 @@ public:
 	std::unique_ptr<graphics::FontRenderer> fontRenderer;
 	Registry registry;		
 	graphics::Camera cameraOrthogonal;
+
+	struct Function {
+		void (*function)(Entity& _entity, System& _system) {};
+	};
 private:
 	graphics::Camera cameraPerspective;
 	graphics::MeshRenderer meshRenderer;	

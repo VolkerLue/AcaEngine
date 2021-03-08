@@ -9,7 +9,7 @@ Game::Game() {
 	glClearColor(0.f, 1.f, 0.f, 1.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glfwSwapInterval(1); //VSync ON->(1) , OFF->(0)
+	glfwSwapInterval(0); //VSync ON->(1) , OFF->(0)
 }
 
 Game::~Game() {
