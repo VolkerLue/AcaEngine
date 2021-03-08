@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 #endif
 #endif
 	
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	
 	//Game game;
 	//game.addState(std::make_unique<FreeFall());

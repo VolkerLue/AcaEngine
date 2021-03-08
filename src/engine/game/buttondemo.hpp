@@ -16,9 +16,17 @@ public:
 	bool isFinished();
 
 private:
+	System system;
 	GuiToolkit guiToolkit;
-	const graphics::Texture2D& planeTexture;	
-	std::string text;
-	int count;
-	bool pressed;
+	const graphics::Texture2D& darkBlueTexture;	
+	const graphics::Texture2D& lightBlueTexture;
+	const graphics::Texture2D& whiteTexture;
+	const graphics::Texture2D& lightGrayTexture;
+	std::string text1;
+	std::string text2;
+
+	Entity entity;
+	std::list<Entity> entities;
+
+
 };
