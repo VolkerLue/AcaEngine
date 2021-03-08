@@ -19,6 +19,7 @@
 #include <engine/game/freefall.hpp>
 #include <engine/game/shooter.hpp>
 #include <engine/game/buttondemo.hpp>
+#include <engine/game/sliderdemo.cpp>
 #include <memory>
 #include <chrono>
 #include <engine/utils/resourcemanager.hpp>
@@ -52,7 +53,8 @@ int main(int argc, char* argv[])
 	//game.run(std::make_unique<Shooter>());	
 	
 	Game game;
-	game.run(std::make_unique<ButtonDemo>());
+	game.run(std::make_unique<SliderDemo>());
+	//game.run(std::make_unique<ButtonDemo>());
 	utils::MeshLoader::clear();
 	graphics::ShaderManager::clear();
 	graphics::Texture2DManager::clear();

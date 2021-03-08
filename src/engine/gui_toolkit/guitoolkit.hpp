@@ -17,19 +17,31 @@ public:
 		addButton(_position, _scale, _defaultTexture, _defaultTexture, _function, _text);
 	}
 
+	~GuiToolkit();
+
 	void updateButton();
 
 	void addTextField(glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(), char* _text);
 
+	void updateTextField();
+
+	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, void(*_function)());
+
+	void updateSlider();
+
+	int getLevel(Entity _entity);
+
 	void update();
 	
-	void updateTextField();
+	
 
 private:
 	System& system;
 	const graphics::Mesh planeMesh;
 	bool pressedButton;
 	bool pressedTextField;
+	const graphics::Texture2D& redTexture;
+	const graphics::Texture2D& blackTexture;
 
 	std::string textFieldText;
 	char* textFieldTextPointer;

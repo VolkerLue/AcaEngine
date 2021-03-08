@@ -128,6 +128,10 @@ public:
 
 	void addFunction(Entity& _entity, void (*_function)());
 
+	void addSlider(Entity& _entity, Slider _slider);
+
+	void addBox2D(Entity& _entity, glm::vec2 _p1, glm::vec2 _p2);
+
 
 	/* ################ Utils-System ################ */
 	int randomWithoutZero(int quantity, int start);

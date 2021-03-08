@@ -3,7 +3,11 @@
 
 GuiToolkit::GuiToolkit(System& _system) : 
 	system(_system), 
-	planeMesh(*utils::MeshLoader::get("models/plane.obj")) 
+	planeMesh(*utils::MeshLoader::get("models/plane.obj")),
+	redTexture(*graphics::Texture2DManager::get("textures/red.png",
+		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	blackTexture(*graphics::Texture2DManager::get("textures/black.png",
+		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	pressedButton = false;
 	pressedTextField = false;
@@ -73,6 +77,12 @@ void GuiToolkit::addTextField(glm::vec3 _position, glm::vec3 _scale, const graph
 	float centerButtonY = (_position.y + (_position.y + _scale.y)) * 0.5;
 	float positionTextY = centerButtonY - (scale * 0.5);
 	system.addText(entity, _text, glm::vec3(_position.x + 0.01f, positionTextY, _position.z), scale, glm::vec4(0.f), 0.f, 0.f, 0.f, false);
+}
+
+GuiToolkit::~GuiToolkit() {
+	system.registry.execute<Slider>([&](Slider& slider) {
+		delete[] slider.levelEntities;
+		});
 }
 
 void GuiToolkit::updateButton() {
@@ -644,7 +654,104 @@ void GuiToolkit::updateTextField() {
 		});
 }
 
+void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, void(*_function)()) {
+	Entity* levelEntities = new Entity[_levels];
+	Slider slider = { _entity, levelEntities, _selectedLevel, _levels};
+	system.addMesh(_entity, &planeMesh);
+	system.addTexture(_entity, graphics::Texture2DManager::get("textures/lightGray.png",
+		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	system.addTransform(_entity, glm::mat4(1.f));
+	system.addPosition(_entity, _position);
+	system.addScale(_entity, _scale);
+	system.addOrthogonal(_entity);
+	system.addFunction(_entity, _function);
+	slider.backgroundEntity = _entity;
+	float sizeLevel = _scale.y / _levels * 0.8f;
+	float sizeLevelDistance = _scale.y / (_levels-1) * 0.2f;
+	for (int i = 0; i < _levels; i++) {
+		Entity levelEntity;
+		system.createEntity(levelEntity);
+		system.addMesh(levelEntity, &planeMesh);
+		system.addTransform(levelEntity, glm::mat4(1.f));
+		glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
+		system.addPosition(levelEntity, pos);
+		glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
+		system.addScale(levelEntity, sca);
+		system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+		system.addOrthogonal(levelEntity);
+		if (i == _selectedLevel) {
+			system.addTexture(levelEntity, &redTexture);
+			slider.currentLevel = i;
+		}
+		else {
+			system.addTexture(levelEntity, &blackTexture);
+		}
+		slider.levelEntities[i] = levelEntity;
+	}
+	system.addSlider(_entity, slider);
+}
+
+void GuiToolkit::updateSlider() {
+	if (!input::InputManager::isButtonPressed(input::MouseButton::LEFT)) return;
+	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+	system.registry.execute<Slider, Position, Scale, Function>([&](Slider& slider, Position& position, Scale& scale, Function& function) {
+		math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel]).box;
+		if (!currentBox.isIn(cursorPos)) return;
+		math::Rectangle higherBox;
+		math::Rectangle lowerBox;
+		if (slider.currentLevel != slider.numberOfLevels - 1) 
+			higherBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel + 1]).box;
+		if (slider.currentLevel != 0)
+			lowerBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel - 1]).box;
+		bool hasChanged = false;
+		bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
+		int x = 5;
+		while (isPressed && x > 0) {
+			std::cout << slider.currentLevel << std::endl;
+			isPressed = false;
+			cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+			if (slider.currentLevel != slider.numberOfLevels - 1 && higherBox.min.y <= cursorPos.y && cursorPos.y <= higherBox.max.y) {
+				hasChanged = true;
+				system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
+				system.setTexture(slider.levelEntities[slider.currentLevel + 1], &redTexture);
+				slider.currentLevel++;
+				lowerBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel - 1]).box;
+				currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel]).box;
+				if (slider.currentLevel != slider.numberOfLevels - 1)
+					higherBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel + 1]).box;
+			}
+			else if (slider.currentLevel != 0 && lowerBox.min.y <= cursorPos.y && cursorPos.y <= lowerBox.max.y) {
+				hasChanged = true;
+				Entity t = slider.levelEntities[slider.currentLevel];
+				system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
+				system.setTexture(slider.levelEntities[slider.currentLevel - 1], &redTexture);
+				slider.currentLevel--;
+				higherBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel + 1]).box;
+				currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel]).box;
+				if (slider.currentLevel != 0)
+					lowerBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel - 1]).box;
+			}
+			if (input::InputManager::isButtonPressed(input::MouseButton::LEFT)) {
+				isPressed = true;
+				std::this_thread::sleep_for(std::chrono::milliseconds(100));
+			}
+			system.draw();
+			x--;
+		}
+
+		
+		//if (hasChanged) system.registry.getComponentUnsafe<Function>(slider.backgroundEntity).function(currentLevel);
+		});
+}
+
+int GuiToolkit::getLevel(Entity _entity) {
+	return system.registry.getComponentUnsafe<Slider>(_entity).currentLevel;
+}
+
 void GuiToolkit::update() {
 	updateButton();
 	updateTextField();
+	updateSlider();
 }
+
+

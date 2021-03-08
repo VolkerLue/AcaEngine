@@ -6,6 +6,7 @@
 #include <glm/gtc/quaternion.hpp>
 #include <glm/gtx/quaternion.hpp>
 #include <functional>
+#include "registry.hpp"
 
 
 struct Mesh {
@@ -58,6 +59,10 @@ struct Box {
 	math::AABB<3> transformedAabb;
 };
 
+struct Box2D {
+	math::Rectangle box;
+};
+
 struct PointLight {
 	glm::vec3 position;
 	glm::vec3 color;
@@ -89,6 +94,13 @@ struct Perspective {};
 struct AlternativeTexture {
 	const graphics::Texture2D* texture;
 	bool inUse;
+};
+
+struct Slider {
+	Entity backgroundEntity;
+	Entity* levelEntities;
+	int currentLevel;
+	int numberOfLevels;
 };
 
 struct Button {};

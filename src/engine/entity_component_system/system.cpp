@@ -486,6 +486,14 @@ void System::addFunction(Entity& _entity, void (*_function)()) {
 	registry.addComponent<Function>(_entity, _function);
 }
 
+void System::addSlider(Entity& _entity, Slider _slider){
+	registry.addComponent<Slider>(_entity, _slider.backgroundEntity, _slider.levelEntities, _slider.currentLevel, _slider.numberOfLevels);
+}
+
+void System::addBox2D(Entity& _entity, glm::vec2 _p1, glm::vec2 _p2) {
+	registry.addComponent<Box2D>(_entity, math::Rectangle(_p1, _p2));
+}
+
 
 /* ################ Utils-System ################ */
 int System::randomWithoutZero(int quantity, int start) {
