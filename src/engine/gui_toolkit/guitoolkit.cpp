@@ -720,60 +720,61 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 	pressedKey_enter = false;
 	}
 
-	void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel) {
-		Entity* levelEntities = new Entity[_levels];
-		Slider slider = { _entity, levelEntities, _selectedLevel, _levels };
-		system.addMesh(_entity, &planeMesh);
-		system.addTexture(_entity, graphics::Texture2DManager::get("textures/lightGray.png",
-			graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
-		system.addTransform(_entity, glm::mat4(1.f));
-		system.addPosition(_entity, _position);
-		system.addScale(_entity, _scale);
-		system.addOrthogonal(_entity);
-		slider.backgroundEntity = _entity;
-		float sizeLevel = _scale.y / _levels * 0.8f;
-		float sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
-		for (int i = 0; i < _levels; i++) {
-			Entity levelEntity;
-			system.createEntity(levelEntity);
-			system.addMesh(levelEntity, &planeMesh);
-			system.addTransform(levelEntity, glm::mat4(1.f));
-			glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
-			system.addPosition(levelEntity, pos);
-			glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
-			system.addScale(levelEntity, sca);
-			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
-			system.addOrthogonal(levelEntity);
-			if (i == _selectedLevel) {
-				system.addTexture(levelEntity, &redTexture);
-				slider.currentLevel = i;
-			}
-			else {
-				system.addTexture(levelEntity, &blackTexture);
-			}
-			slider.levelEntities[i] = levelEntity;
+	
+}
+void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel) {
+	Entity* levelEntities = new Entity[_levels];
+	Slider slider = { _entity, levelEntities, _selectedLevel, _levels };
+	system.addMesh(_entity, &planeMesh);
+	system.addTexture(_entity, graphics::Texture2DManager::get("textures/lightGray.png",
+		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	system.addTransform(_entity, glm::mat4(1.f));
+	system.addPosition(_entity, _position);
+	system.addScale(_entity, _scale);
+	system.addOrthogonal(_entity);
+	slider.backgroundEntity = _entity;
+	float sizeLevel = _scale.y / _levels * 0.8f;
+	float sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
+	for (int i = 0; i < _levels; i++) {
+		Entity levelEntity;
+		system.createEntity(levelEntity);
+		system.addMesh(levelEntity, &planeMesh);
+		system.addTransform(levelEntity, glm::mat4(1.f));
+		glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
+		system.addPosition(levelEntity, pos);
+		glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
+		system.addScale(levelEntity, sca);
+		system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+		system.addOrthogonal(levelEntity);
+		if (i == _selectedLevel) {
+			system.addTexture(levelEntity, &redTexture);
+			slider.currentLevel = i;
 		}
-		system.addSlider(_entity, slider);
+		else {
+			system.addTexture(levelEntity, &blackTexture);
+		}
+		slider.levelEntities[i] = levelEntity;
 	}
+	system.addSlider(_entity, slider);
+}
 
-	void GuiToolkit::updateSlider() {
-		bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
-		glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
-		system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
-			if (isPressed) {
-				for (int i = 0; i < slider.numberOfLevels; i++) {
-					math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
-					if (currentBox.isIn(cursorPos)) {
-						system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
-						system.setTexture(slider.levelEntities[i], &redTexture);
-						slider.currentLevel = i;
-					}
+void GuiToolkit::updateSlider() {
+	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
+	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
+		if (isPressed) {
+			for (int i = 0; i < slider.numberOfLevels; i++) {
+				math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
+				if (currentBox.isIn(cursorPos)) {
+					system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
+					system.setTexture(slider.levelEntities[i], &redTexture);
+					slider.currentLevel = i;
 				}
 			}
-			});
-	}
+		}
+		});
+}
 
-	int GuiToolkit::getLevel(Entity _entity) {
-		return system.registry.getComponentUnsafe<Slider>(_entity).currentLevel;
-	}
+int GuiToolkit::getLevel(Entity _entity) {
+	return system.registry.getComponentUnsafe<Slider>(_entity).currentLevel;
 }
