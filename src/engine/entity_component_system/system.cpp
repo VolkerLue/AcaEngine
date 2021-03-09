@@ -487,7 +487,7 @@ void System::addFunction(Entity& _entity, void (*_function)()) {
 }
 
 void System::addSlider(Entity& _entity, Slider _slider){
-	registry.addComponent<Slider>(_entity, _slider.backgroundEntity, _slider.levelEntities, _slider.currentLevel, _slider.numberOfLevels);
+	registry.addComponent<Slider>(_entity, _slider);
 }
 
 void System::addBox2D(Entity& _entity, glm::vec2 _p1, glm::vec2 _p2) {

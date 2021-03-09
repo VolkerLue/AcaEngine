@@ -25,7 +25,7 @@ public:
 
 	void updateTextField();
 
-	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, void(*_function)());
+	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel);
 
 	void updateSlider();
 

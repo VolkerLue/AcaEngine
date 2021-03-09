@@ -654,7 +654,7 @@ void GuiToolkit::updateTextField() {
 		});
 }
 
-void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, void(*_function)()) {
+void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel) {
 	Entity* levelEntities = new Entity[_levels];
 	Slider slider = { _entity, levelEntities, _selectedLevel, _levels};
 	system.addMesh(_entity, &planeMesh);
@@ -664,7 +664,6 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 	system.addPosition(_entity, _position);
 	system.addScale(_entity, _scale);
 	system.addOrthogonal(_entity);
-	system.addFunction(_entity, _function);
 	slider.backgroundEntity = _entity;
 	float sizeLevel = _scale.y / _levels * 0.8f;
 	float sizeLevelDistance = _scale.y / (_levels-1) * 0.2f;
@@ -692,55 +691,19 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 }
 
 void GuiToolkit::updateSlider() {
-	if (!input::InputManager::isButtonPressed(input::MouseButton::LEFT)) return;
+	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
-	system.registry.execute<Slider, Position, Scale, Function>([&](Slider& slider, Position& position, Scale& scale, Function& function) {
-		math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel]).box;
-		if (!currentBox.isIn(cursorPos)) return;
-		math::Rectangle higherBox;
-		math::Rectangle lowerBox;
-		if (slider.currentLevel != slider.numberOfLevels - 1) 
-			higherBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel + 1]).box;
-		if (slider.currentLevel != 0)
-			lowerBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel - 1]).box;
-		bool hasChanged = false;
-		bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
-		int x = 5;
-		while (isPressed && x > 0) {
-			std::cout << slider.currentLevel << std::endl;
-			isPressed = false;
-			cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
-			if (slider.currentLevel != slider.numberOfLevels - 1 && higherBox.min.y <= cursorPos.y && cursorPos.y <= higherBox.max.y) {
-				hasChanged = true;
-				system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
-				system.setTexture(slider.levelEntities[slider.currentLevel + 1], &redTexture);
-				slider.currentLevel++;
-				lowerBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel - 1]).box;
-				currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel]).box;
-				if (slider.currentLevel != slider.numberOfLevels - 1)
-					higherBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel + 1]).box;
+	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
+		if (isPressed) {
+			for (int i = 0; i < slider.numberOfLevels; i++) {
+				math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
+				if (currentBox.isIn(cursorPos)) {
+					system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
+					system.setTexture(slider.levelEntities[i], &redTexture);
+					slider.currentLevel = i;
+				}
 			}
-			else if (slider.currentLevel != 0 && lowerBox.min.y <= cursorPos.y && cursorPos.y <= lowerBox.max.y) {
-				hasChanged = true;
-				Entity t = slider.levelEntities[slider.currentLevel];
-				system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
-				system.setTexture(slider.levelEntities[slider.currentLevel - 1], &redTexture);
-				slider.currentLevel--;
-				higherBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel + 1]).box;
-				currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel]).box;
-				if (slider.currentLevel != 0)
-					lowerBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[slider.currentLevel - 1]).box;
-			}
-			if (input::InputManager::isButtonPressed(input::MouseButton::LEFT)) {
-				isPressed = true;
-				std::this_thread::sleep_for(std::chrono::milliseconds(100));
-			}
-			system.draw();
-			x--;
 		}
-
-		
-		//if (hasChanged) system.registry.getComponentUnsafe<Function>(slider.backgroundEntity).function(currentLevel);
 		});
 }
 

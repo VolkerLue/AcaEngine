@@ -16,7 +16,7 @@ SliderDemo::SliderDemo() :
 	//guiToolkit.addButton(glm::vec3(0.35f, 0.1f, 0.f), glm::vec3(0.3f, 0.1f, 1.f), lightBlueTexture, darkBlueTexture, displayMessage, (char*)"click me!");
 	Entity sliderEntity;
 	system.createEntity(sliderEntity);
-	guiToolkit.addSlider(sliderEntity, glm::vec3(0.35f, 0.1f, 0.f), glm::vec3(0.1f, 0.3f, 1.f), 10, 0, nothing);
+	guiToolkit.addSlider(sliderEntity, glm::vec3(0.35f, 0.1f, 0.f), glm::vec3(0.1f, 0.3f, 1.f), 10, 0);
 }
 
 void SliderDemo::newState() {
