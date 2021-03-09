@@ -96,7 +96,7 @@ public:
 
 	void setAngularVelocity(Entity& _entity, glm::vec3 _angularVelocity);
 
-	void addAccelaration(Entity& _entity, glm::vec3 _velocity);
+	void addAccelaration(Entity& _entity, glm::vec3 _accelaration);
 
 	void setAccelaration(Entity& _entity, glm::vec3 _accelaration);
 
