@@ -33,6 +33,7 @@ static Entity EntityCreationInterface::createRectangle(const graphics::Texture2D
 	system.addTransform(entity, _transform);
 	system.addPosition(entity, _position);
 	system.addScale(entity, _scale);
+	system.addOrthogonal(entity);
 	return entity;
 }
 
@@ -53,6 +54,7 @@ static Entity EntityCreationInterface::createWorldObject(const graphics::Mesh* _
 	system.addMass(entity, _mass);
 	system.addAnchor(entity, _anchor);
 	system.addAABB(entity, _box_is_projectile);
+	system.addPerspective(entity);
 	return entity;
 }
 
