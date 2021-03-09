@@ -136,7 +136,7 @@ CMAKE_INSTALL_MANDIR:PATH=
 CMAKE_INSTALL_OLDINCLUDEDIR:PATH=/usr/include
 
 //No help, variable specified on the command line.
-CMAKE_INSTALL_PREFIX:PATH=C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)
+CMAKE_INSTALL_PREFIX:PATH=C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)
 
 //Run-time variable data (LOCALSTATEDIR/run)
 CMAKE_INSTALL_RUNSTATEDIR:PATH=
@@ -660,5 +660,5 @@ OPENGL_glu_LIBRARY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: PKG_CONFIG_EXECUTABLE
 PKG_CONFIG_EXECUTABLE-ADVANCED:INTERNAL=1
 //CMAKE_INSTALL_PREFIX during last run
-_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)
+_GNUInstallDirs_LAST_CMAKE_INSTALL_PREFIX:INTERNAL=C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)
 

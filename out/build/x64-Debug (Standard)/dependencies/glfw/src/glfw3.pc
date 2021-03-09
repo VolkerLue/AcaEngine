@@ -1,7 +1,7 @@
-prefix=C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)
+prefix=C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)
 exec_prefix=${prefix}
-includedir=C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)/include
-libdir=C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)/lib
+includedir=C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)/include
+libdir=C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)/lib
 
 Name: GLFW
 Description: A multi-platform library for OpenGL, window and input

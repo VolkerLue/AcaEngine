@@ -26,7 +26,7 @@ set(CPACK_DEFAULT_PACKAGE_DESCRIPTION_FILE "C:/Program Files (x86)/Microsoft Vis
 set(CPACK_DEFAULT_PACKAGE_DESCRIPTION_SUMMARY "AcaEngine built using CMake")
 set(CPACK_GENERATOR "ZIP")
 set(CPACK_INSTALL_CMAKE_PROJECTS "C:/Users/Janusz/source/repos/AcaEngine/out/build/x64-Debug (Standard);AcaEngine;ALL;/")
-set(CPACK_INSTALL_PREFIX "C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)")
+set(CPACK_INSTALL_PREFIX "C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)")
 set(CPACK_MODULE_PATH "C:/Users/Janusz/source/repos/AcaEngine/dependencies/freetype/builds/cmake")
 set(CPACK_NSIS_DISPLAY_NAME "AcaEngine 2.10.1")
 set(CPACK_NSIS_INSTALLER_ICON_CODE "")

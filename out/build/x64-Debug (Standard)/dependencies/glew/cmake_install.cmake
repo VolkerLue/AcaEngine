@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Users/Janusz/Source/Repos/AcaEngine/out/install/x64-Debug (Standard)")
+  set(CMAKE_INSTALL_PREFIX "C:/Users/Janusz/source/repos/AcaEngine/out/install/x64-Debug (Standard)")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
