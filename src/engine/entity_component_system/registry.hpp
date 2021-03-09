@@ -33,7 +33,7 @@ struct componentStruct {
 	std::vector<int> sparse;
 	std::vector<Entity> entities;
 	std::vector<Component> components;
-	size_t componentSize;
+	size_t componentSize = 0;
 };
 
 class Registry

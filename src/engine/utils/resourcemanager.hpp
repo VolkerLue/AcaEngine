@@ -46,7 +46,7 @@ namespace utils {
 		utils::HashMap<std::string, typename TLoader::Handle, FastStringHash> m_resourceMap;
 	};
 
-#define RESOURCE_PATH "C:/Users/Janusz/Source/Repos/AcaEngine/resources/"s
+#define RESOURCE_PATH "../resources/"s
 
 	// ********************************************************************************************* //
 	// IMPLEMENTATION																				 //

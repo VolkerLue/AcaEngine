@@ -103,8 +103,37 @@ struct Slider {
 	int numberOfLevels;
 };
 
-struct Button {};
+struct Button {
+	bool swapTextureIfCursorOnIt;
+	bool activeFunction;
+};
+
+struct TextDisplay {};
 
 struct TextField {
 	bool pressed;
+};
+
+struct CheckBox {
+	uint32_t buttonEntity;
+	uint32_t textEntity;
+	bool pressed;
+	bool status;
+};
+
+struct Container{
+	int rows;
+	int colums;
+	float gapFactor;
+	bool pressed;
+	glm::vec2 oldCursorPosition;
+	float time;
+};
+
+struct Moved {
+	bool moved;
+};
+
+struct Movable {
+	bool movable;
 };

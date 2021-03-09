@@ -2,7 +2,6 @@
 
 #include <glm/gtx/transform.hpp>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <limits>
 #include <set>
 #include <map>
@@ -17,12 +16,12 @@
 #include "../utils/containers/octree.hpp"
 
 
-
 class System
 {	
 public:	
 	System();
 
+	
 	/* ################ Entity-System ################ */
 	Entity& createEntity(Entity& _entity);
 
@@ -124,21 +123,32 @@ public:
 
 	void addAlternativeTexture(Entity& _entity, const graphics::Texture2D* _texture, bool _inUse);
 
-	void addButton(Entity& _entity);
+	void addButton(Entity& _entity, bool _swapTextureIfCursorOnIt, bool _activeFunction);
+
+	void addTextDisplay(Entity& _entity);
 
 	void addTextField(Entity& _entity, bool _pressed);
 
+	void addCheckBox(Entity& _entity, uint32_t _buttonEntity, uint32_t _textEntity, bool _pressed, bool _status);
+
+	void addContainer(Entity& _entity, int _rows, int _colums, float _gapFactor, bool _pressed, glm::vec2 _oldCursorPosition, float _time);
+
 	void addFunction(Entity& _entity, void (*_function)(Entity& _entity, System& _system));
 
+	void addMoved(Entity& _entity, bool _moved);
+
+	void addMovable(Entity& _entity, bool _movable);
 	void addSlider(Entity& _entity, Slider _slider);
 
 	void addBox2D(Entity& _entity, glm::vec2 _p1, glm::vec2 _p2);
+
 
 
 	/* ################ Utils-System ################ */
 	int randomWithoutZero(int quantity, int start);
 
 	int whichEntityIsNotInView();
+		
 
 	template<typename Component>
 	bool hasComponent(Entity& _entity) {

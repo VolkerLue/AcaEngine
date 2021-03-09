@@ -63,7 +63,7 @@ namespace graphics {
 
 		spdlog::info("dimensions: {} {}: full-screen?: {}", _width, _height, _fullScreen);
 		s_window = glfwCreateWindow(_width, _height, "AcaEngine", nullptr, nullptr);
-		if (!s_window)
+		if (!s_window)										   //glfwGetPrimaryMonitor()
 		{
 			spdlog::error("Could not create window.");
 			glfwTerminate();

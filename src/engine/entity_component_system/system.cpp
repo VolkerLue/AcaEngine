@@ -27,56 +27,35 @@ std::optional<Entity> System::getEntity(EntityRef _entity) const {
 
 
 /* ################ Draw-System ################ */
-std::string toUtf8(const std::wstring& str)
-{
-	std::string ret;
-	int len = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), NULL, 0, NULL, NULL);
-	if (len > 0)
-	{
-		ret.resize(len);
-		WideCharToMultiByte(CP_UTF8, 0, str.c_str(), str.length(), &ret[0], len, NULL, NULL);
-	}
-	return ret;
-}
-
-int StringToWString(std::wstring& ws, const std::string& s)
-{
-	std::wstring wsTmp(s.begin(), s.end());
-
-	ws = wsTmp;
-
-	return 0;
-}
-
 void System::draw() {
 	updateAABB();
-	// Perspective draw
-	glEnable(GL_DEPTH_TEST);
-	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
-		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Perspective& perspective) {
-			meshRenderer.clear();
-			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
-			uploadLights(ent);	
-			meshRenderer.present(cameraPerspective);
-		});
-	
 
-	// Orthogonal draw
-	glDisable(GL_DEPTH_TEST);
-	meshRenderer.clear();
-	registry.execute<Entity, Mesh, Texture, Transform, Orthogonal>([&](
-		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Orthogonal& orthogonal) {
-			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
-			//uploadLights(ent);
-		});
-	meshRenderer.present(cameraOrthogonal);
-
+	//glDisable(GL_DEPTH_TEST);	
 	// Text draw
 	if (!fontRenderer->isEmpty()) fontRenderer->clearText(); 
 	registry.execute<Text>([&](Text _text) {	
 			fontRenderer->draw(_text.position, _text.text, _text.size, _text.color, _text.rotation, _text.alignX, _text.alignY, _text.roundToPixel);
-	});	
+		});	
 	fontRenderer->present(cameraOrthogonal);
+
+	// Orthogonal draw	
+	meshRenderer.clear();
+	registry.execute<Mesh, Texture, Transform, Orthogonal>([&](
+		const Mesh& mesh, const Texture texture, const Transform& transform, const Orthogonal& orthogonal) {
+			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
+		});
+	meshRenderer.present(cameraOrthogonal);
+
+	// Perspective draw
+	//glEnable(GL_DEPTH_TEST);
+	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
+		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Perspective& perspective) {
+			meshRenderer.clear();
+			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
+			uploadLights(ent);
+			meshRenderer.present(cameraPerspective);
+		});
+
 }
 
 void System::drawEntity(Entity& _entity, const graphics::Texture2D& _texture) {
@@ -118,7 +97,7 @@ void System::uploadLights(Entity ent) {
 			lights[intens] = ent;
 		}
 		});
-	unsigned numLights = lights.size();
+	int numLights = lights.size();
 	const int maxLights = 8;
 	if (numLights > maxLights) numLights = maxLights;
 	float lightIntensity[maxLights];
@@ -455,16 +434,36 @@ void System::addAlternativeTexture(Entity& _entity, const graphics::Texture2D* _
 	registry.addComponent<AlternativeTexture>(_entity, _texture, _inUse);
 }
 
-void System::addButton(Entity& _entity) {
-	registry.addComponent<Button>(_entity);
+void System::addButton(Entity& _entity, bool _swapTextureIfCursorOnIt, bool _activeFunction) {
+	registry.addComponent<Button>(_entity, _swapTextureIfCursorOnIt, _activeFunction);
+}
+
+void System::addTextDisplay(Entity& _entity) {
+	registry.addComponent<TextDisplay>(_entity);
 }
 
 void System::addTextField(Entity& _entity, bool _pressed) {
 	registry.addComponent<TextField>(_entity, _pressed);
 }
 
+void System::addCheckBox(Entity& _entity, uint32_t _buttonEntity, uint32_t _textEntity, bool _pressed, bool _status) {
+	registry.addComponent<CheckBox>(_entity, _buttonEntity, _textEntity, _pressed, _status);
+}
+
+void System::addContainer(Entity& _entity, int _rows, int _colums, float _gapFactor, bool _pressed, glm::vec2 _oldCursorPosition, float _time) {
+	registry.addComponent<Container>(_entity, _rows, _colums, _gapFactor, _pressed, _oldCursorPosition, _time);
+}
+
 void System::addFunction(Entity& _entity, void (*_function)(Entity& _entity, System& _system)) {
 	registry.addComponent<Function>(_entity, _function);
+}
+
+void System::addMoved(Entity& _entity, bool _moved) {
+	registry.addComponent<Moved>(_entity, _moved);
+}
+
+void System::addMovable(Entity& _entity, bool _movable) {
+	registry.addComponent<Movable>(_entity, _movable);
 }
 
 void System::addSlider(Entity& _entity, Slider _slider){

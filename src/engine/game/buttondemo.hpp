@@ -18,15 +18,33 @@ public:
 private:
 	System system;
 	GuiToolkit guiToolkit;
+
 	const graphics::Texture2D& darkBlueTexture;	
 	const graphics::Texture2D& lightBlueTexture;
 	const graphics::Texture2D& whiteTexture;
+	const graphics::Texture2D& grayTexture;
 	const graphics::Texture2D& lightGrayTexture;
-	std::string text1;
-	std::string text2;
+	const graphics::Texture2D& greenTexture;
+	const graphics::Texture2D& redTexture;
+
+	std::string buttonText;
+	std::string textFieldText;
+	std::string textDisplayText;
+	std::string checkBoxText;
+	std::string exit;
 
 	Entity entity;
-	std::list<Entity> entities;
+	Entity singleButton;
+	Entity singleTextField;
+	Entity singleTextDisplay;
+	Entity singleCheckBox;
 
+	std::vector<Entity> containerElements1;
+	Entity container1;	
 
+	std::vector<Entity> containerElements2;
+	Entity container2;
+
+	std::vector<Entity> containerElements3;
+	Entity container3;
 };

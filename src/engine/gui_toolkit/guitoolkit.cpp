@@ -12,7 +12,7 @@ GuiToolkit::GuiToolkit(System& _system) :
 		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	pressedButton = false;
-
+	firstLeftClick = false;
 	textFieldTextPointer = nullptr;
 
 	pressedKey_a = pressedKey_b = pressedKey_c = pressedKey_d =	pressedKey_e = pressedKey_f = pressedKey_g = pressedKey_h = pressedKey_i = pressedKey_j = 
@@ -24,9 +24,15 @@ GuiToolkit::GuiToolkit(System& _system) :
 	pressedKey_backspace = pressedKey_space = pressedKey_escape = pressedKey_enter = false;
 }
 
+GuiToolkit::~GuiToolkit() {
+	system.registry.execute<Slider>([&](Slider& slider) {
+		delete[] slider.levelEntities;
+		});
+}
+
 
 /* ################ Button ################ */
-void GuiToolkit::addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text)
+void GuiToolkit::addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, bool _swapTextureIfCursorOnIt, void (*_function)(Entity& _entity, System& _system), bool _activeFunction, std::string& _text, glm::vec4 _textColor)
 {
 	_position.x *= graphics::Device::getAspectRatio();
 	_scale.x *= graphics::Device::getAspectRatio();
@@ -38,43 +44,98 @@ void GuiToolkit::addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scal
 	system.addPosition(_entity, _position);
 	system.addScale(_entity, _scale);
 	system.addOrthogonal(_entity);
-	system.addButton(_entity);
+	system.addButton(_entity, _swapTextureIfCursorOnIt, _activeFunction);
 	system.addFunction(_entity, _function);
+	system.addMoved(_entity, false);
 
 	float positionTextX, positionTextY, scaleY = 0.0f;
-	findPositionAndScaleForAddText(scaleY, _scale, _position, _text, positionTextX, positionTextY);
-	system.addText(_entity, (char*)_text.c_str(), glm::vec3(positionTextX, positionTextY, _position.z), scaleY, glm::vec4(1.f), 0.f, 0.f, 0.f, false);
+	findPositionAndScaleForAddText(_scale, _position, _text, scaleY, positionTextX, positionTextY);
+	system.addText(_entity, (char*)_text.c_str(), glm::vec3(positionTextX, positionTextY, _position.z), scaleY, _textColor, 0.f, 0.f, 0.f, false);
 }
 
-GuiToolkit::~GuiToolkit() {
-	system.registry.execute<Slider>([&](Slider& slider) {
-		delete[] slider.levelEntities;
+void GuiToolkit::updateButton()
+{
+	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+	bool leftClick = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
+
+	system.registry.execute<Entity, Button, Position, Scale, Texture, AlternativeTexture, Moved, Text, System::Function>([&](
+		Entity& entity, Button& button, Position& position, Scale& scale, Texture& texture, AlternativeTexture& alternativeTexture, Moved& moved, Text& text, System::Function& function) {
+
+			math::Rectangle buttonBox = math::Rectangle(glm::vec2(position.position[0], position.position[1]), glm::vec2(position.position[0] + scale.scale[0], position.position[1] + scale.scale[1]));
+
+			if (firstLeftClick == false && button.swapTextureIfCursorOnIt == true) {
+				swapTextureWhenCursorOnIt(texture, alternativeTexture, buttonBox, cursorPos);
+			}
+			if (buttonBox.isIn(cursorPos) == true && leftClick == true && firstLeftClick == false) {
+				alternativeTexture.inUse = false;
+				const graphics::Texture2D& tempTexture = *texture.texture;
+				texture.texture = alternativeTexture.texture;
+				alternativeTexture.texture = &tempTexture;
+
+				firstLeftClick = true;
+
+				if (pressedButton == false) {
+					pressedButton = true;
+					if (button.activeFunction == true) {
+						function.function(entity, system);
+					}					
+				}
+			}
+			if (leftClick == false && pressedButton == true) {
+				pressedButton = false;
+				firstLeftClick = false;
+			}
+			if (moved.moved == true) {
+				float positionTextX, positionTextY, scaleY = 0.0f;
+				findPositionAndScaleForAddText(scale.scale, position.position, text.text, scaleY, positionTextX, positionTextY);
+				text.position.x = positionTextX;
+				text.position.y = positionTextY;
+				text.size = scaleY;
+				moved.moved = false;
+			}
 		});
 }
 
-void GuiToolkit::updateButton() {
-	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());	
-	bool leftClick = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 
-	system.registry.execute<Entity, Button, Position, Scale, Texture, AlternativeTexture, System::Function>([&](
-		Entity& entity, Button& button, Position& position, Scale& scale, Texture& texture, AlternativeTexture& alternativeTexture, System::Function& function) {
-			math::Rectangle buttonBox = math::Rectangle(glm::vec2(position.position[0], position.position[1]), glm::vec2(position.position[0] + scale.scale[0], position.position[1] + scale.scale[1]));
+/* ################ Text-Display ################ */
+void GuiToolkit::addTextDisplay(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _texture, std::string& _text, glm::vec4 _textColor) 
+{
+	_position.x *= graphics::Device::getAspectRatio();
+	_scale.x *= graphics::Device::getAspectRatio();
 
-			swapTextureWhenCursorOnIt(texture, alternativeTexture, buttonBox, cursorPos);
+	system.addMesh(_entity, &planeMesh);
+	system.addTexture(_entity, &_texture);
+	system.addTransform(_entity, glm::mat4(1.f));
+	system.addPosition(_entity, _position);
+	system.addScale(_entity, _scale);
+	system.addOrthogonal(_entity);
+	system.addTextDisplay(_entity);
+	system.addMoved(_entity, false);
 
-			if (buttonBox.isIn(cursorPos) == true && leftClick == true && pressedButton == false) {
-				pressedButton = true;
-				function.function(entity, system);
-			}
-			if (leftClick == false) {
-				pressedButton = false;
+	float positionTextX, positionTextY, scale = 0.f;
+	findPositionAndScaleForAddText(_scale, _position, _text, scale, positionTextX, positionTextY);
+	system.addText(_entity, (char*)_text.c_str(), glm::vec3(positionTextX, positionTextY, _position.z), scale, _textColor, 0.f, 0.f, 0.f, false);
+}
+
+void GuiToolkit::updateTextDisplay() {
+
+	system.registry.execute<Entity, TextDisplay, Position, Scale, Moved, Text>([&](
+		Entity& entity, TextDisplay& textDisplay, Position& position, Scale& scale, Moved& moved, Text& text) {
+		
+			if (moved.moved == true) {
+				float positionTextX, positionTextY, scaleY = 0.0f;
+				findPositionAndScaleForAddText(scale.scale, position.position, text.text, scaleY, positionTextX, positionTextY);
+				text.position.x = positionTextX;
+				text.position.y = positionTextY;
+				text.size = scaleY;
+				moved.moved = false;
 			}
 		});
 }
 
 
 /* ################ TextField ################ */
-void GuiToolkit::addTextField(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text)
+void GuiToolkit::addTextField(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor)
 {
 	_position.x *= graphics::Device::getAspectRatio();
 	_scale.x *= graphics::Device::getAspectRatio();
@@ -88,13 +149,14 @@ void GuiToolkit::addTextField(Entity& _entity, glm::vec3 _position, glm::vec3 _s
 	system.addOrthogonal(_entity);
 	system.addTextField(_entity, false);
 	system.addFunction(_entity, _function);
+	system.addMoved(_entity, false);
 
 	textFieldsDefaults[_entity.id] = _text;
 	textFieldsTexts[_entity.id] = nullString;
 
 	float positionTextX, positionTextY, scale = 0.f;
-	findPositionAndScaleForAddText(scale, _scale, _position, _text, positionTextX, positionTextY);
-	system.addText(_entity, (char*)_text.c_str(), glm::vec3(positionTextX, positionTextY, _position.z), scale, glm::vec4(0.f), 0.f, 0.f, 0.f, false);
+	findPositionAndScaleForAddText(_scale, _position, _text, scale, positionTextX, positionTextY);
+	system.addText(_entity, (char*)_text.c_str(), glm::vec3(positionTextX, positionTextY, _position.z), scale, _textColor, 0.f, 0.f, 0.f, false);
 }
 
 void GuiToolkit::updateTextField() 
@@ -102,17 +164,23 @@ void GuiToolkit::updateTextField()
 	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
 	bool leftClick = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 
-	system.registry.execute<Entity, TextField, Position, Scale, Texture, AlternativeTexture, Text, System::Function>([&](
-		Entity& entity, TextField& textField, Position& position, Scale& scale, Texture& texture, AlternativeTexture& alternativeTexture, Text& text, System::Function& function) {
+	system.registry.execute<Entity, TextField, Position, Scale, Texture, AlternativeTexture, Text, Moved, System::Function>([&](
+		Entity& entity, TextField& textField, Position& position, Scale& scale, Texture& texture, AlternativeTexture& alternativeTexture, Text& text, Moved& moved, System::Function& function) {
+			
 			math::Rectangle buttonBox = math::Rectangle(glm::vec2(position.position[0], position.position[1]), glm::vec2(position.position[0] + scale.scale[0], position.position[1] + scale.scale[1]));
 
-			swapTextureWhenCursorOnIt(texture, alternativeTexture, buttonBox, cursorPos);
-
-			if (buttonBox.isIn(cursorPos) == true && leftClick == true && textField.pressed == false) {
+			if (textField.pressed == false && firstLeftClick == false) {
+				swapTextureWhenCursorOnIt(texture, alternativeTexture, buttonBox, cursorPos);
+			}
+			if (buttonBox.isIn(cursorPos) == true && leftClick == true && textField.pressed == false && firstLeftClick == false) {
 				textField.pressed = true;
+				firstLeftClick = true;
 			}
 			if (buttonBox.isIn(cursorPos) == false && leftClick == true && textField.pressed == true) {
 				textField.pressed = false;
+			}
+			if (leftClick == false) {
+				firstLeftClick = false;
 			}
 			if (textField.pressed == true) {
 				if (textFieldsTexts[entity.id] == nullString) {
@@ -120,7 +188,7 @@ void GuiToolkit::updateTextField()
 				}
 				std::string tempString = textFieldsTexts[entity.id];
 				updateKeyInputActions(entity, function, textField);
-				if (tempString != textFieldsTexts[entity.id]) {
+				if (tempString != textFieldsTexts[entity.id] || pressedKey_enter == true || pressedKey_escape == true) {
 					float positionTextX, positionTextY, scaleY = 0.f;
 					if (findPositionAndScaleForTextFieldText(entity, scaleY, scale, position, positionTextX, positionTextY)) {
 						text.text = textFieldTextPointer;
@@ -130,21 +198,346 @@ void GuiToolkit::updateTextField()
 					}
 				}
 			}
+			if (moved.moved == true) {
+				float positionTextX, positionTextY, scaleY = 0.0f;
+				findPositionAndScaleForAddText(scale.scale, position.position, text.text, scaleY, positionTextX, positionTextY);
+				text.position.x = positionTextX;
+				text.position.y = positionTextY;
+				text.size = scaleY;
+				moved.moved = false;
+			}
+		});
+}
+
+
+/* ################ Check-Box ################ */
+void GuiToolkit::addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor)
+{
+	_position.x *= graphics::Device::getAspectRatio();
+	_scale.x *= graphics::Device::getAspectRatio();
+
+	Entity buttonEntity = system.createEntity(buttonEntity);
+	Entity textEntity = system.createEntity(textEntity);
+
+	float buttonPositionX = (_position.x / graphics::Device::getAspectRatio()) + ((_scale.x / graphics::Device::getAspectRatio()) * 0.04f);
+	float buttonPositionY = _position.y + (_scale.y * 0.04f);
+	float buttonScaleX = (_scale.x / graphics::Device::getAspectRatio()) * 0.22f;
+	float buttonScaleY = _scale.y * 0.92f;
+	addButton(buttonEntity, glm::vec3(buttonPositionX, buttonPositionY, 0.f), glm::vec3(buttonScaleX, buttonScaleY, 1.f), _defaultTexture, _alternativeTexture, false, nullptr, false, off, glm::vec4(0.f));
+
+	float textPositionX = buttonPositionX + buttonScaleX + ((_scale.x / graphics::Device::getAspectRatio()) * 0.04f);
+	float textPositionY = buttonPositionY;
+	float textScaleX = (_scale.x / graphics::Device::getAspectRatio()) * 0.66f;
+	float textScaleY = _scale.y * 0.92f;
+	addTextDisplay(textEntity, glm::vec3(textPositionX, textPositionY, 0.f), glm::vec3(textScaleX, textScaleY, 1.f), whiteTexture, _text, _textColor);
+
+	system.addMesh(_entity, &planeMesh);
+	system.addTexture(_entity, &lightGrayTexture);
+	system.addTransform(_entity, glm::mat4(1.f));
+	system.addPosition(_entity, _position);
+	system.addScale(_entity, _scale);
+	system.addOrthogonal(_entity);
+	system.addCheckBox(_entity, buttonEntity.id, textEntity.id, false, false);
+	system.addMoved(_entity, false);
+	system.addFunction(_entity, _function);
+}
+
+void GuiToolkit::updateCheckBox() 
+{
+	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+	bool leftClick = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
+
+	system.registry.execute<Entity, CheckBox, Position, Scale, Moved, System::Function>([&](
+		Entity& entity, CheckBox& checkBox, Position& position, Scale& scale, Moved& moved, System::Function& function) {
+			
+			glm::vec3& positionButton = system.registry.getComponentUnsafe<Position>(Entity{ checkBox.buttonEntity }).position;
+			glm::vec3& scaleButton = system.registry.getComponentUnsafe<Scale>(Entity{ checkBox.buttonEntity }).scale;			
+			math::Rectangle checkboxButtonBox = math::Rectangle(glm::vec2(positionButton.x, positionButton.y), glm::vec2(positionButton.x + scaleButton.x, positionButton.y + scaleButton.y));
+
+			if (checkboxButtonBox.isIn(cursorPos) == true && leftClick == true && checkBox.pressed == false && (firstLeftClick == false || pressedButton == true)) {
+				checkBox.pressed = true;
+				firstLeftClick = true;
+				Text& text = system.registry.getComponentUnsafe<Text>(Entity{ checkBox.buttonEntity });
+				if (checkBox.status == true) {
+					checkBox.status = false;
+					text.text = (char*)off.c_str();
+				}
+				else {
+					checkBox.status = true;
+					text.text = (char*)on.c_str();
+				}
+				function.function(entity, system);
+			}
+			if (leftClick == false) {
+				checkBox.pressed = false;
+				firstLeftClick = false;
+			}
+
+			if (moved.moved == true) {		
+				positionButton.x = position.position.x + (scale.scale.x * 0.04f);
+				positionButton.y = position.position.y + (scale.scale.y * 0.04f);
+				scaleButton.x = scale.scale.x * 0.22f;
+				scaleButton.y = scale.scale.y * 0.92f;
+				system.registry.getComponentUnsafe<Moved>(Entity{ checkBox.buttonEntity }).moved = true;
+
+				glm::vec3& positionText = system.registry.getComponentUnsafe<Position>(Entity{ checkBox.textEntity }).position;
+				glm::vec3& scaleText = system.registry.getComponentUnsafe<Scale>(Entity{ checkBox.textEntity }).scale;
+				positionText.x = positionButton.x + scaleButton.x + (scale.scale.x * 0.04f);
+				positionText.y = positionButton.y;
+				scaleText.x = scale.scale.x * 0.66f;
+				scaleText.y = scale.scale.y * 0.92f;
+				system.registry.getComponentUnsafe<Moved>(Entity{ checkBox.textEntity }).moved = true;
+
+				moved.moved = false;
+			}
+
+		});
+}
+
+
+/* ################ Slider ################ */
+void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertical) 
+{
+	_position.x *= graphics::Device::getAspectRatio();
+	_scale.x *= graphics::Device::getAspectRatio();
+	
+	Entity* levelEntities = new Entity[_levels];
+	Slider slider = { _entity, levelEntities, _selectedLevel, _levels };
+
+	float sizeLevel;
+	float sizeLevelDistance;
+	if (vertical) {
+		sizeLevel = _scale.y / _levels * 0.8f;
+		sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
+	}
+	else {
+		sizeLevel = _scale.x / _levels * 0.8;
+		sizeLevelDistance = _scale.x / (_levels - 1) * 0.2;
+	}
+	for (int i = 0; i < _levels; i++) {
+		Entity levelEntity;
+		system.createEntity(levelEntity);
+		system.addMesh(levelEntity, &planeMesh);
+		system.addTransform(levelEntity, glm::mat4(1.f));
+		if (vertical) {
+			glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
+			system.addPosition(levelEntity, pos);
+			glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
+			system.addScale(levelEntity, sca);
+			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+		}
+		else {
+			glm::vec3 pos = glm::vec3(i * (sizeLevel + sizeLevelDistance), 0.f, 0.f) + _position;
+			system.addPosition(levelEntity, pos);
+			glm::vec3 sca = glm::vec3(1.f / _levels * 0.8, 1.f, 1.f) * _scale;
+			system.addScale(levelEntity, sca);
+			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+		}
+
+		if (i <= _selectedLevel) {
+			system.addTexture(levelEntity, &redTexture);
+			slider.currentLevel = i;
+		}
+		else {
+			system.addTexture(levelEntity, &blackTexture);
+		}
+		slider.levelEntities[i] = levelEntity;
+		system.addOrthogonal(levelEntity);
+	}
+	system.addSlider(_entity, slider);
+	system.addMesh(_entity, &planeMesh);
+	system.addTexture(_entity, &greyTexture);
+	system.addTransform(_entity, glm::mat4(1.f));
+	system.addPosition(_entity, _position);
+	system.addScale(_entity, _scale);
+	system.addOrthogonal(_entity);
+	slider.backgroundEntity = _entity;
+}
+
+void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor, gamestates auswählen
+	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
+	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
+		if (isPressed) {
+			for (int i = 0; i < slider.numberOfLevels; i++) {
+				math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
+				if (currentBox.isIn(cursorPos)) {
+					if (i > slider.currentLevel) {
+						for (int j = slider.currentLevel; j <= i; j++) {
+							system.setTexture(slider.levelEntities[j], &redTexture);
+						}
+					}
+					else if (i < slider.currentLevel) {
+						for (int j = slider.currentLevel; j > i; j--) {
+							system.setTexture(slider.levelEntities[j], &blackTexture);
+						}
+					}
+					slider.currentLevel = i;
+					break;
+				}
+			}
+		}
+
+		//if (moved.moved == true) {
+
+
+		//	moved.moved = false;
+		//}
+
+	});
+}
+
+
+/* ################ Container ################ */
+void GuiToolkit::addContainer(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, int _rows, int _colums, float _gapFactor, const graphics::Texture2D& _texture, bool _background, bool _movable, std::vector<Entity> _entities)
+{
+	_position.x *= graphics::Device::getAspectRatio();
+	_scale.x *= graphics::Device::getAspectRatio();
+
+	if (_background == true) {
+		system.addMesh(_entity, &planeMesh);
+		system.addTexture(_entity, &_texture);
+		system.addTransform(_entity, glm::mat4(1.f));
+		system.addOrthogonal(_entity);
+	}
+	system.addPosition(_entity, _position);
+	system.addScale(_entity, _scale);	
+	system.addContainer(_entity, _rows, _colums, _gapFactor, false, glm::vec2(0.f), 0.f);
+	system.addMoved(_entity, false);
+	system.addMovable(_entity, _movable);	
+
+	entitiesInContainer[_entity] = _entities;
+
+	float gap = (_scale.y / _rows) * _gapFactor;
+
+	float scaleX = (_scale.x - gap) / _colums;
+	float scaleY = (_scale.y - gap) / _rows;
+
+	float posX = _position.x;
+	float posY = _position.y + _scale.y;
+
+	int count = 0;
+
+	for (int i = 0; i < _colums; i++)
+	{
+		for (int j = 0; j < _rows; j++)
+		{
+			glm::vec3& position = system.registry.getComponentUnsafe<Position>(_entities.at(count)).position;
+			position.x = (posX + (scaleX * (i)) + gap);
+			position.y = posY - (scaleY * (j + 1));
+
+			glm::vec3& scale = system.registry.getComponentUnsafe<Scale>(_entities.at(count)).scale;
+			scale.x = scaleX - gap;
+			scale.y = scaleY - gap;
+
+			system.registry.getComponentUnsafe<Moved>(_entities.at(count)).moved = true;
+			
+			count++;
+			if (count >= _entities.size()) return;
+		}
+	}
+}
+
+void GuiToolkit::updateContainer(float _deltaTime)
+{
+	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
+	bool leftClick = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
+
+	system.registry.execute<Entity, Container, Position, Scale, Moved, Movable>([&](
+		Entity& entity, Container& container, Position& position, Scale& scale, Moved& moved, Movable& movable) {
+
+			if (movable.movable == true) {				
+				math::Rectangle containerBox = math::Rectangle(glm::vec2(position.position[0], position.position[1]), glm::vec2(position.position[0] + scale.scale[0], position.position[1] + scale.scale[1]));
+
+				if (containerBox.isIn(cursorPos) == true && leftClick == true && container.pressed == false && firstLeftClick == false) {
+					bool cursorOnContainerElement = false;
+					math::Rectangle containerElementBoxes;
+					for (int i = 0; i < entitiesInContainer[entity].size(); i++) {
+						Position& pos = system.registry.getComponentUnsafe<Position>(entitiesInContainer[entity].at(i));
+						Scale& sca = system.registry.getComponentUnsafe<Scale>(entitiesInContainer[entity].at(i));
+						containerElementBoxes = math::Rectangle(glm::vec2(pos.position[0], pos.position[1]), glm::vec2(pos.position[0] + sca.scale[0], pos.position[1] + sca.scale[1]));
+						if (containerElementBoxes.isIn(cursorPos) == true) {
+							cursorOnContainerElement = true;
+						}
+					}
+					if (cursorOnContainerElement == false) {
+						container.oldCursorPosition = cursorPos;
+						container.time = 0.f;
+						container.pressed = true;
+						firstLeftClick = true;
+					}
+				}
+				if (container.pressed == true) {
+					position.position[0] += cursorPos.x - container.oldCursorPosition.x;
+					position.position[1] += cursorPos.y - container.oldCursorPosition.y;
+					container.oldCursorPosition = cursorPos;
+					container.time += _deltaTime;
+					if (container.time > 0.05f) {
+						moved.moved = true;
+						container.time = 0.f;
+					}
+				}
+				if (leftClick == false && container.pressed == true) {
+					moved.moved = true;
+					container.pressed = false;
+					firstLeftClick = false;
+				}
+			}
+
+			if (moved.moved == true) 
+			{
+				float gap = (scale.scale.y / container.rows) * container.gapFactor;
+
+				float scaleX = (scale.scale.x - gap) / container.colums;
+				float scaleY = (scale.scale.y - gap) / container.rows;
+
+				float posX = position.position.x;
+				float posY = position.position.y + scale.scale.y;
+
+				int count = 0;
+
+				for (int i = 0; i < container.colums; i++)
+				{
+					for (int j = 0; j < container.rows; j++)
+					{
+						glm::vec3& position = system.registry.getComponentUnsafe<Position>(entitiesInContainer[entity].at(count)).position;
+						position.x = (posX + (scaleX * (i)) + gap);
+						position.y = posY - (scaleY * (j + 1));
+
+						glm::vec3& scale = system.registry.getComponentUnsafe<Scale>(entitiesInContainer[entity].at(count)).scale;
+						scale.x = scaleX - gap;
+						scale.y = scaleY - gap;
+
+						system.registry.getComponentUnsafe<Moved>(entitiesInContainer[entity].at(count)).moved = true;
+		
+						count++;
+						if (count >= entitiesInContainer[entity].size()) {
+							moved.moved = false;
+							return;
+						}
+					}
+				}
+				moved.moved = false;
+			}
 		});
 }
 
 
 /* ################ GUI-Update ################ */
-void GuiToolkit::update() 
-{
+void GuiToolkit::update(float _deltaTime)
+{	
+	updateContainer(_deltaTime);
 	updateButton();
+	updateCheckBox();
+	updateTextDisplay();
+	updateTextField();	
 	updateTextField();
 	updateSlider();
 }
 
 
 /* ################ GUI-Utils ################ */
-void GuiToolkit::findPositionAndScaleForAddText(float& scaleY, glm::vec3& _scale, glm::vec3& _position, std::string _text, float& positionTextX, float& positionTextY)
+void GuiToolkit::findPositionAndScaleForAddText(glm::vec3& _scale, glm::vec3& _position, std::string _text, float& scaleY, float& positionTextX, float& positionTextY)
 {
 	scaleY = _scale.y;
 	math::Rectangle boxButton = math::Rectangle(glm::vec2(_position.x, _position.y), glm::vec2(_position.x + _scale.x, _position.y + _scale.y));
@@ -168,7 +561,7 @@ void GuiToolkit::findPositionAndScaleForAddText(float& scaleY, glm::vec3& _scale
 		}
 	}
 	float centerButtonX = (_position.x + (_position.x + _scale.x)) * 0.5f;
-	positionTextX = centerButtonX - ((boxText.max.x - boxText.min.x) * 0.5f);
+	positionTextX = (centerButtonX - ((boxText.max.x - boxText.min.x) * 0.5f)) + 0.005;
 	float centerButtonY = (_position.y + (_position.y + _scale.y)) * 0.5f;
 	positionTextY = centerButtonY - (scaleY * 0.5f);
 }
@@ -562,10 +955,10 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 	else if (InputManager::isKeyPressed(Key::Y) && pressedKey_y == false) {
 		pressedKey_y = true;
 		if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
-			textFieldsTexts[_entity.id].append("Y");
+			textFieldsTexts[_entity.id].append("Z");
 		}
 		else {
-			textFieldsTexts[_entity.id].append("y");
+			textFieldsTexts[_entity.id].append("z");
 		}
 		textFieldTextPointer = (char*)textFieldsTexts[_entity.id].c_str();
 	}
@@ -576,10 +969,10 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 	else if (InputManager::isKeyPressed(Key::Z) && pressedKey_z == false) {
 		pressedKey_z = true;
 		if (InputManager::isKeyPressed(Key::LEFT_SHIFT) || InputManager::isKeyPressed(Key::RIGHT_SHIFT)) {
-			textFieldsTexts[_entity.id].append("Z");
+			textFieldsTexts[_entity.id].append("Y");
 		}
 		else {
-			textFieldsTexts[_entity.id].append("z");
+			textFieldsTexts[_entity.id].append("y");
 		}
 		textFieldTextPointer = (char*)textFieldsTexts[_entity.id].c_str();
 	}
@@ -710,8 +1103,6 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 
 	else if (InputManager::isKeyPressed(Key::ENTER) && pressedKey_enter == false) {
 	pressedKey_enter = true;
-	Text text;
-	text.text = (char*)textFieldsTexts[_entity.id].c_str();
 	_function.function(_entity, system);
 	textFieldsTexts[_entity.id].erase();
 	textFieldsTexts[_entity.id].shrink_to_fit();
@@ -723,84 +1114,6 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 	}
 
 	
-}
-void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertical) {
-	Entity* levelEntities = new Entity[_levels];
-	Slider slider = { _entity, levelEntities, _selectedLevel, _levels };
-	system.addMesh(_entity, &planeMesh);
-	system.addTexture(_entity, &greyTexture);
-	system.addTransform(_entity, glm::mat4(1.f));
-	system.addPosition(_entity, _position);
-	system.addScale(_entity, _scale);
-	system.addOrthogonal(_entity);
-	slider.backgroundEntity = _entity;
-	float sizeLevel;
-	float sizeLevelDistance;
-	if (vertical) {
-		sizeLevel = _scale.y / _levels * 0.8f;
-		sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
-	} 
-	else {
-		sizeLevel = _scale.x / _levels * 0.8;
-		sizeLevelDistance = _scale.x / (_levels - 1) * 0.2;
-	}
-	for (int i = 0; i < _levels; i++) {
-		Entity levelEntity;
-		system.createEntity(levelEntity);
-		system.addMesh(levelEntity, &planeMesh);
-		system.addTransform(levelEntity, glm::mat4(1.f));
-		if (vertical) {
-			glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
-			system.addPosition(levelEntity, pos);
-			glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
-			system.addScale(levelEntity, sca);
-			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
-		}
-		else {
-			glm::vec3 pos = glm::vec3(i * (sizeLevel + sizeLevelDistance), 0.f, 0.f) + _position;
-			system.addPosition(levelEntity, pos);
-			glm::vec3 sca = glm::vec3(1.f / _levels * 0.8, 1.f, 1.f) * _scale;
-			system.addScale(levelEntity, sca);
-			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
-		}
-		
-		if (i <= _selectedLevel) {
-			system.addTexture(levelEntity, &redTexture);
-			slider.currentLevel = i;
-		}
-		else {
-			system.addTexture(levelEntity, &blackTexture);
-		}
-		slider.levelEntities[i] = levelEntity;
-		system.addOrthogonal(levelEntity);
-	}
-	system.addSlider(_entity, slider);
-}
-
-void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor, gamestates auswählen
-	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
-	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
-	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
-		if (isPressed) {
-			for (int i = 0; i < slider.numberOfLevels; i++) {
-				math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
-				if (currentBox.isIn(cursorPos)) {
-					if (i > slider.currentLevel) {
-						for (int j = slider.currentLevel; j <= i; j++) {
-							system.setTexture(slider.levelEntities[j], &redTexture);
-						}
-					}
-					else if (i < slider.currentLevel) {
-						for (int j = slider.currentLevel; j > i; j--) {
-							system.setTexture(slider.levelEntities[j], &blackTexture);
-						}
-					}
-					slider.currentLevel = i;
-					break;
-				}
-			}
-		}
-		});
 }
 
 int GuiToolkit::getLevel(Entity _entity) {

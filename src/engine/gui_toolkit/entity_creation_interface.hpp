@@ -12,34 +12,34 @@ public:
 
 	static Entity createMovingCrate(System& _system, glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration);
 
-	static Entity createMovingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform, 
+	static Entity createMovingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 		glm::vec3 _velocity, glm::vec3 _accelaration);
 
 
-	static Entity createSpringPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration, 
+	static Entity createSpringPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration,
 		float _mass, glm::vec3 _anchor);
 
-	static Entity createSpringCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration, 
+	static Entity createSpringCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration,
 		float _mass, glm::vec3 _anchor);
 
-	static Entity createSpringObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform, 
+	static Entity createSpringObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 		glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration, float _mass, glm::vec3 _anchor);
 
 
-	static Entity createRotatingPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, 
+	static Entity createRotatingPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation,
 		glm::vec3 _velocity, glm::vec3 _angularVelocity, bool _isProjectile);
 
-	static Entity createRotatingCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, 
+	static Entity createRotatingCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation,
 		glm::vec3 _velocity, glm::vec3 _angularVelocity, bool _isProjectile);
 
-	static Entity createRotatingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform, 
+	static Entity createRotatingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 		glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, glm::vec3 _velocity, glm::vec3 _angularVelocity, bool _isProjectile);
 
 
-	static Entity createShootablePlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::vec3 _velocity, 
+	static Entity createShootablePlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::vec3 _velocity,
 		bool _isProjectile);
 
-	static Entity createShootableCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::vec3 _velocity, 
+	static Entity createShootableCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::vec3 _velocity,
 		bool _isProjectile);
 
 	static Entity createShootableObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,

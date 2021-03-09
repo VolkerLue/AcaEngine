@@ -32,7 +32,7 @@ void SliderDemo::update(float _time, float _deltaTime) {
 	}
 
 	system.updateTransform(_deltaTime);
-	guiToolkit.update();
+	guiToolkit.update(_deltaTime);
 }
 
 void SliderDemo::draw(float _time, float _deltaTime) {

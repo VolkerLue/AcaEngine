@@ -4,36 +4,76 @@
 #include "../graphics/renderer/fontrenderer.hpp"
 #include "../graphics/core/device.hpp"
 
-
 class GuiToolkit
 {
 public:
 	GuiToolkit(System& _system);
-	
-	/* ################ Button ################ */
-	void addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text);
-		
-	inline void addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, void (*_function)(Entity& _entity, System& _system)) {
-		addButton(_entity, _position, _scale, _defaultTexture, _defaultTexture, _function, nullString);
-	}
 
 	~GuiToolkit();
+
+
+	/* ################ Button ################ */
+	void addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, bool _swapTextureIfCursorOnIt, void (*_function)(Entity& _entity, System& _system), bool _activeFunction, std::string& _text, glm::vec4 _textColor);
+	
+	inline void addButton(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, bool _swapTextureIfCursorOnIt, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor) {
+		addButton(_entity, _position, _scale, _defaultTexture, _alternativeTexture, _swapTextureIfCursorOnIt, _function, true, _text, _textColor);
+	}
+
+	inline void addButton(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text) {
+		addButton(_entity, glm::vec3(0.f), glm::vec3(1.f), darkBlueTexture, lightBlueTexture, true, _function, true, _text, glm::vec4(1.f));
+	}	
 
 	void updateButton();
 	
 
-	/* ################ TextField ################ */
-	void addTextField(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text);
+	/* ################ Text-Display ################ */
+	void addTextDisplay(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _texture, std::string& _text, glm::vec4 _textColor);
+
+	inline void addTextDisplay(Entity& _entity, std::string& _text) {
+		addTextDisplay(_entity, glm::vec3(0.f), glm::vec3(1.f), whiteTexture, _text, glm::vec4(0.f));
+	}
+
+	void updateTextDisplay();
+
+
+	/* ################ Text-Field ################ */
+	void addTextField(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor);
 	
+	inline void addTextField(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text) {
+		addTextField(_entity, glm::vec3(0.f), glm::vec3(1.f), grayTexture, whiteTexture, _function, _text, glm::vec4(0.f));
+	}
+
 	void updateTextField();
-		
+	
+
+	/* ################ Check-Box ################ */
+	void addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor);
+
+	void updateCheckBox();
+
+
+	/* ################ Slider ################ */
+	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertcal);
+
+	void updateSlider();
+
+
+	/* ################ Container ################ */
+	void addContainer(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, int _rows, int _colums, float _gapFactor, const graphics::Texture2D& _texture, bool _background, bool _movable, std::vector<Entity> _entities);
+
+	inline void addContainer(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, int _rows, int _colums, float _gapFactor, bool _background, bool _movable, std::vector<Entity> _entities) {
+		addContainer(_entity, _position, _scale, _rows, _colums, _gapFactor, lightGrayTexture, _background, _movable, _entities);
+	}
+
+	void updateContainer(float _deltaTime);
+
 
 	/* ################ GUI-Update ################ */
-	void update();	
+	void update(float _deltaTime);
 
 
 	/* ################ GUI-Utils ################ */
-	void findPositionAndScaleForAddText(float& scale, glm::vec3& _scale, glm::vec3& _position, std::string _text, float& positionTextX, float& positionTextY);
+	void findPositionAndScaleForAddText(glm::vec3& _scale, glm::vec3& _position, std::string _text, float& scale, float& positionTextX, float& positionTextY);
 	
 	bool findPositionAndScaleForTextFieldText(Entity& _entity, float& scaleY, Scale& scale, Position& position, float& positionTextX, float& positionTextY);
 
@@ -41,25 +81,33 @@ public:
 
 	void updateKeyInputActions(Entity& _entity, System::Function& _function, TextField& _textField);
 
-	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertcal);
-
-	void updateSlider();
-
 	int getLevel(Entity _entity);
 
 private:
 	System& system;
 	const graphics::Mesh planeMesh;
-	bool pressedButton;
-	bool pressedTextField;
+	
+	const graphics::Texture2D& darkBlueTexture = (*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	const graphics::Texture2D& lightBlueTexture = (*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	const graphics::Texture2D& whiteTexture = (*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	const graphics::Texture2D& grayTexture = (*graphics::Texture2DManager::get("textures/gray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	const graphics::Texture2D& lightGrayTexture = (*graphics::Texture2DManager::get("textures/lightGray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
 	const graphics::Texture2D& redTexture;
 	const graphics::Texture2D& blackTexture;
 	const graphics::Texture2D& greyTexture;
+
+	bool pressedButton;
+	bool firstLeftClick;
 
 	std::string nullString = "";
 	std::map<uint32_t, std::string> textFieldsDefaults;
 	std::map<uint32_t, std::string> textFieldsTexts;
 	char* textFieldTextPointer;
+
+	std::map<Entity, std::vector<Entity>> entitiesInContainer;
+
+	std::string off = "O";
+	std::string on = "X";
 
 	bool pressedKey_a;
 	bool pressedKey_b;

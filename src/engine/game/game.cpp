@@ -1,10 +1,9 @@
 #include "game.hpp"
 #include "game.hpp"
 
-
 Game::Game() {
 	//acquires global resources
-	graphics::Device::initialize(1366, 768, false);
+	graphics::Device::initialize(3000, 2000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
 	window = graphics::Device::getWindow();
 	input::InputManager::initialize(window);
 	glClearColor(0.f, 1.f, 0.f, 1.f);
@@ -16,9 +15,9 @@ Game::Game() {
 
 Game::~Game() {
 	graphics::Device::close(); 
-	utils::MeshLoader::clear();
-	graphics::ShaderManager::clear();
-	graphics::Texture2DManager::clear();
+	//utils::MeshLoader::clear();
+	//graphics::ShaderManager::clear();
+	//graphics::Texture2DManager::clear();
 	//graphics::FontManager::clear();
 }
 
@@ -42,8 +41,10 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		//states saved number or second stack
 		//interuption keys
 		//saving of t in state
-		GameState& current = *states.back();
-		current.onResume();
+		std::unique_ptr<GameState> current = std::move(states.back());
+		//GameState& current = *states.back();
+		
+		current->onResume();
 		float t = 0;
 		const float timeStep = 0.01;
 		auto currentTime = clock::now();
@@ -60,7 +61,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			while (dt >= timeStep) {
 				t += timeStep;
 				dt -= timeStep;
-				current.update(t, timeStep);
+				current->update(t, timeStep);
 			}
 			current.draw(t, dt / timeStep);
 			glfwPollEvents();
@@ -135,16 +136,16 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		}
 
 		if (rightPressed) {
-			current.onPause(t);
+			current->onPause(t);
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
 			states.pop_back();
 		}
 		else if (leftPressed) {
 			if (pausedStates.size() == 0) {
-				current.newState();
+				current->newState();
 			}
 			else {
-				current.onPause(t);
+				current->onPause(t);
 				std::move(pausedStates.end() - 1, pausedStates.end(), std::back_inserter(states));
 				pausedStates.pop_back();
 			}
@@ -156,7 +157,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			chooseState(t, pressedNumber);
 		}
 		else {
-			current.newState();
+			current->newState();
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
 			states.pop_back();
 		}

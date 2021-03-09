@@ -26,7 +26,7 @@ Entity EntityCreationInterface::createMovingCrate(System& _system, glm::mat4 _tr
 	return createMovingObject(_system, &meshCrate, textureCratetex, _transform, _velocity, _accelaration);
 }
 
-Entity EntityCreationInterface::createMovingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, 
+Entity EntityCreationInterface::createMovingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture,
 	glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration) {
 	Entity entity;
 	_system.createEntity(entity);
@@ -41,17 +41,17 @@ Entity EntityCreationInterface::createMovingObject(System& _system, const graphi
 }
 
 
-Entity EntityCreationInterface::createSpringPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, 
+Entity EntityCreationInterface::createSpringPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity,
 	glm::vec3 _accelaration, float _mass, glm::vec3 _anchor) {
 	return createSpringObject(_system, &meshSphere, texturePlanet, _transform, _position, _velocity, _accelaration, _mass, _anchor);
 }
 
-Entity EntityCreationInterface::createSpringCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, 
+Entity EntityCreationInterface::createSpringCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity,
 	glm::vec3 _accelaration, float _mass, glm::vec3 _anchor) {
 	return createSpringObject(_system, &meshCrate, textureCratetex, _transform, _position, _velocity, _accelaration, _mass, _anchor);
 }
 
-Entity EntityCreationInterface::createSpringObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, 
+Entity EntityCreationInterface::createSpringObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture,
 	glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration, float _mass, glm::vec3 _anchor) {
 	Entity entity;
 	_system.createEntity(entity);
@@ -81,8 +81,8 @@ Entity EntityCreationInterface::createRotatingCrate(System& _system, glm::mat4 _
 		_isProjectile);
 }
 
-Entity EntityCreationInterface::createRotatingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, 
-	glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, glm::vec3 _velocity, glm::vec3 _angularVelocity, 
+Entity EntityCreationInterface::createRotatingObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture,
+	glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, glm::vec3 _velocity, glm::vec3 _angularVelocity,
 	bool _isProjectile) {
 	Entity entity;
 	_system.createEntity(entity);
@@ -110,7 +110,7 @@ Entity EntityCreationInterface::createShootableCrate(System& _system, glm::mat4 
 	return createShootableObject(_system, &meshCrate, textureCratetex, _transform, _position, _scale, _velocity, _isProjectile);
 }
 
-Entity EntityCreationInterface::createShootableObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, 
+Entity EntityCreationInterface::createShootableObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture,
 	glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::vec3 _velocity, bool _isProjectile) {
 	Entity entity;
 	_system.createEntity(entity);
@@ -146,7 +146,7 @@ Entity EntityCreationInterface::createCrate(System& _system, glm::mat4 _transfor
 
 Entity EntityCreationInterface::createWorldObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 	bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale, bool _hasOrientation, glm::quat _orientation, bool _hasVelocity,
-	glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity, bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, 
+	glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity, bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass,
 	float _mass, bool _hasAnchor, glm::vec3 _anchor, bool _hasBox, bool _isProjectile) {
 	Entity entity;
 	_system.createEntity(entity);
