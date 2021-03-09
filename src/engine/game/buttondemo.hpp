@@ -22,4 +22,11 @@ private:
 	const graphics::Texture2D& lightBlueTexture;
 	const graphics::Texture2D& whiteTexture;
 	const graphics::Texture2D& lightGrayTexture;
+	std::string text1;
+	std::string text2;
+
+	Entity entity;
+	std::list<Entity> entities;
+
+
 };
