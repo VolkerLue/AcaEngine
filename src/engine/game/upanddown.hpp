@@ -22,6 +22,4 @@ public:
 private:
 	Entity entity;
 	System system;
-	const graphics::Texture2D& texture;
-	const graphics::Mesh meshSphere;
 };

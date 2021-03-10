@@ -243,24 +243,7 @@ int System::removeIntersecting() {
 	for (auto it = ent.begin(); it != ent.end(); it++) {
 		registry.erase(*it);
 	}
-
 	return ent.size();
-}
-
-void System::shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity) {
-	if (inputManager.isButtonPressed(input::MouseButton::LEFT)) {
-		glm::vec3 curserPos = cameraPerspective.toWorldSpace(inputManager.getCursorPos());
-		Entity entity;
-		_entities.push_back(createEntity(entity));
-		addTexture(_entities.back(), &_texture);
-		addMesh(_entities.back(), _mesh);
-		addTransform(_entities.back(), glm::mat4(1.f));
-		addPosition(_entities.back(), glm::vec3(curserPos));
-		addScale(_entities.back(), glm::vec3(0.7f, 0.7f, 0.7f));
-		addVelocity(_entities.back(), glm::vec3(curserPos * _velocity));
-		addAABB(_entities.back(), true);
-		addPerspective(_entities.back());
-	}
 }
 
 void System::move(Entity& _entity, float _deltaTime) {

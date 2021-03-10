@@ -57,8 +57,6 @@ public:
 	void updateAABB();
 
 	int removeIntersecting();
-	
-	void shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Texture2D& _texture, std::list<Entity>& _entities, float _velocity);
 			
 	void move(Entity& _entity, float _deltaTime);
 
@@ -154,8 +152,8 @@ public:
 	struct Function {
 		void (*function)(Entity& _entity, System& _system) {};
 	};
-private:
 	graphics::Camera cameraPerspective;
+private:
 	graphics::MeshRenderer meshRenderer;	
 	input::InputManager inputManager;	
 };

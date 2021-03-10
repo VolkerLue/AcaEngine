@@ -10,6 +10,7 @@ Game::Game() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glfwSwapInterval(0); //VSync ON->(1) , OFF->(0)
+	EntityCreationInterface::initialize();
 }
 
 Game::~Game() {

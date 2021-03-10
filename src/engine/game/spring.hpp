@@ -1,6 +1,7 @@
 #pragma once
 #include "gamestate.hpp"
 #include "../entity_component_system/system.hpp"
+#include "engine/gui_toolkit/entity_creation_interface.hpp"
 
 
 class Spring : public GameState {
@@ -19,6 +20,4 @@ public:
 private:
 	Entity entity;
 	System system;
-	const graphics::Texture2D& texture;
-	const graphics::Mesh meshSphere;
 };

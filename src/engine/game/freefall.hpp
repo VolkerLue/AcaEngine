@@ -1,6 +1,7 @@
 #pragma once
 #include "gamestate.hpp"
 #include "../entity_component_system/system.hpp"
+#include "../gui_toolkit/entity_creation_interface.hpp"
 
 
 class FreeFall : public GameState {
@@ -20,8 +21,4 @@ private:
 	Entity entity;
 	Entity entity2;
 	System system;
-	const graphics::Texture2D& texture;
-	const graphics::Texture2D& texture2;
-	const graphics::Mesh meshSphere;
-	const graphics::Mesh meshCrate;
 };

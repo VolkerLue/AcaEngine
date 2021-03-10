@@ -7,6 +7,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <memory>
+#include <engine/gui_toolkit/entity_creation_interface.hpp>
 
 
 class Game {

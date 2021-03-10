@@ -1,26 +1,12 @@
 #include "spring.hpp"
 
 
-Spring::Spring() : GameState(), system(), 
-texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-meshSphere(*utils::MeshLoader::get("models/sphere.obj"))
-{	
+Spring::Spring() : GameState(), system() {	
 	finished = false;
-	entity = system.createEntity(entity);
-	system.addMesh(entity, &meshSphere);
-	system.addTexture(entity, &texture);
-	system.addTransform(entity, glm::mat4(1.f));
-	system.addPosition(entity, glm::vec3(0.f, 5.f, -15.0f));
-	system.addVelocity(entity, glm::vec3(0.f, 0.f, 0.f));
-	system.addAccelaration(entity, glm::vec3(0.f, 0.f, 0.f));
-	system.addMass(entity, 1.f);
-	system.addAnchor(entity, glm::vec3(0.f, 1.f, -15.f));
-	system.addPerspective(entity);
-	system.addAABB(entity, false);
-
-	system.addLightConstants(0.1, 0.05, 0.01);
-	Entity entity1;
-	system.addPointLight(system.createEntity(entity1), glm::vec3(0.f, 0.f, -10.f), glm::vec3(1.f, 1.f, 1.f), 5.f);
+	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
+		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 5.f));
+	entity = EntityCreationInterface::createSpringPlanet(system, glm::mat4(1.f), glm::vec3(0.f, 5.f, -15.0f), glm::vec3(0.f, 0.f, 0.f), 
+		glm::vec3(0.f, 0.f, 0.f), 1.f, glm::vec3(0.f, 1.f, -15.f));
 }
 
 void Spring::newState() {
