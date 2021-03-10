@@ -758,7 +758,7 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 	system.addSlider(_entity, slider);
 }
 
-void GuiToolkit::updateSlider() {
+void GuiToolkit::updateSlider() {	//balken, quer, ggf. text, move, ggf. minimaler konstruktor, meshrenderer setter, gamestates auswählen
 	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
 	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
