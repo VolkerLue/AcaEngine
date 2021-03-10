@@ -52,6 +52,7 @@ int StringToWString(std::wstring& ws, const std::string& s)
 }
 
 void System::draw() {
+	updateAABB();
 	// Perspective draw
 	glEnable(GL_DEPTH_TEST);
 	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
@@ -107,7 +108,6 @@ void System::uploadLights(Entity ent) {
 	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("ke"), ke);
 	
 	//find nearest lights and upload them
-	updateAABB();
 	Box& box = registry.getComponentUnsafe<Box>(ent);
 	glm::vec3 min = box.transformedAabb.min;
 	glm::vec3 max = box.transformedAabb.max;

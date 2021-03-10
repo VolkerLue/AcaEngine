@@ -46,19 +46,21 @@ int main(int argc, char* argv[])
 	srand(static_cast<unsigned int>(time(NULL)));
 	
 	Game game;
-	game.addState(std::make_unique<UpAndDown>());
-	game.addState(std::make_unique<Spring>());
-	game.run(std::make_unique<FreeFall>());
+	//game.addState(std::make_unique<UpAndDown>());
+	//game.addState(std::make_unique<Spring>());
+	//game.run(std::make_unique<FreeFall>());
 	//game.addState(std::make_unique<ButtonDemo>());
-	//game.run(std::make_unique<Shooter>());	
+	game.run(std::make_unique<Shooter>());	
 	
+	//TODO: Shooter Bereich zu klein, bild zu ecken hin verzehrt in allen Gamestates
+
 	//Game game;
 	//game.run(std::make_unique<SliderDemo>());
 	//game.run(std::make_unique<ButtonDemo>());
 	
 
 
-	//TODO: Shooter, auswahl Gamestates, bearbeitung slider
+	//TODO: auswahl Gamestates, bearbeitung slider
 
 	return EXIT_SUCCESS;
 }
