@@ -15,6 +15,9 @@ Game::Game() {
 
 Game::~Game() {
 	graphics::Device::close(); 
+	utils::MeshLoader::clear();
+	graphics::ShaderManager::clear();
+	graphics::Texture2DManager::clear();
 }
 
 void Game::addState(std::unique_ptr<GameState> _state) {

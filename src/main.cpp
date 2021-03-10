@@ -55,10 +55,10 @@ int main(int argc, char* argv[])
 	//Game game;
 	//game.run(std::make_unique<SliderDemo>());
 	//game.run(std::make_unique<ButtonDemo>());
-	utils::MeshLoader::clear();
-	graphics::ShaderManager::clear();
-	graphics::Texture2DManager::clear();
+	
 
+
+	//TODO: Wechsel zwischen Gamestates bug, wechsel pfeiltasten, auswahl Gamestates, bearbeitung slider
 
 	return EXIT_SUCCESS;
 }
