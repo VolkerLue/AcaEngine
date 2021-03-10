@@ -54,13 +54,14 @@ int StringToWString(std::wstring& ws, const std::string& s)
 void System::draw() {
 	// Perspective draw
 	glEnable(GL_DEPTH_TEST);
-	meshRenderer.clear();
 	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
 		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Perspective& perspective) {
+			meshRenderer.clear();
 			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
-			uploadLights(ent);			
+			uploadLights(ent);	
+			meshRenderer.present(cameraPerspective);
 		});
-	meshRenderer.present(cameraPerspective);
+	
 
 	// Orthogonal draw
 	glDisable(GL_DEPTH_TEST);
@@ -106,6 +107,7 @@ void System::uploadLights(Entity ent) {
 	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("ke"), ke);
 	
 	//find nearest lights and upload them
+	updateAABB();
 	Box& box = registry.getComponentUnsafe<Box>(ent);
 	glm::vec3 min = box.transformedAabb.min;
 	glm::vec3 max = box.transformedAabb.max;

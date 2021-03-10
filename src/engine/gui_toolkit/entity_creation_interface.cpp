@@ -7,6 +7,8 @@ const graphics::Mesh& EntityCreationInterface::meshCrate = *utils::MeshLoader::g
 const graphics::Mesh& EntityCreationInterface::meshRectangle = *utils::MeshLoader::get("models/sphere.obj");
 
 
+
+
 Entity EntityCreationInterface::createMovingPlanet(System& _system, glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration) {
 	Entity entity;
 	_system.createEntity(entity);
