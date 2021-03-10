@@ -46,8 +46,8 @@ int main(int argc, char* argv[])
 	srand(static_cast<unsigned int>(time(NULL)));
 	
 	Game game;
-	//game.addState(std::make_unique<UpAndDown>());
-	//game.addState(std::make_unique<Spring>());
+	game.addState(std::make_unique<UpAndDown>());
+	game.addState(std::make_unique<Spring>());
 	game.run(std::make_unique<FreeFall>());
 	//game.addState(std::make_unique<ButtonDemo>());
 	//game.run(std::make_unique<Shooter>());	
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 	
 
 
-	//TODO: Wechsel zwischen Gamestates bug, wechsel pfeiltasten, auswahl Gamestates, bearbeitung slider
+	//TODO: Shooter, wechsel pfeiltasten, auswahl Gamestates, bearbeitung slider
 
 	return EXIT_SUCCESS;
 }

@@ -145,7 +145,7 @@ public:
 		return registry.getComponent<Component>(_entity) != nullptr;
 	};
 
-	std::unique_ptr<graphics::FontRenderer> fontRenderer;
+	graphics::FontRenderer* fontRenderer;
 	Registry registry;		
 	graphics::Camera cameraOrthogonal;
 

@@ -74,7 +74,7 @@ void System::draw() {
 	meshRenderer.present(cameraOrthogonal);
 
 	// Text draw
-	fontRenderer->clearText(); 
+	if (!fontRenderer->isEmpty()) fontRenderer->clearText(); 
 	registry.execute<Text>([&](Text _text) {	
 			fontRenderer->draw(_text.position, _text.text, _text.size, _text.color, _text.rotation, _text.alignX, _text.alignY, _text.roundToPixel);
 	});	

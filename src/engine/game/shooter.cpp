@@ -32,7 +32,6 @@ void Shooter::update(float _time, float _deltaTime) {
 	else if (shot > 0) {
 		shot--;
 	}
-	system.updateAABB();
 	int deletedCrates = system.removeIntersecting();
 
 	for (int i = 0; i < deletedCrates; i++) {
