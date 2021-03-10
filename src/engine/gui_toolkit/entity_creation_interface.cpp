@@ -155,19 +155,6 @@ static Entity EntityCreationInterface::createCrate(glm::mat4 _transform, bool _h
 		_hasBox, _isProjectile);
 }
 
-static Entity EntityCreationInterface::createRectangle(const graphics::Texture2D* _texture, glm::mat4 _transform, glm::vec3 _position,
-	glm::vec3 _scale) {
-	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshRectangle);
-	system.addTexture(entity, _texture);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addScale(entity, _scale);
-	system.addOrthogonal(entity);
-	return entity;
-}
-
 static Entity EntityCreationInterface::createWorldObject(const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 	bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale, bool _hasOrientation, glm::quat _orientation, bool _hasVelocity,
 	glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity, bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, 
@@ -187,6 +174,19 @@ static Entity EntityCreationInterface::createWorldObject(const graphics::Mesh* _
 	if (_hasAnchor) system.addAnchor(entity, _anchor);
 	if (_hasBox) system.addAABB(entity, _isProjectile);
 	system.addPerspective(entity);
+	return entity;
+}
+
+static Entity EntityCreationInterface::createRectangle(const graphics::Texture2D* _texture, glm::mat4 _transform, glm::vec3 _position,
+	glm::vec3 _scale) {
+	Entity entity;
+	system.getEntity(entity);
+	system.addMesh(entity, meshRectangle);
+	system.addTexture(entity, _texture);
+	system.addTransform(entity, _transform);
+	system.addPosition(entity, _position);
+	system.addScale(entity, _scale);
+	system.addOrthogonal(entity);
 	return entity;
 }
 

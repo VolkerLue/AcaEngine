@@ -26,7 +26,7 @@ public:
 
 	static Entity createShootableCrate(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::vec3 _velocity, bool _isProjectile);
 
-	static Entity createPlanet(glm::mat4 _transform, bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale, 
+	static Entity createPlanet(glm::mat4 _transform, bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale,
 		bool _hasOrientation, glm::quat _orientation, bool _hasVelocity, glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity,
 		bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, float _mass, bool _hasAnchor, glm::vec3 _anchor,
 		bool _hasBox, bool _isProjectile);
@@ -36,9 +36,7 @@ public:
 		bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, float _mass, bool _hasAnchor, glm::vec3 _anchor,
 		bool _hasBox, bool _isProjectile);
 
-	static Entity createRectangle(const graphics::Texture2D* _texture, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale);
-
-	static Entity createWorldObject(const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform, 
+	static Entity createWorldObject(const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 		bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale, bool _hasOrientation, glm::quat _orientation,
 		bool _hasVelocity, glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity, bool _hasAccelaration,
 		glm::vec3 _accelaration, bool _hasMass, float _mass, bool _hasAnchor, glm::vec3 _anchor, bool _hasBox, bool _isProjectile);
@@ -50,8 +48,6 @@ public:
 		std::vector<glm::vec3> colors, std::vector<float> intensities);
 
 
-
-
 private:
 	System* system;
 	static const graphics::Texture2D& texturePlanet;
@@ -59,4 +55,4 @@ private:
 	static const graphics::Mesh& meshSphere;
 	static const graphics::Mesh& meshCrate;
 	static const graphics::Mesh& meshRectangle;
-}
+};

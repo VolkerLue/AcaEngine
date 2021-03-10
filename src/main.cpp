@@ -23,6 +23,7 @@
 #include <memory>
 #include <chrono>
 #include <engine/utils/resourcemanager.hpp>
+#include <engine/gui_toolkit/entity_creation_interface.hpp>
 
 // CRT's memory leak detection
 #ifndef NDEBUG 
