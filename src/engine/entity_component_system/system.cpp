@@ -257,6 +257,7 @@ void System::shootMeshWithTexure(const graphics::Mesh* _mesh, const graphics::Te
 		addScale(_entities.back(), glm::vec3(0.7f, 0.7f, 0.7f));
 		addVelocity(_entities.back(), glm::vec3(curserPos * _velocity));
 		addAABB(_entities.back(), true);
+		addPerspective(_entities.back());
 	}
 }
 

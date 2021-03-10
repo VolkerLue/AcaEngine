@@ -80,6 +80,7 @@ void Shooter::update(float _time, float _deltaTime) {
 		system.addVelocity(entities.back(), glm::vec3(system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4)));
 		system.addAngularVelocity(entities.back(), glm::vec3((((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5));
 		system.addAABB(entities.back(), false);
+		system.addPerspective(entities.back());
 	}
 
 	int entityId = system.whichEntityIsNotInView();

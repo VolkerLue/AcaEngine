@@ -12,12 +12,14 @@ meshCrate(*utils::MeshLoader::get("models/crate.obj"))
 	system.addTransform(entity, glm::translate(glm::vec3(0.f, 10.f, -50.f)));
 	system.addVelocity(entity, glm::vec3(0.f, 0.13f, 0.f));
 	system.addAccelaration(entity, glm::vec3(0.f, -0.1f, 0.f));
+	system.addPerspective(entity);
 	
 	entity2 = system.createEntity(entity2);
 	system.addMesh(entity2, &meshCrate);
 	system.addTransform(entity2, glm::translate(glm::vec3(5.f, 10.f, -50.f)));
 	system.addVelocity(entity2, glm::vec3(0.f, 0.13f, 0.f));
 	system.addAccelaration(entity2, glm::vec3(0.f, -0.1f, 0.f));
+	system.addPerspective(entity2);
 }
 
 void FreeFall::newState() {

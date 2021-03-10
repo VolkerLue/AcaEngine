@@ -1,204 +1,199 @@
 #include "entity_creation_interface.hpp"
 
-System* EntityCreationInterface::system = nullptr;
-graphics::Texture2D& EntityCreationInterface::texturePlanet = *graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR));
-graphics::Texture2D& EntityCreationInterface::textureCratetex = *graphics::Texture2DManager::get("textures/cratetex.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR));
-graphics::Mesh& EntityCreationInterface::meshSphere = *utils::MeshLoader::get("models/sphere.obj");
-graphics::Mesh& EntityCreationInterface::meshCrate = *utils::MeshLoader::get("models/crate.obj");
-graphics::Mesh& EntityCreationInterface::meshRectangle = *utils::MeshLoader::get("models/sphere.obj");
+const graphics::Texture2D& EntityCreationInterface::texturePlanet = *graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR));
+const graphics::Texture2D& EntityCreationInterface::textureCratetex = *graphics::Texture2DManager::get("textures/cratetex.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR));
+const graphics::Mesh& EntityCreationInterface::meshSphere = *utils::MeshLoader::get("models/sphere.obj");
+const graphics::Mesh& EntityCreationInterface::meshCrate = *utils::MeshLoader::get("models/crate.obj");
+const graphics::Mesh& EntityCreationInterface::meshRectangle = *utils::MeshLoader::get("models/sphere.obj");
 
 
-EntityCreationInterface::initialize(System _system) {
-	system = _system;
-}
-
-Entity EntityCreationInterface::createMovingPlanet(glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration) {
+Entity EntityCreationInterface::createMovingPlanet(System& _system, glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshSphere);
-	system.addTexture(entity, texturePlanet);
-	system.addTransform(entity, _transform);
-	system.addVelocity(entity, _velocity);
-	system.addAcceleration(entity, _accerleration);
-	system.addPerspective(entity);
-	system.addAABB(true);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshSphere);
+	_system.addTexture(entity, &texturePlanet);
+	_system.addTransform(entity, _transform);
+	_system.addVelocity(entity, _velocity);
+	_system.addAccelaration(entity, _accelaration);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, true);
 	return entity;
 }
 
-Entity EntityCreationInterface::createMovingCrate(glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration)
+Entity EntityCreationInterface::createMovingCrate(System& _system, glm::mat4 _transform, glm::vec3 _velocity, glm::vec3 _accelaration)
 {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshCrate);
-	system.addTexture(entity, textureCratetex);
-	system.addTransform(entity, _transform);
-	system.addVelocity(entity, _velocity);
-	system.addAcceleration(entity, _accerleration);
-	system.addPerspective(entity);
-	system.addAABB(true);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshCrate);
+	_system.addTexture(entity, &textureCratetex);
+	_system.addTransform(entity, _transform);
+	_system.addVelocity(entity, _velocity);
+	_system.addAccelaration(entity, _accelaration);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, true);
 	return entity;
 }
 
-Entity EntityCreationInterface::createSpringPlanet(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration, 
+Entity EntityCreationInterface::createSpringPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration,
 	float _mass, glm::vec3 _anchor) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshSphere);
-	system.addTexture(entity, texturePlanet);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addVelocity(entity, _velocity);
-	system.addAcceleration(entity, _accelaration);
-	system.addMass(entity, _mass);
-	system.addAnchor(entity, _anchor);
-	system.addPerspective(entity);
-	system.addAABB(true);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshSphere);
+	_system.addTexture(entity, &texturePlanet);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addVelocity(entity, _velocity);
+	_system.addAccelaration(entity, _accelaration);
+	_system.addMass(entity, _mass);
+	_system.addAnchor(entity, _anchor);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, true);
 	return entity;
 }
 
-Entity EntityCreationInterface::createSpringCrate(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration,
+Entity EntityCreationInterface::createSpringCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _velocity, glm::vec3 _accelaration,
 	float _mass, glm::vec3 _anchor) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshCrate);
-	system.addTexture(entity, textureCratetex);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addVelocity(entity, _velocity);
-	system.addAcceleration(entity, _accelaration);
-	system.addMass(entity, _mass);
-	system.addAnchor(entity, _anchor);
-	system.addPerspective(entity);
-	system.addAABB(true);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshCrate);
+	_system.addTexture(entity, &textureCratetex);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addVelocity(entity, _velocity);
+	_system.addAccelaration(entity, _accelaration);
+	_system.addMass(entity, _mass);
+	_system.addAnchor(entity, _anchor);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, true);
 	return entity;
 }
 
-Entity EntityCreationInterface::createRotatingPlanet(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, 
+Entity EntityCreationInterface::createRotatingPlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation,
 	glm::vec3 _velocity, glm::vec3 _angularVelocity, bool _isProjectile) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshSphere);
-	system.addTexture(entity, texturePlanet);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addScale(entity, _scale);
-	system.addOrientation(entity, _orientation);
-	system.addVelocity(entity, _velocity);
-	system.addAngularVelocity(entity, _angularVelocity);
-	system.addPerspective(entity);
-	system.addAABB(_isProjectile);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshSphere);
+	_system.addTexture(entity, &texturePlanet);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addScale(entity, _scale);
+	_system.addOrientation(entity, _orientation);
+	_system.addVelocity(entity, _velocity);
+	_system.addAngularVelocity(entity, _angularVelocity);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, _isProjectile);
 	return entity;
 }
 
-Entity EntityCreationInterface::createRotatingCrate(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation, 
+Entity EntityCreationInterface::createRotatingCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, glm::quat _orientation,
 	glm::vec3 _velocity, glm::vec3 _angularVelocity, bool _isProjectile) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshCrate);
-	system.addTexture(entity, textureCratetex);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addScale(entity, _scale);
-	system.addOrientation(entity, _orientation);
-	system.addVelocity(entity, _velocity);
-	system.addAngularVelocity(entity, _angularVelocity);
-	system.addPerspective(entity);
-	system.addAABB(_isProjectile);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshCrate);
+	_system.addTexture(entity, &textureCratetex);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addScale(entity, _scale);
+	_system.addOrientation(entity, _orientation);
+	_system.addVelocity(entity, _velocity);
+	_system.addAngularVelocity(entity, _angularVelocity);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, _isProjectile);
 	return entity;
 }
 
-Entity EntityCreationInterface::createShootablePlanet(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, 
+Entity EntityCreationInterface::createShootablePlanet(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale,
 	glm::vec3 _velocity, bool _isProjectile) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshSphere);
-	system.addTexture(entity, texturePlanet);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addScale(entity, _scale);
-	system.addVelocity(entity, _velocity);
-	system.addPerspective(entity);
-	system.addAABB(_isProjectile);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshSphere);
+	_system.addTexture(entity, &texturePlanet);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addScale(entity, _scale);
+	_system.addVelocity(entity, _velocity);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, _isProjectile);
 	return entity;
 }
 
-Entity EntityCreationInterface::createShootableCrate(glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale, 
+Entity EntityCreationInterface::createShootableCrate(System& _system, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale,
 	glm::vec3 _velocity, bool _isProjectile) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshCrate);
-	system.addTexture(entity, textureCratetex);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addScale(entity, _scale);
-	system.addVelocity(entity, _velocity);
-	system.addPerspective(entity);
-	system.addAABB(_isProjectile);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshCrate);
+	_system.addTexture(entity, &textureCratetex);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addScale(entity, _scale);
+	_system.addVelocity(entity, _velocity);
+	_system.addPerspective(entity);
+	_system.addAABB(entity, _isProjectile);
 	return entity;
 }
 
-static Entity EntityCreationInterface::createPlanet(glm::mat4 _transform, bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale,
+Entity EntityCreationInterface::createPlanet(System& _system, glm::mat4 _transform, bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale,
 	bool _hasOrientation, glm::quat _orientation, bool _hasVelocity, glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity,
 	bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, float _mass, bool _hasAnchor, glm::vec3 _anchor,
 	bool _hasBox, bool _isProjectile) {
-	return createWorldObject(meshSphere, texturePlanet, _transform, _hasPosition, _position, _hasScale, _scale, _hasOrientation, _orientation,
+	return createWorldObject(_system, &meshSphere, &texturePlanet, _transform, _hasPosition, _position, _hasScale, _scale, _hasOrientation, _orientation,
 		_hasVelocity, _velocity, _hasAngularVelocity, _angularVelocity, _hasAccelaration, _accelaration, _hasMass, _mass, _hasAnchor, _anchor,
 		_hasBox, _isProjectile);
 }
 
-static Entity EntityCreationInterface::createCrate(glm::mat4 _transform, bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale,
+Entity EntityCreationInterface::createCrate(System& _system, glm::mat4 _transform, bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale,
 	bool _hasOrientation, glm::quat _orientation, bool _hasVelocity, glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity,
 	bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, float _mass, bool _hasAnchor, glm::vec3 _anchor,
 	bool _hasBox, bool _isProjectile) {
-	return createWorldObject(meshCratex, textureCrate, _transform, _hasPosition, _position, _hasScale, _scale, _hasOrientation, _orientation,
+	return createWorldObject(_system, &meshCrate, &textureCratetex, _transform, _hasPosition, _position, _hasScale, _scale, _hasOrientation, _orientation,
 		_hasVelocity, _velocity, _hasAngularVelocity, _angularVelocity,	_hasAccelaration, _accelaration, _hasMass, _mass, _hasAnchor, _anchor,
 		_hasBox, _isProjectile);
 }
 
-static Entity EntityCreationInterface::createWorldObject(const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
+Entity EntityCreationInterface::createWorldObject(System& _system, const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform,
 	bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale, bool _hasOrientation, glm::quat _orientation, bool _hasVelocity,
 	glm::vec3 _velocity, bool _hasAngularVelocity, glm::vec3 _angularVelocity, bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, 
 	float _mass, bool _hasAnchor, glm::vec3 _anchor, bool _hasBox, bool _isProjectile) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, _mesh);
-	system.addTexture(entity, _texture);
-	system.addTransform(entity, _transform);
-	if (_hasPosition) system.addPosition(entity, _position);
-	if (_hasScale) system.addScale(entity, _scale);
-	if (_hasOrientation) system.addOrientation(entity, _orientation);
-	if (_hasVelocity) system.addVelocity(entity, _velocity);
-	if (_hasAngularVelocity) system.addAngularVelocity(entity, _angularVelocity);
-	if (_hasAccelaration) system.addAccelaration(entity, _accelaration);
-	if (_hasMass) system.addMass(entity, _mass);
-	if (_hasAnchor) system.addAnchor(entity, _anchor);
-	if (_hasBox) system.addAABB(entity, _isProjectile);
-	system.addPerspective(entity);
+	_system.createEntity(entity);
+	_system.addMesh(entity, _mesh);
+	_system.addTexture(entity, _texture);
+	_system.addTransform(entity, _transform);
+	if (_hasPosition) _system.addPosition(entity, _position);
+	if (_hasScale) _system.addScale(entity, _scale);
+	if (_hasOrientation) _system.addOrientation(entity, _orientation);
+	if (_hasVelocity) _system.addVelocity(entity, _velocity);
+	if (_hasAngularVelocity) _system.addAngularVelocity(entity, _angularVelocity);
+	if (_hasAccelaration) _system.addAccelaration(entity, _accelaration);
+	if (_hasMass) _system.addMass(entity, _mass);
+	if (_hasAnchor) _system.addAnchor(entity, _anchor);
+	if (_hasBox) _system.addAABB(entity, _isProjectile);
+	_system.addPerspective(entity);
 	return entity;
 }
 
-static Entity EntityCreationInterface::createRectangle(const graphics::Texture2D* _texture, glm::mat4 _transform, glm::vec3 _position,
+Entity EntityCreationInterface::createRectangle(System& _system, const graphics::Texture2D* _texture, glm::mat4 _transform, glm::vec3 _position,
 	glm::vec3 _scale) {
 	Entity entity;
-	system.getEntity(entity);
-	system.addMesh(entity, meshRectangle);
-	system.addTexture(entity, _texture);
-	system.addTransform(entity, _transform);
-	system.addPosition(entity, _position);
-	system.addScale(entity, _scale);
-	system.addOrthogonal(entity);
+	_system.createEntity(entity);
+	_system.addMesh(entity, &meshRectangle);
+	_system.addTexture(entity, _texture);
+	_system.addTransform(entity, _transform);
+	_system.addPosition(entity, _position);
+	_system.addScale(entity, _scale);
+	_system.addOrthogonal(entity);
 	return entity;
 }
 
-static std::vector<Entity> EntityCreationInterface::createPointLights(float c_constant, float q_constant, float e_constant, 
+std::vector<Entity> EntityCreationInterface::createPointLights(System& _system, float c_constant, float q_constant, float e_constant,
 	std::vector<glm::vec3> positions, std::vector<glm::vec3> colors, std::vector<float> intensities) {
 	std::vector<Entity> entities;
-	system.addLightConstants(c_constant, q_constant, e_constant);
+	_system.addLightConstants(c_constant, q_constant, e_constant);
 	for (int i = 0; i < positions.size(); i++) {
 		Entity entity;
-		this->system.getEntity(entity);
+		_system.createEntity(entity);
 		entities.push_back(entity);
-		system.addPointLight(entity, position[i], color[i], intensities[i]);
+		_system.addPointLight(entity, positions[i], colors[i], intensities[i]);
 	}
 	return entities;
 }

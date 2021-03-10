@@ -23,7 +23,6 @@
 #include <memory>
 #include <chrono>
 #include <engine/utils/resourcemanager.hpp>
-#include <engine/gui_toolkit/entity_creation_interface.hpp>
 
 // CRT's memory leak detection
 #ifndef NDEBUG 
@@ -46,15 +45,15 @@ int main(int argc, char* argv[])
 	
 	srand(static_cast<unsigned int>(time(NULL)));
 	
-	//Game game;
-	//game.addState(std::make_unique<FreeFall());
+	Game game;
+	//game.addState(std::make_unique<FreeFall>());
 	//game.addState(std::make_unique<Spring>());
-	//game.addState(std::make_unique<UpAndDown>());
+	game.run(std::make_unique<UpAndDown>());
 	//game.addState(std::make_unique<ButtonDemo>());
 	//game.run(std::make_unique<Shooter>());	
 	
-	Game game;
-	game.run(std::make_unique<SliderDemo>());
+	//Game game;
+	//game.run(std::make_unique<SliderDemo>());
 	//game.run(std::make_unique<ButtonDemo>());
 	utils::MeshLoader::clear();
 	graphics::ShaderManager::clear();

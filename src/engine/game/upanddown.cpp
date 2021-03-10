@@ -3,13 +3,10 @@
 
 UpAndDown::UpAndDown() : GameState(), system(), 
 texture(*graphics::Texture2DManager::get("textures/planet1.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-meshSphere(*utils::MeshLoader::get("models/sphere.obj"))
-{
-	entity = system.createEntity(entity);
-	system.addMesh(entity, &meshSphere);
-	system.addTransform(entity, glm::translate(glm::vec3(0.f, 4.f, -5.0f)));
-	system.addVelocity(entity, glm::vec3(0.f, 0.f, 0.f));
-	system.addAccelaration(entity, glm::vec3(0.f, 0.f, 0.f));
+meshSphere(*utils::MeshLoader::get("models/sphere.obj")) {
+	entity = EntityCreationInterface::createMovingPlanet(system, glm::translate(glm::vec3(0.f, 4.f, -5.0f)), glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f));
+	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f, 
+		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 5.f));
 }
 
 void UpAndDown::newState() {
