@@ -1,7 +1,7 @@
 #include "shooter.hpp"
 
 
-Shooter::Shooter() : GameState(), system(), shot(0) {
+Shooter::Shooter() : GameState(), system(), shot(0), timePaused{ 0.0f } {
 	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
 		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 5.f));
 	for (int i = 0; i < 50; i++) {
@@ -14,9 +14,23 @@ Shooter::Shooter() : GameState(), system(), shot(0) {
 }
 
 void Shooter::newState() {
+	finished = false;
+	timePaused = 0.0f;
+	for (auto it = entities.begin(); it != entities.end(); it++) {
+		system.eraseEntity(*it);
+	}
+	entities.clear();
+	for (int i = 0; i < 50; i++) {
+		entities.push_back(EntityCreationInterface::createRotatingCrate(system, glm::mat4(1.f),
+			glm::vec3(rand() % 51 + (-25), rand() % 51 + (-25), rand() % 10 + (-55)), glm::vec3(1.f, 0.5f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f),
+			glm::vec3(system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4)),
+			glm::vec3((((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5),
+			false));
+	}
 }
 
 void Shooter::update(float _time, float _deltaTime) {
+	_time += timePaused;
 	if (_time > 100) finished = true;
 
 	system.updateTransform(_deltaTime);
@@ -66,7 +80,8 @@ void Shooter::onResume() {
 	system.draw();
 }
 
-void Shooter::onPause() {
+void Shooter::onPause(float _time) {
+	timePaused += _time;
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

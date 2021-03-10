@@ -13,7 +13,7 @@ public:
 
 	//has virtual interface for state transition events
 	virtual void onResume() = 0;
-	virtual void onPause() = 0;
+	virtual void onPause(float _time) = 0;
 
 	//interface to mark current state as finished and to provide a new state
 	virtual void newState() = 0;

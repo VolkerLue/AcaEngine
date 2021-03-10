@@ -26,4 +26,5 @@ public:
 private:
 	GLFWwindow* window;
 	std::vector<std::unique_ptr<GameState>> states;
+	std::vector<std::unique_ptr<GameState>> pausedStates;
 };

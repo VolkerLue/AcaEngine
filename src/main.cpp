@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
 	
 
 
-	//TODO: Shooter, wechsel pfeiltasten, auswahl Gamestates, bearbeitung slider
+	//TODO: Shooter, auswahl Gamestates, bearbeitung slider
 
 	return EXIT_SUCCESS;
 }

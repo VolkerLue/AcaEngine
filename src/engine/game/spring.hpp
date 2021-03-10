@@ -12,7 +12,7 @@ public:
 	void draw(float _time, float _deltaTime) override;
 
 	void onResume() override;
-	void onPause() override;
+	void onPause(float _time) override;
 
 	void newState() override;
 	bool isFinished();
@@ -20,4 +20,5 @@ public:
 private:
 	Entity entity;
 	System system;
+	float timePaused;
 };

@@ -31,18 +31,23 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
-
 	states.push_back(std::move(_initialState));
+	bool rightPressed = false;
+	bool leftPressed = false;
 
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
-		std::unique_ptr<GameState> current = std::move(states.back());
+		//states saved number or second stack
+		//interuption keys
+		//saving of t in state
+		GameState& current = *states.back();
+		current.onResume();
 		float t = 0;
 		const float timeStep = 0.01;
-
 		auto currentTime = clock::now();
 		float dt = 0.f;
-
-		while (!current->isFinished() && !glfwWindowShouldClose(window)) {
+		rightPressed = false;
+		leftPressed = false;
+		while (!current.isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -51,13 +56,42 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			while (dt >= timeStep) {
 				t += timeStep;
 				dt -= timeStep;
-				current->update(t, timeStep);
+				current.update(t, timeStep);
 			}
-			current->draw(t, dt/timeStep);
+			current.draw(t, dt / timeStep);
 
+			if (input::InputManager::isKeyPressed(input::Key::RIGHT)) {
+				rightPressed = true;
+				std::this_thread::sleep_for(std::chrono::milliseconds(250));
+			}
+			if (input::InputManager::isKeyPressed(input::Key::LEFT)) {
+				leftPressed = true;
+				std::this_thread::sleep_for(std::chrono::milliseconds(250));
+			}
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 		}
-		states.pop_back();
+
+		if (rightPressed) {
+			current.onPause(t);
+			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
+			states.pop_back();
+		}
+		else if (leftPressed) {
+			if (pausedStates.size() == 0) {
+				current.newState();
+			}
+			else {
+				current.onPause(t);
+				std::move(pausedStates.end() - 1, pausedStates.end(), std::back_inserter(states));
+				pausedStates.pop_back();
+			}
+		}
+		else {
+			current.newState();
+			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
+			states.pop_back();
+		}
+
 	}
 }

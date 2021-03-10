@@ -57,7 +57,7 @@ void ButtonDemo::onResume() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void ButtonDemo::onPause() {
+void ButtonDemo::onPause(float _time) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

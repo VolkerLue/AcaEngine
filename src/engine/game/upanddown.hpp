@@ -13,7 +13,7 @@ public:
 
 	//has virtual interface for state transition events
 	void onResume() override;
-	void onPause() override;
+	void onPause(float _time) override;
 
 	//interface to mark current state as finished and to provide a new state
 	void newState() override;
@@ -22,4 +22,5 @@ public:
 private:
 	Entity entity;
 	System system;
+	float timePaused;
 };
