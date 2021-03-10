@@ -36,6 +36,7 @@ public:
 		bool _hasAccelaration, glm::vec3 _accelaration, bool _hasMass, float _mass, bool _hasAnchor, glm::vec3 _anchor,
 		bool _hasBox, bool _isProjectile);
 
+	static Entity createRectangle(const graphics::Texture2D* _texture, glm::mat4 _transform, glm::vec3 _position, glm::vec3 _scale);
 
 	static Entity createWorldObject(const graphics::Mesh* _mesh, const graphics::Texture2D* _texture, glm::mat4 _transform, 
 		bool _hasPosition, glm::vec3 _position, bool _hasScale, glm::vec3 _scale, bool _hasOrientation, glm::quat _orientation,
@@ -48,7 +49,7 @@ public:
 	static std::vector<Entity> createPointLights(float c_constant, float q_constant, float e_constant, std::vector<glm::vec3> positions,
 		std::vector<glm::vec3> colors, std::vector<float> intensities);
 
-	
+
 
 
 private:
