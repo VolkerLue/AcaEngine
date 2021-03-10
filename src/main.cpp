@@ -19,7 +19,7 @@
 #include <engine/game/freefall.hpp>
 #include <engine/game/shooter.hpp>
 #include <engine/game/buttondemo.hpp>
-#include <engine/game/sliderdemo.cpp>
+#include <engine/game/sliderdemo.hpp>
 #include <memory>
 #include <chrono>
 #include <engine/utils/resourcemanager.hpp>
