@@ -515,3 +515,37 @@ int System::whichEntityIsNotInView() {
 		}});
 	return found;
 }
+
+void System::addSwitchTexture(Entity& _entity, const graphics::Texture2D* _texture_1, const graphics::Texture2D* _texture_2) {
+	registry.addComponent<SwitchTexture>(_entity, _texture_1, _texture_2);
+}
+
+void System::setSwitchTexture(Entity& _entity, const graphics::Texture2D* _texture_1, const graphics::Texture2D* _texture_2) {
+
+	auto& texture = registry.getComponentUnsafe<SwitchTexture>(_entity);
+	texture.texture_1 = _texture_1;
+	texture.texture_2 = _texture_2;
+
+}
+
+const graphics::Texture2D* System::getSwitchTexture(Entity& _entity, bool _boolean) {
+	if (_boolean == false) {
+		return registry.getComponentUnsafe<SwitchTexture>(_entity).texture_1;
+	}
+	else {
+		return registry.getComponentUnsafe<SwitchTexture>(_entity).texture_2;
+	}
+}
+
+void System::addBool(Entity& _entity, bool _boolean) {
+	registry.addComponent<Boolean>(_entity, _boolean);
+}
+
+void System::setBool(Entity& _entity, bool _boolean) {
+	Boolean& _Bool = registry.getComponentUnsafe<Boolean>(_entity);
+	_Bool.check = _boolean;
+}
+
+bool System::getBool(Entity& _entity) {
+	return registry.getComponentUnsafe<Boolean>(_entity).check;
+}
