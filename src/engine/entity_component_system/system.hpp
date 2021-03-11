@@ -135,6 +135,18 @@ public:
 	void addSlider(Entity& _entity, Slider _slider);
 
 	void addBox2D(Entity& _entity, glm::vec2 _p1, glm::vec2 _p2);
+	
+	void addSwitchTexture(Entity& _entity, const graphics::Texture2D* _texture_1, const graphics::Texture2D* _texture_2);
+
+	void setSwitchTexture(Entity& _entity, const graphics::Texture2D* _texture_1, const graphics::Texture2D* _texture_2);
+	
+	void addBool(Entity& _entity, bool _boolean);
+
+	void setBool(Entity& _entity, bool _boolean);
+
+	bool getBool(Entity& _entity);
+
+	const graphics::Texture2D* getSwitchTexture(Entity& _entity, bool _boolean);
 
 
 	/* ################ Utils-System ################ */
