@@ -46,6 +46,14 @@ public:
 	void updateSlider();
 
 	int getLevel(Entity _entity);
+	
+	void addCheck(Entity& _ent, glm::vec3 _position, const graphics::Texture2D& _planeTexture1, const graphics::Texture2D& _planeTexture2);
+
+	void changeTexture(Entity& _ent, const graphics::Texture2D* _planeTexture);
+
+	void changeSwitch(Entity& _ent);
+
+	bool askBool(Entity& _ent);
 
 private:
 	System& system;
