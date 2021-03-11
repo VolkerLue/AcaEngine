@@ -778,3 +778,37 @@ void GuiToolkit::updateSlider() {
 int GuiToolkit::getLevel(Entity _entity) {
 	return system.registry.getComponentUnsafe<Slider>(_entity).currentLevel;
 }
+
+void GuiToolkit::addCheck(Entity& _ent, glm::vec3 _position, const graphics::Texture2D& _planeTexture1, const graphics::Texture2D& _planeTexture2) {
+
+	system.createEntity(_ent);
+	system.addMesh(_ent, &planeMesh);
+	system.addTexture(_ent, &_planeTexture1);
+	system.addSwitchTexture(_ent, &_planeTexture1, &_planeTexture2);
+	system.addTransform(_ent, glm::mat4(1.f));
+	system.addPosition(_ent, _position);
+	system.addScale(_ent, glm::vec3(0.1f, 0.1f, 0.5f));
+	system.addAABB(_ent, false);
+	system.addBool(_ent, false);
+}
+
+void  GuiToolkit::changeTexture(Entity& _ent, const graphics::Texture2D* _planeTexture) {
+	system.setTexture(_ent, _planeTexture);
+}
+
+void  GuiToolkit::changeSwitch(Entity& _ent) {
+	bool _boolean;
+	if (system.getBool(_ent) == true) {
+		_boolean = false;
+	}
+	else {
+		_boolean = true;
+	}
+	system.setBool(_ent, _boolean);
+	system.setTexture(_ent, system.getSwitchTexture(_ent, _boolean));
+	
+}
+
+bool GuiToolkit::askBool(Entity& _ent) {
+	return system.getBool(_ent);
+}
