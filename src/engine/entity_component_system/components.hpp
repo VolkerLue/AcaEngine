@@ -21,6 +21,11 @@ struct Texture {
 	const graphics::Texture2D* texture;
 };
 
+struct SwitchTexture {
+	const graphics::Texture2D* texture_1;
+	const graphics::Texture2D* texture_2;
+};
+
 struct Position {
 	glm::vec3 position;
 };
@@ -108,3 +113,8 @@ struct Button {};
 struct TextField {
 	bool pressed;
 };
+
+struct Boolean {
+	bool check;
+};
+
