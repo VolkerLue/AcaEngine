@@ -6,10 +6,7 @@ System::System() :
 	meshRenderer(),
 	fontRenderer(graphics::FontManager::get("fonts/AnonymousPro.caf")),
 	cameraPerspective(graphics::Camera(90.f, 1.f, 150.f)),
-	cameraOrthogonal(graphics::Camera(glm::vec2(1.f * graphics::Device::getAspectRatio(), 1.f)))
-{
-	utils::MeshLoader::clear();
-}
+	cameraOrthogonal(graphics::Camera(glm::vec2(1.f * graphics::Device::getAspectRatio(), 1.f))) {}
 
 /* ################ Entity-System ################ */
 Entity& System::createEntity(Entity& entity) {

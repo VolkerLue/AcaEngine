@@ -7,6 +7,8 @@ GuiToolkit::GuiToolkit(System& _system) :
 	redTexture(*graphics::Texture2DManager::get("textures/red.png",
 		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
 	blackTexture(*graphics::Texture2DManager::get("textures/black.png",
+		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	greyTexture(*graphics::Texture2DManager::get("textures/lightGray.png",
 		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	pressedButton = false;
@@ -722,31 +724,47 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 
 	
 }
-void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel) {
+void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertical) {
 	Entity* levelEntities = new Entity[_levels];
 	Slider slider = { _entity, levelEntities, _selectedLevel, _levels };
 	system.addMesh(_entity, &planeMesh);
-	system.addTexture(_entity, graphics::Texture2DManager::get("textures/lightGray.png",
-		graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	system.addTexture(_entity, &greyTexture);
 	system.addTransform(_entity, glm::mat4(1.f));
 	system.addPosition(_entity, _position);
 	system.addScale(_entity, _scale);
 	system.addOrthogonal(_entity);
 	slider.backgroundEntity = _entity;
-	float sizeLevel = _scale.y / _levels * 0.8f;
-	float sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
+	float sizeLevel;
+	float sizeLevelDistance;
+	if (vertical) {
+		sizeLevel = _scale.y / _levels * 0.8f;
+		sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
+	} 
+	else {
+		sizeLevel = _scale.x / _levels * 0.8;
+		sizeLevelDistance = _scale.x / (_levels - 1) * 0.2;
+	}
 	for (int i = 0; i < _levels; i++) {
 		Entity levelEntity;
 		system.createEntity(levelEntity);
 		system.addMesh(levelEntity, &planeMesh);
 		system.addTransform(levelEntity, glm::mat4(1.f));
-		glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
-		system.addPosition(levelEntity, pos);
-		glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
-		system.addScale(levelEntity, sca);
-		system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
-		system.addOrthogonal(levelEntity);
-		if (i == _selectedLevel) {
+		if (vertical) {
+			glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
+			system.addPosition(levelEntity, pos);
+			glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
+			system.addScale(levelEntity, sca);
+			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+		}
+		else {
+			glm::vec3 pos = glm::vec3(i * (sizeLevel + sizeLevelDistance), 0.f, 0.f) + _position;
+			system.addPosition(levelEntity, pos);
+			glm::vec3 sca = glm::vec3(1.f / _levels * 0.8, 1.f, 1.f) * _scale;
+			system.addScale(levelEntity, sca);
+			system.addBox2D(levelEntity, glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+		}
+		
+		if (i <= _selectedLevel) {
 			system.addTexture(levelEntity, &redTexture);
 			slider.currentLevel = i;
 		}
@@ -754,11 +772,12 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 			system.addTexture(levelEntity, &blackTexture);
 		}
 		slider.levelEntities[i] = levelEntity;
+		system.addOrthogonal(levelEntity);
 	}
 	system.addSlider(_entity, slider);
 }
 
-void GuiToolkit::updateSlider() {	//balken, quer, ggf. text, move, ggf. minimaler konstruktor, meshrenderer setter, gamestates auswählen
+void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor, gamestates auswählen
 	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
 	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
@@ -766,9 +785,18 @@ void GuiToolkit::updateSlider() {	//balken, quer, ggf. text, move, ggf. minimale
 			for (int i = 0; i < slider.numberOfLevels; i++) {
 				math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
 				if (currentBox.isIn(cursorPos)) {
-					system.setTexture(slider.levelEntities[slider.currentLevel], &blackTexture);
-					system.setTexture(slider.levelEntities[i], &redTexture);
+					if (i > slider.currentLevel) {
+						for (int j = slider.currentLevel; j <= i; j++) {
+							system.setTexture(slider.levelEntities[j], &redTexture);
+						}
+					}
+					else if (i < slider.currentLevel) {
+						for (int j = slider.currentLevel; j > i; j--) {
+							system.setTexture(slider.levelEntities[j], &blackTexture);
+						}
+					}
 					slider.currentLevel = i;
+					break;
 				}
 			}
 		}

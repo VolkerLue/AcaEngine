@@ -41,7 +41,7 @@ public:
 
 	void updateKeyInputActions(Entity& _entity, System::Function& _function, TextField& _textField);
 
-	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel);
+	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertcal);
 
 	void updateSlider();
 
@@ -54,6 +54,7 @@ private:
 	bool pressedTextField;
 	const graphics::Texture2D& redTexture;
 	const graphics::Texture2D& blackTexture;
+	const graphics::Texture2D& greyTexture;
 
 	std::string nullString = "";
 	std::map<uint32_t, std::string> textFieldsDefaults;
