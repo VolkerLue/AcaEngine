@@ -5,7 +5,7 @@ System::System() :
 	registry(),
 	meshRenderer(),
 	fontRenderer(graphics::FontManager::get("fonts/AnonymousPro.caf")),
-	cameraPerspective(graphics::Camera(90.f, 1.f, 150.f)),
+	cameraPerspective(graphics::Camera(45.f, 1.f, 150.f)),
 	cameraOrthogonal(graphics::Camera(glm::vec2(1.f * graphics::Device::getAspectRatio(), 1.f))) {}
 
 /* ################ Entity-System ################ */
@@ -202,6 +202,7 @@ void System::updateAABB() {
 }
 
 int System::removeIntersecting() {
+	updateAABB();
 	utils::SparseOctree<Entity, 3, float> sparseOctree;
 	registry.execute<Entity, Box>([&](Entity ent, Box box) {
 		if (!box.isProjectile) sparseOctree.insert(box.transformedAabb, ent);

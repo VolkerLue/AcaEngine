@@ -33,19 +33,22 @@ void Shooter::update(float _time, float _deltaTime) {
 	_time += timePaused;
 	if (_time > 100) finished = true;
 
-	system.updateTransform(_deltaTime);
+	
 	system.updatePosition(_deltaTime);
 	system.updateOrientation(_deltaTime);
+	system.updateTransform(_deltaTime);
+	
 
 	if (shot == 0 && input::InputManager::isButtonPressed(input::MouseButton::LEFT)) {
 		glm::vec3 curserPos = system.cameraPerspective.toWorldSpace(input::InputManager::getCursorPos());
 		entities.push_back(EntityCreationInterface::createShootablePlanet(system, glm::mat4(1.f), glm::vec3(curserPos), 
-			glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(curserPos * 50.f), true));
+			glm::vec3(0.7f, 0.7f, 0.7f), glm::vec3(curserPos * 150.f), true));
 		shot = 30;
 	}
 	else if (shot > 0) {
 		shot--;
 	}
+
 	int deletedCrates = system.removeIntersecting();
 
 	for (int i = 0; i < deletedCrates; i++) {
