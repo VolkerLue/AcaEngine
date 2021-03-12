@@ -107,11 +107,11 @@ public:
 
 	void addAABB(Entity& ent, bool isProjectile);
 
-	void addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, float intensity);
+	void addPointLight(Entity& _entity, glm::vec3 _position, glm::vec3 _color, float _intensity);
 
-	void addLightConstants(float kc, float kq, float ke);
+	void addLightConstants(float _constantC, float _constantQ, float _constantE);
 
-	void setLightConstants(float kc, float kq, float ke);
+	void setLightConstants(float _constantC, float _constantQ, float _constantE);
 
 	void addText(Entity& _entity, char* _text, glm::vec3 _position, float _size, glm::vec4 _color, float _rotation, float _alignX, float _alignY, bool _roundToPixel);
 

@@ -3,7 +3,7 @@
 
 Shooter::Shooter() : GameState(), system(), shot(0), timePaused{ 0.0f } {
 	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
-		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 5.f));
+		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 10.f));
 	for (int i = 0; i < 50; i++) {
 		entities.push_back(EntityCreationInterface::createRotatingCrate(system, glm::mat4(1.f), 
 			glm::vec3(rand() % 51 + (-25), rand() % 51 + (-25), rand() % 10 + (-55)), glm::vec3(1.f, 0.5f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f),

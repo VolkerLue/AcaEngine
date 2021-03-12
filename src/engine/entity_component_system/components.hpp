@@ -67,13 +67,13 @@ struct PointLight {
 	glm::vec3 position;
 	glm::vec3 color;
 	float intensity;
-	int AOE;
+	int areaOfEffect;
 };
 
 struct LightConstants {
-	float kc;
-	float kq;
-	float ke;
+	float constantC;
+	float constantQ;
+	float constantE;
 };
 
 struct Text {

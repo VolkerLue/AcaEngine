@@ -68,33 +68,33 @@ void System::setCameraPerspective(float _fov, float _zNear, float zFar) {
 	cameraPerspective = graphics::Camera(_fov, _zNear, zFar);
 }
 
-void System::uploadLights(Entity ent) {
+void System::uploadLights(Entity _ent) {
 	meshRenderer.program.use();
 	//get Constants and upload them
-	float kc;
-	float kq;
-	float ke;
+	float constantC;
+	float constantQ;
+	float constantE;
 	registry.execute<LightConstants>([&](LightConstants& lc) {
-		kc = lc.kc;
-		kq = lc.kq;
-		ke = lc.ke;
+		constantC = lc.constantC;
+		constantQ = lc.constantQ;
+		constantE = lc.constantE;
 		});
-	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("kc"), kc);
-	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("kq"), kq);
-	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("ke"), ke);
+	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("kc"), constantC);
+	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("kq"), constantQ);
+	graphics::glCall(glUniform1f, meshRenderer.program.getUniformLoc("ke"), constantE);
 	
 	//find nearest lights and upload them
-	Box& box = registry.getComponentUnsafe<Box>(ent);
+	Box& box = registry.getComponentUnsafe<Box>(_ent);
 	glm::vec3 min = box.transformedAabb.min;
 	glm::vec3 max = box.transformedAabb.max;
 	float distance;
-	float intens;
+	float intensity;
 	std::map<float, Entity, std::greater<float>> lights;
 	registry.execute<Entity, PointLight>([&](Entity ent, PointLight& pl) {
 		distance = std::min(glm::distance(min, pl.position), glm::distance(max, pl.position));
-		if (distance < pl.AOE) {
-			intens = pl.intensity / (1 + kc * distance + kq * distance * distance + glm::exp(-ke * distance));
-			lights[intens] = ent;
+		if (distance < pl.areaOfEffect) {
+			intensity = pl.intensity / (1 + constantC * distance + constantC * distance * distance + glm::exp(-constantE * distance));
+			lights[intensity] = ent;
 		}
 		});
 	int numLights = lights.size();
@@ -371,39 +371,37 @@ void System::addAABB(Entity& ent, bool isProjectile) {
 	registry.addComponent<Box>(ent, isProjectile, math::AABB<3>(min, max), math::AABB<3>(minTransformed, maxTransformed));
 }
 
-void System::addPointLight(Entity& ent, glm::vec3 position, glm::vec3 color, float intensity)
-{
-	float kc;
-	float kq;
-	float ke;
-	registry.execute<LightConstants>([&](LightConstants& lc) {
-		kc = lc.kc;
-		kq = lc.kq;
-		ke = lc.ke;
+void System::addPointLight(Entity& _entity, glm::vec3 _position, glm::vec3 _color, float _intensity) {
+	float constantC;
+	float constantQ;
+	float constantE;
+	registry.execute<LightConstants>([&](LightConstants& lightConstants) {
+		constantC = lightConstants.constantC;
+		constantQ = lightConstants.constantQ;
+		constantE = lightConstants.constantE;
 		});
-	float intens = 0.0f;
-	int d = 0;
-	for (; d < 1000; d++) {
-		intens = intensity / (1 + kc * d + kq * d * d + glm::exp(-ke * d));
-		if (intens < 0.01) {
-			d = d - 1;
+	float intensity = 0.0f;
+	int distance = 0;
+	for (; distance < 1000; distance++) {
+		intensity = _intensity / (1 + constantC * distance + constantQ * distance * distance + glm::exp(-constantE * distance));
+		if (intensity < 0.01) {
+			distance = distance - 1;
 			break;
 		}
 	}
-	registry.addComponent<PointLight>(ent, position, color, intensity, d);
+	registry.addComponent<PointLight>(_entity, _position, _color, _intensity, distance);
 }
 
-void System::addLightConstants(float kc, float kq, float ke)
-{
-	registry.addComponent<LightConstants>(registry.create(), kc, kq, ke);
+void System::addLightConstants(float _constantC, float _constantQ, float _constantE) {
+	registry.addComponent<LightConstants>(registry.create(), _constantC, _constantQ, _constantE);
 }
 
-void System::setLightConstants(float kc, float kq, float ke)
+void System::setLightConstants(float _constantC, float _constantQ, float _constantE)
 {
-	registry.execute<LightConstants>([&](LightConstants& lc) {
-		lc.kc = kc;
-		lc.kq = kq;
-		lc.ke = ke;
+	registry.execute<LightConstants>([&](LightConstants& lightConstants) {
+		lightConstants.constantC = _constantC;
+		lightConstants.constantQ = _constantQ;
+		lightConstants.constantE = _constantE;
 		});
 }
 
