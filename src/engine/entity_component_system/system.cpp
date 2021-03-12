@@ -30,14 +30,14 @@ std::optional<Entity> System::getEntity(EntityRef _entity) const {
 void System::draw() {
 	updateAABB();
 
-	//glDisable(GL_DEPTH_TEST);	
 	// Text draw
 	if (!fontRenderer->isEmpty()) fontRenderer->clearText(); 
 	registry.execute<Text>([&](Text _text) {	
 			fontRenderer->draw(_text.position, _text.text, _text.size, _text.color, _text.rotation, _text.alignX, _text.alignY, _text.roundToPixel);
 		});	
 	fontRenderer->present(cameraOrthogonal);
-
+	
+	meshRenderer.set("shader/mesh3.vert", "shader/mesh3.frag");
 	// Orthogonal draw	
 	meshRenderer.clear();
 	registry.execute<Mesh, Texture, Transform, Orthogonal>([&](
@@ -46,8 +46,8 @@ void System::draw() {
 		});
 	meshRenderer.present(cameraOrthogonal);
 
+	meshRenderer.set("shader/mesh2.vert", "shader/mesh2.frag");
 	// Perspective draw
-	//glEnable(GL_DEPTH_TEST);
 	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
 		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Perspective& perspective) {
 			meshRenderer.clear();

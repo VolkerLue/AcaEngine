@@ -42,7 +42,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		//interuption keys
 		//saving of t in state
 		std::unique_ptr<GameState> current = std::move(states.back());
-		//GameState& current = *states.back();
+
 		
 		current->onResume();
 		float t = 0;
@@ -52,7 +52,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		rightPressed = leftPressed = spacePressed = numPressed = num1Pressed = num2Pressed = num3Pressed = num4Pressed = num5Pressed = num6Pressed = num7Pressed = 
 			num8Pressed = num9Pressed = false;
 		pressedNumber = 0;
-		while (!current.isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
+		while (!current->isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -63,7 +63,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 				dt -= timeStep;
 				current->update(t, timeStep);
 			}
-			current.draw(t, dt / timeStep);
+			current->draw(t, dt / timeStep);
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 
@@ -151,7 +151,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			}
 		}
 		else if (spacePressed) {
-			current.newState();
+			current->newState();
 		}
 		else if (numPressed) {
 			chooseState(t, pressedNumber);

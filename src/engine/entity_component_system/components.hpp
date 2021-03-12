@@ -101,6 +101,7 @@ struct Slider {
 	Entity* levelEntities;
 	int currentLevel;
 	int numberOfLevels;
+	bool vertical;
 };
 
 struct Button {

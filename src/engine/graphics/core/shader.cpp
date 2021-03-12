@@ -95,6 +95,14 @@ namespace graphics {
 		glCall(glUseProgram, m_programID);
 	}
 
+	void Program::clear()
+	{
+		while (m_numShaders > 0) {
+			glCall(glDetachShader, m_programID, m_shaders[m_numShaders - 1]->m_shaderID);
+			m_numShaders--;
+		}
+	}
+
 	void Program::link()
 	{
 		if (!m_programID)

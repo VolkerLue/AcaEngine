@@ -20,6 +20,8 @@ namespace graphics {
 		void draw(const Mesh& _mesh, const Texture2D& _texture, const glm::mat4& _transform);
 		void present(const Camera& _camera);
 		void clear();
+		void set(const char* _vertex, const char* _fragment);
+
 		Program program;
 	private:
 		struct MeshInstance {

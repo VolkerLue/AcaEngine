@@ -97,8 +97,8 @@ ButtonDemo::ButtonDemo() :
 	containerElements1.push_back(system.createEntity(entity));	
 	guiToolkit.addTextField(containerElements1.back(), functionExampleTextField, textFieldText);
 
-	//containerElements1.push_back(system.createEntity(entity));
-	//guiToolkit.addSlider(containerElements1.back(), glm::vec3(0.f), glm::vec3(1.f), 10, 0);
+	containerElements1.push_back(system.createEntity(entity));
+	guiToolkit.addSlider(containerElements1.back(), glm::vec3(0.f), glm::vec3(1.f), 10, 0, true);
 
 	containerElements1.push_back(system.createEntity(entity));
 	guiToolkit.addCheckBox(containerElements1.back(), glm::vec3(0.4f, 0.91f, 0.f), glm::vec3(0.1f, 0.05f, 1.f), redTexture, greenTexture, functionExampleCheckBox, checkBoxText, glm::vec4(0.f));;

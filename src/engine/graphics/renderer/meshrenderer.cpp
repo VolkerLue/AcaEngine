@@ -46,5 +46,16 @@ namespace graphics {
 	void MeshRenderer::clear() {
 		instances.clear();
 	}
+	
+	void MeshRenderer::set(const char* _vertex, const char* _fragment) 
+	{
+		program.clear();
+		program.attach(ShaderManager::get(_vertex, ShaderType::VERTEX));
+		program.attach(ShaderManager::get(_fragment, ShaderType::FRAGMENT));
+		program.link();
+	}
 
 }
+
+
+

@@ -296,17 +296,17 @@ void GuiToolkit::updateCheckBox()
 
 
 /* ################ Slider ################ */
-void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertical) 
+void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool _vertical) 
 {
 	_position.x *= graphics::Device::getAspectRatio();
 	_scale.x *= graphics::Device::getAspectRatio();
 	
 	Entity* levelEntities = new Entity[_levels];
-	Slider slider = { _entity, levelEntities, _selectedLevel, _levels };
+	Slider slider = { _entity, levelEntities, _selectedLevel, _levels, _vertical };
 
 	float sizeLevel;
 	float sizeLevelDistance;
-	if (vertical) {
+	if (_vertical) {
 		sizeLevel = _scale.y / _levels * 0.8f;
 		sizeLevelDistance = _scale.y / (_levels - 1) * 0.2f;
 	}
@@ -319,7 +319,7 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 		system.createEntity(levelEntity);
 		system.addMesh(levelEntity, &planeMesh);
 		system.addTransform(levelEntity, glm::mat4(1.f));
-		if (vertical) {
+		if (_vertical) {
 			glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + _position;
 			system.addPosition(levelEntity, pos);
 			glm::vec3 sca = glm::vec3(1.f, 1.f / _levels * 0.8, 1.f) * _scale;
@@ -351,13 +351,14 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 	system.addPosition(_entity, _position);
 	system.addScale(_entity, _scale);
 	system.addOrthogonal(_entity);
-	slider.backgroundEntity = _entity;
+	system.addMoved(_entity, false);
 }
 
 void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor, gamestates auswählen
 	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
-	system.registry.execute<Slider, Position, Scale>([&](Slider& slider, Position& position, Scale& scale) {
+	system.registry.execute<Slider, Position, Scale, Moved>([&](Slider& slider, Position& position, Scale& scale, Moved& moved) {
+		
 		if (isPressed) {
 			for (int i = 0; i < slider.numberOfLevels; i++) {
 				math::Rectangle currentBox = system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box;
@@ -378,11 +379,38 @@ void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor,
 			}
 		}
 
-		//if (moved.moved == true) {
+		if (moved.moved == true) {
 
+			float sizeLevel;
+			float sizeLevelDistance;
 
-		//	moved.moved = false;
-		//}
+			if (slider.vertical) {
+				sizeLevel = scale.scale.y / slider.numberOfLevels * 0.8f;
+				sizeLevelDistance = scale.scale.y / (slider.numberOfLevels - 1) * 0.2f;
+			}
+			else {
+				sizeLevel = scale.scale.x / slider.numberOfLevels * 0.8;
+				sizeLevelDistance = scale.scale.x / (slider.numberOfLevels - 1) * 0.2;
+			}
+			for (int i = 0; i < slider.numberOfLevels; i++) {
+
+				if (slider.vertical) {
+					glm::vec3 pos = glm::vec3(0.f, i * (sizeLevel + sizeLevelDistance), 0.f) + position.position;
+					system.setPosition(slider.levelEntities[i], pos);
+					glm::vec3 sca = glm::vec3(1.f, 1.f / slider.numberOfLevels * 0.8, 1.f) * scale.scale;
+					system.setScale(slider.levelEntities[i], sca);
+					system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box = math::Rectangle(glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+				}
+				else {
+					glm::vec3 pos = glm::vec3(i * (sizeLevel + sizeLevelDistance), 0.f, 0.f) + position.position;
+					system.setPosition(slider.levelEntities[i], pos);
+					glm::vec3 sca = glm::vec3(1.f / slider.numberOfLevels * 0.8, 1.f, 1.f) * scale.scale;
+					system.setScale(slider.levelEntities[i], sca);
+					system.registry.getComponentUnsafe<Box2D>(slider.levelEntities[i]).box = math::Rectangle(glm::vec2(pos.x, pos.y), glm::vec2(pos.x + sca.x, pos.y + sca.y));
+				}
+			}
+			moved.moved = false;
+		}
 
 	});
 }

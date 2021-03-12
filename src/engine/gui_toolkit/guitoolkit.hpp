@@ -53,7 +53,7 @@ public:
 
 
 	/* ################ Slider ################ */
-	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool vertcal);
+	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool _vertical);
 
 	void updateSlider();
 

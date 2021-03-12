@@ -28,6 +28,8 @@ namespace graphics {
 
 		static void unload(Handle _shader);
 
+
+
 	private:
 		/// Construction to create a shader from source code.
 		///
@@ -55,6 +57,8 @@ namespace graphics {
 
 		/// Use this program now, links if necessary.
 		void use() const;
+
+		void clear();
 
 		/// Build program from the attached files.
 		void link();
