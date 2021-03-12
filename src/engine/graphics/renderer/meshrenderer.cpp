@@ -8,8 +8,8 @@
 namespace graphics {
 
 	MeshRenderer::MeshRenderer() {
-		program.attach(ShaderManager::get("shader/mesh3.vert", ShaderType::VERTEX));
-		program.attach(ShaderManager::get("shader/mesh3.frag", ShaderType::FRAGMENT));
+		program.attach(ShaderManager::get("shader/mesh2.vert", ShaderType::VERTEX));
+		program.attach(ShaderManager::get("shader/mesh2.frag", ShaderType::FRAGMENT));
 		program.link();
 
 		graphics::VertexAttribute va[3];

@@ -19,7 +19,10 @@ public:
 	~Game();
 
 	//Start the game loop with _initialState on the stack
+	//Keys Left, Right and Numbers to switch between states, Space to restart State
 	void run(std::unique_ptr<GameState> _initialState);
+
+	void chooseState(float time, int number);
 
 	void addState(std::unique_ptr<GameState> _state);
 
