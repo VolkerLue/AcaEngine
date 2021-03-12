@@ -55,13 +55,13 @@ int main(int argc, char* argv[])
 	//game.run(std::make_unique<SliderDemo>());
 
 	Game game;
+	game.addState(std::make_unique<FreeFall>());
 	game.addState(std::make_unique<Spring>());
 	game.run(std::make_unique<ButtonDemo>());
-
-	utils::MeshLoader::clear();
-	graphics::ShaderManager::clear();
-	graphics::Texture2DManager::clear();
-
+	
+	//utils::MeshLoader::clear();
+	//graphics::ShaderManager::clear();
+	//graphics::Texture2DManager::clear();
 	graphics::FontManager::clear();
 	
 	//TODO: auswahl Gamestates, bearbeitung slider
