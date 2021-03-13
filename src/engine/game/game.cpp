@@ -5,6 +5,7 @@
 int pressedNumber;
 bool numPressed;
 
+
 Game::Game() {
 	graphics::Device::initialize(3000, 2000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
 	window = graphics::Device::getWindow();

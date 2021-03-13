@@ -51,6 +51,8 @@ public:
 
 	void updateCheckBox();
 
+	void deleteCheckBox(Entity& _entity);
+
 
 	/* ################ Slider ################ */
 	void addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool _vertical);

@@ -2,6 +2,8 @@
 #include "gamestate.hpp"
 #include "../entity_component_system/system.hpp"
 #include "../gui_toolkit/entity_creation_interface.hpp"
+#include <engine/gui_toolkit/guitoolkit.hpp>
+#include "gamehelper.hpp"
 
 
 class UpAndDown : public GameState {
@@ -20,7 +22,12 @@ public:
 	bool isFinished();
 
 private:
+	const graphics::Texture2D& darkBlueTexture;
+	const graphics::Texture2D& lightBlueTexture;
 	Entity entity;
+	Entity menuButton;
 	System system;
+	GuiToolkit guiToolkit;
+	std::string menu;
 	float timePaused;
 };

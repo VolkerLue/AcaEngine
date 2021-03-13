@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <time.h> 
 #include "../gui_toolkit/entity_creation_interface.hpp"
+#include "../gui_toolkit/guitoolkit.hpp"
+#include <engine/game/gamehelper.hpp>
 
 
 class Shooter : public GameState {
@@ -20,8 +22,15 @@ public:
 	bool isFinished();
 
 private:
+	const graphics::Texture2D& darkBlueTexture;
+	const graphics::Texture2D& lightBlueTexture;
 	std::list<Entity> entities;
+	Entity menuButton;
+	Entity checkBox;
 	System system;
+	GuiToolkit guiToolkit;
+	std::string menu;
+	std::string checkBoxText;
 	int shot;
 	float timePaused;
 };

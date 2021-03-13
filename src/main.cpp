@@ -28,7 +28,8 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-	//Physic: speed or acceleration with slider, lights: on / off, brightness, shooter: kantenerkennung on/off, maybe more targets
+	//Physic: lights:  with brightness in container, shooter: maybe more targets,  all: überschrift mit textdisplay
+	//bugs: farben lights, texturegröße freefall and upanddown
 	//TextDisplay: leertaste, rechts/links, zahlen; Checkbox: text is functionality slider: rgb of background, textdisplay and textfield linked
 
 	Game game;
@@ -37,7 +38,6 @@ int main(int argc, char* argv[])
 	game.addState(std::make_shared<FreeFall>());
 	game.addState(std::make_shared<Spring>());
 	game.addState(std::make_shared<Lights>());
-	game.addState(std::make_shared<SliderDemo>());
 	game.run(std::make_shared<ButtonDemo>());
 	
 	graphics::FontManager::clear();

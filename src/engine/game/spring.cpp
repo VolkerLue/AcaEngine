@@ -1,7 +1,17 @@
 #include "spring.hpp"
+#include "gamehelper.hpp"
+
+void getToMenu(Entity& _entity, System& _system) {
+	pressedNumber = 1;
+	numPressed = true;
+};
 
 
-Spring::Spring() : GameState(), system(), guiToolkit(system), timePaused{ 0.0f } {
+Spring::Spring() : GameState(), system(), guiToolkit(system), timePaused{ 0.0f }, 
+darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+ {
+	lastFactor = 1;
 	finished = false;
 	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
 		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 5.f));
@@ -9,13 +19,15 @@ Spring::Spring() : GameState(), system(), guiToolkit(system), timePaused{ 0.0f }
 		glm::vec3(0.f, 0.f, 0.f), 1.f, glm::vec3(0.f, 1.f, -15.f));
 	system.createEntity(sliderEntity);
 	guiToolkit.addSlider(sliderEntity, glm::vec3(0.1f, 0.1f, 0.f), glm::vec3(0.1f, 0.3f, 1.f), 10, 0, true);
+	menu = "Main Menu";
+	system.createEntity(menuButton);
+	guiToolkit.addButton(menuButton, glm::vec3(0.01f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, getToMenu, menu, glm::vec4(1.f));
 }
 
 void Spring::newState() {
 	finished = false;
 	timePaused = 0.0f;
 	system.eraseEntity(entity);
-	system.createEntity(entity);
 	entity = EntityCreationInterface::createSpringPlanet(system, glm::mat4(1.f), glm::vec3(0.f, 5.f, -15.0f), glm::vec3(0.f, 0.f, 0.f),
 		glm::vec3(0.f, 0.f, 0.f), 1.f, glm::vec3(0.f, 1.f, -15.f));
 	guiToolkit.deleteSlider(sliderEntity);
@@ -25,9 +37,11 @@ void Spring::newState() {
 
 void Spring::update(float _time, float _deltaTime) {
 	_time += timePaused;
-	if (_time > 5) {
+	if (_time > 60) {
 		finished = true;
 	}
+	int level = system.registry.getComponentUnsafe<Slider>(sliderEntity).currentLevel + 1;
+	_deltaTime *= level;
 	system.springY(entity, _deltaTime);
 	system.updateVelocity(_deltaTime);
 	system.updatePosition(_deltaTime);
