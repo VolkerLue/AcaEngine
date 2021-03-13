@@ -6,7 +6,6 @@ int pressedNumber;
 bool numPressed;
 
 Game::Game() {
-	//acquires global resources
 	graphics::Device::initialize(3000, 2000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
 	window = graphics::Device::getWindow();
 	input::InputManager::initialize(window);
@@ -30,9 +29,6 @@ void Game::addState(std::shared_ptr<GameState> _state) {
 }
 
 void Game::run(std::shared_ptr<GameState> _initialState) {
-	//manages game states with a stack invoking the appropriate events
-	//controls delta time to maintain a smooth frame rate without wasting to much CPU time
-	//performs state update + rendering
 
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
@@ -42,9 +38,6 @@ void Game::run(std::shared_ptr<GameState> _initialState) {
 	
 
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
-		//states saved number or second stack
-		//interuption keys
-		//saving of t in state
 		std::shared_ptr<GameState> current = states.back();
 		
 		current->onResume();
@@ -200,7 +193,13 @@ void Game::chooseState(float time,  int number) {
 		}
 	}
 	else {
-		states.clear();	//correct memory management?
+		for (auto it = states.begin(); it != states.end(); it++) {
+			it->reset();
+		}
+		for (auto it = pausedStates.begin(); it != pausedStates.end(); it++) {
+			it->reset();
+		}
+		states.clear();
 	}
 
 }
