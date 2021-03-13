@@ -36,18 +36,18 @@ void System::draw() {
 			fontRenderer->draw(_text.position, _text.text, _text.size, _text.color, _text.rotation, _text.alignX, _text.alignY, _text.roundToPixel);
 		});	
 	fontRenderer->present(cameraOrthogonal);
-	
-	meshRenderer.set("shader/mesh3.vert", "shader/mesh3.frag");
+		
 	// Orthogonal draw	
+	meshRenderer.set("shader/mesh3.vert", "shader/mesh3.frag");
 	meshRenderer.clear();
 	registry.execute<Mesh, Texture, Transform, Orthogonal>([&](
 		const Mesh& mesh, const Texture texture, const Transform& transform, const Orthogonal& orthogonal) {
 			meshRenderer.draw(*mesh.mesh, *texture.texture, transform.transform);
 		});
 	meshRenderer.present(cameraOrthogonal);
-
-	meshRenderer.set("shader/mesh2.vert", "shader/mesh2.frag");
+		
 	// Perspective draw
+	meshRenderer.set("shader/mesh2.vert", "shader/mesh2.frag");
 	registry.execute<Entity, Mesh, Texture, Transform, Perspective>([&](
 		const Entity ent, const Mesh& mesh, const Texture texture, const Transform& transform, const Perspective& perspective) {
 			meshRenderer.clear();

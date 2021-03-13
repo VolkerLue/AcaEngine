@@ -70,7 +70,7 @@ ButtonDemo::ButtonDemo() :
 	// single Slider
 	Entity sliderEntity;
 	system.createEntity(sliderEntity);
-	guiToolkit.addSlider(sliderEntity, glm::vec3(0.22f, 0.94f, 0.f), glm::vec3(0.2f, 0.05f, 1.f), 10, 0, true);
+	guiToolkit.addSlider(sliderEntity, glm::vec3(0.22f, 0.94f, 0.f), glm::vec3(0.2f, 0.05f, 1.f), 10, 0, false);
 
 	/*##############################################################################*/
 

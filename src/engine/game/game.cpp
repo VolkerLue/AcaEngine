@@ -6,7 +6,7 @@ Game::Game() {
 	graphics::Device::initialize(3000, 2000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
 	window = graphics::Device::getWindow();
 	input::InputManager::initialize(window);
-	glClearColor(0.f, 1.f, 0.f, 1.f);
+	glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glfwSwapInterval(0); //VSync ON->(1) , OFF->(0)
@@ -42,7 +42,6 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		//interuption keys
 		//saving of t in state
 		std::unique_ptr<GameState> current = std::move(states.back());
-
 		
 		current->onResume();
 		float t = 0;
