@@ -15,9 +15,9 @@ Game::Game() {
 
 Game::~Game() {
 	graphics::Device::close(); 
-	//utils::MeshLoader::clear();
-	//graphics::ShaderManager::clear();
-	//graphics::Texture2DManager::clear();
+	utils::MeshLoader::clear();
+	graphics::ShaderManager::clear();
+	graphics::Texture2DManager::clear();
 	//graphics::FontManager::clear();
 }
 
@@ -41,9 +41,10 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		//states saved number or second stack
 		//interuption keys
 		//saving of t in state
-		std::unique_ptr<GameState> current = std::move(states.back());
+		GameState& current = *states.back();
+
 		
-		current->onResume();
+		current.onResume();
 		float t = 0;
 		const float timeStep = 0.01;
 		auto currentTime = clock::now();
@@ -51,7 +52,7 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		rightPressed = leftPressed = spacePressed = numPressed = num1Pressed = num2Pressed = num3Pressed = num4Pressed = num5Pressed = num6Pressed = num7Pressed = 
 			num8Pressed = num9Pressed = false;
 		pressedNumber = 0;
-		while (!current->isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
+		while (!current.isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -60,9 +61,9 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			while (dt >= timeStep) {
 				t += timeStep;
 				dt -= timeStep;
-				current->update(t, timeStep);
+				current.update(t, timeStep);
 			}
-			current->draw(t, dt / timeStep);
+			current.draw(t, dt / timeStep);
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 
@@ -135,32 +136,39 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		}
 
 		if (rightPressed) {
-			current->onPause(t);
+			current.onPause(t);
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
 			states.pop_back();
 		}
 		else if (leftPressed) {
 			if (pausedStates.size() == 0) {
-				current->newState();
+				current.newState();
 			}
 			else {
-				current->onPause(t);
+				current.onPause(t);
 				std::move(pausedStates.end() - 1, pausedStates.end(), std::back_inserter(states));
 				pausedStates.pop_back();
 			}
 		}
 		else if (spacePressed) {
-			current->newState();
+			current.newState();
 		}
 		else if (numPressed) {
 			chooseState(t, pressedNumber);
 		}
 		else {
-			current->newState();
+			current.newState();
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
 			states.pop_back();
 		}
-
+		if (glfwWindowShouldClose(window) || states.empty()) {
+			for (auto it = states.begin(); it != states.end(); it++) {
+				it->release();
+			}
+			for (auto it = pausedStates.begin(); it != pausedStates.end(); it++) {
+				it->release();
+			}
+		}
 	}
 }
 
