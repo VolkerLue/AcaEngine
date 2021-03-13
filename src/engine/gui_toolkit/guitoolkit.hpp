@@ -57,6 +57,8 @@ public:
 
 	void updateSlider();
 
+	void deleteSlider(Entity& _entity);
+
 
 	/* ################ Container ################ */
 	void addContainer(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, int _rows, int _colums, float _gapFactor, const graphics::Texture2D& _texture, bool _background, bool _movable, std::vector<Entity> _entities);

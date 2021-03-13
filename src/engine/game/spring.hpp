@@ -2,6 +2,7 @@
 #include "gamestate.hpp"
 #include "../entity_component_system/system.hpp"
 #include "engine/gui_toolkit/entity_creation_interface.hpp"
+#include "engine/gui_toolkit/guitoolkit.hpp"
 
 
 class Spring : public GameState {
@@ -19,6 +20,8 @@ public:
 
 private:
 	Entity entity;
+	Entity sliderEntity;
 	System system;
+	GuiToolkit guiToolkit;
 	float timePaused;
 };

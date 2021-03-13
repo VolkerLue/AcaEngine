@@ -27,7 +27,10 @@ int main(int argc, char* argv[])
 		//_CrtSetBreakAlloc(769028);
 #endif
 #endif
-	
+
+	//Physic: speed or acceleration with slider, lights: on / off, brightness, shooter: kantenerkennung on/off, maybe more targets
+	//TextDisplay: leertaste, rechts/links, zahlen; Checkboxtext is functionality, slider rgb of background
+
 	Game game;
 	game.addState(std::make_shared<Shooter>());
 	game.addState(std::make_shared<UpAndDown>());

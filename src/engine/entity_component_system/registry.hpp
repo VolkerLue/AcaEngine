@@ -206,7 +206,7 @@ public:
 		vector<Entity> ent = componentMap[comp[0]].entities;
 		for (int i = 1; i < comp.size(); i++) {
 			for (auto it = ent.begin(); it != ent.end();) {
-				if (componentMap[comp[i]].sparse.size() < it->id || componentMap[comp[i]].sparse[it->id] == -1) {
+				if (componentMap[comp[i]].sparse.size() <= it->id || componentMap[comp[i]].sparse[it->id] == -1) {
 					it = ent.erase(it);
 				}
 				else {

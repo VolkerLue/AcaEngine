@@ -415,6 +415,15 @@ void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor,
 	});
 }
 
+void GuiToolkit::deleteSlider(Entity& _entity) {
+	Slider& slider = system.registry.getComponentUnsafe<Slider>(_entity);
+	for (int i = 0; i < slider.numberOfLevels; i++) {
+		system.eraseEntity(slider.levelEntities[i]);
+	}
+	delete[] slider.levelEntities;
+	system.eraseEntity(_entity);
+}
+
 
 /* ################ Container ################ */
 void GuiToolkit::addContainer(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, int _rows, int _colums, float _gapFactor, const graphics::Texture2D& _texture, bool _background, bool _movable, std::vector<Entity> _entities)
