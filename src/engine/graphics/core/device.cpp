@@ -60,8 +60,8 @@ namespace graphics {
 		glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 		glfwWindowHint(GLFW_FOCUSED, GL_TRUE);//
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //We don't want the old OpenGL 
-		glfwWindowHint(GLFW_DECORATED, GL_FALSE);// 
-		glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);//
+		//glfwWindowHint(GLFW_DECORATED, GL_FALSE);
+		//glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
 
 		spdlog::info("dimensions: {} {}: full-screen?: {}", _width, _height, _fullScreen);
 		s_window = glfwCreateWindow(_width, _height, "AcaEngine", nullptr, nullptr);

@@ -8,6 +8,7 @@
 #include <engine/game/buttondemo.hpp>
 #include <engine/game/sliderdemo.hpp>
 
+
 // CRT's memory leak detection
 #ifndef NDEBUG 
 #if defined(_MSC_VER)
@@ -27,21 +28,15 @@ int main(int argc, char* argv[])
 #endif
 #endif
 	
-	srand(static_cast<unsigned int>(time(NULL)));
-
 	Game game;
-	game.addState(std::make_unique<Shooter>());
-	game.addState(std::make_unique<UpAndDown>());
-	game.addState(std::make_unique<FreeFall>());
-	game.addState(std::make_unique<Spring>());
-	game.addState(std::make_unique<Lights>());
-	game.addState(std::make_unique<SliderDemo>());
-	game.run(std::make_unique<ButtonDemo>());
+	game.addState(std::make_shared<Shooter>());
+	game.addState(std::make_shared<UpAndDown>());
+	game.addState(std::make_shared<FreeFall>());
+	game.addState(std::make_shared<Spring>());
+	game.addState(std::make_shared<Lights>());
+	game.addState(std::make_shared<SliderDemo>());
+	game.run(std::make_shared<ButtonDemo>());
 	
-	//utils::MeshLoader::clear();
-	//graphics::ShaderManager::clear();
-	//graphics::Texture2DManager::clear();
 	graphics::FontManager::clear();
-
 	return EXIT_SUCCESS;
 }

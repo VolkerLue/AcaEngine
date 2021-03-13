@@ -1,4 +1,5 @@
 #include "buttondemo.hpp"
+#include "gamehelper.hpp"
 #include <iostream>
 
 
@@ -12,9 +13,38 @@ void functionExampleButton1(Entity& _entity, System& _system) {
 	glClearColor(1.f, 1.f, 1.f, 1.f);
 };
 
-static bool buttonDemoFinished = false;
-void functionExampleButton2(Entity& _entity, System& _system) {
+bool buttonDemoFinished = false;
+void buttonDemoExitFunction(Entity& _entity, System& _system) {
 	buttonDemoFinished = true;	
+};
+
+void chooseGameState1(Entity& _entity, System& _system) {	
+	pressedNumber = 1;
+	numPressed = true;
+};
+void chooseGameState2(Entity& _entity, System& _system) {
+	pressedNumber = 2;
+	numPressed = true;
+};
+void chooseGameState3(Entity& _entity, System& _system) {
+	pressedNumber = 3;
+	numPressed = true;
+};
+void chooseGameState4(Entity& _entity, System& _system) {
+	pressedNumber = 4;
+	numPressed = true;
+};
+void chooseGameState5(Entity& _entity, System& _system) {
+	pressedNumber = 5;
+	numPressed = true;
+};
+void chooseGameState6(Entity& _entity, System& _system) {
+	pressedNumber = 6;
+	numPressed = true;
+};
+void chooseGameState7(Entity& _entity, System& _system) {
+	pressedNumber = 7;
+	numPressed = true;
 };
 
 void functionExampleTextField(Entity& _entity, System& _system) {
@@ -50,10 +80,17 @@ ButtonDemo::ButtonDemo() :
 	textDisplayText = "TextDisplay";
 	checkBoxText = "CheckBox";
 	exit = "EXIT";
+	GameState1 = "GameState1";
+	GameState2 = "GameState2";
+	GameState3 = "GameState3";
+	GameState4 = "GameState4";
+	GameState5 = "GameState5";
+	GameState6 = "GameState6";
+	GameState7 = "GameState7";
 
 	// single button with all arguments
 	singleButton = system.createEntity(singleButton);
-	guiToolkit.addButton(singleButton, glm::vec3(0.01f, 0.01f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, functionExampleButton2, exit, glm::vec4(1.f));
+	guiToolkit.addButton(singleButton, glm::vec3(0.01f, 0.01f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, buttonDemoExitFunction, exit, glm::vec4(1.f));
 
 	// single textField with all arguments
 	singleTextField = system.createEntity(singleTextField);
@@ -76,22 +113,22 @@ ButtonDemo::ButtonDemo() :
 
 	// buttons for container1 
 	containerElements1.push_back(system.createEntity(entity));
-	guiToolkit.addButton(containerElements1.back(), functionExampleButton0, buttonText);
+	guiToolkit.addButton(containerElements1.back(), chooseGameState2, GameState2);
 
 	containerElements1.push_back(system.createEntity(entity));
-	guiToolkit.addButton(containerElements1.back(), functionExampleButton0, buttonText);
+	guiToolkit.addButton(containerElements1.back(), chooseGameState3, GameState3);
 
 	containerElements1.push_back(system.createEntity(entity));
-	guiToolkit.addButton(containerElements1.back(), functionExampleButton0, buttonText);
+	guiToolkit.addButton(containerElements1.back(), chooseGameState4, GameState4);
 
 	containerElements1.push_back(system.createEntity(entity));
-	guiToolkit.addButton(containerElements1.back(), functionExampleButton1, buttonText);
+	guiToolkit.addButton(containerElements1.back(), chooseGameState5, GameState5);
 
 	containerElements1.push_back(system.createEntity(entity));
-	guiToolkit.addButton(containerElements1.back(), functionExampleButton1, buttonText);
+	guiToolkit.addButton(containerElements1.back(), chooseGameState6, GameState6);
 
 	containerElements1.push_back(system.createEntity(entity));
-	guiToolkit.addButton(containerElements1.back(), functionExampleButton1, buttonText);
+	guiToolkit.addButton(containerElements1.back(), chooseGameState7, GameState7);
 		
 	// textFields for container1
 	containerElements1.push_back(system.createEntity(entity));	

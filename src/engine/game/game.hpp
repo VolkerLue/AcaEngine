@@ -4,9 +4,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <memory>
-#include <engine/gui_toolkit/entity_creation_interface.hpp>
 
 #include "gamestate.hpp"
+#include "../gui_toolkit/entity_creation_interface.hpp"
 #include "../graphics/core/device.hpp"
 #include "../input/inputmanager.hpp"
 
@@ -21,14 +21,14 @@ public:
 
 	//Start the game loop with _initialState on the stack
 	//Keys Left, Right and Numbers to switch between states, Space to restart State
-	void run(std::unique_ptr<GameState> _initialState);
+	void run(std::shared_ptr<GameState> _initialState);
 
 	void chooseState(float time, int number);
 
-	void addState(std::unique_ptr<GameState> _state);
+	void addState(std::shared_ptr<GameState> _state);
 	
 private:
 	GLFWwindow* window;	
-	std::vector<std::unique_ptr<GameState>> states;
-	std::vector<std::unique_ptr<GameState>> pausedStates;
+	std::vector<std::shared_ptr<GameState>> states;
+	std::vector<std::shared_ptr<GameState>> pausedStates;
 };

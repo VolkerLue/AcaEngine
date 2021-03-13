@@ -1,5 +1,9 @@
 #include "game.hpp"
-#include "game.hpp"
+#include "gamehelper.hpp"
+
+
+int pressedNumber;
+bool numPressed;
 
 Game::Game() {
 	//acquires global resources
@@ -10,6 +14,7 @@ Game::Game() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glfwSwapInterval(0); //VSync ON->(1) , OFF->(0)
+	srand(static_cast<unsigned int>(time(NULL)));
 	EntityCreationInterface::initialize();
 }
 
@@ -18,14 +23,13 @@ Game::~Game() {
 	utils::MeshLoader::clear();
 	graphics::ShaderManager::clear();
 	graphics::Texture2DManager::clear();
-	//graphics::FontManager::clear();
 }
 
-void Game::addState(std::unique_ptr<GameState> _state) {
+void Game::addState(std::shared_ptr<GameState> _state) {
 	states.push_back(std::move(_state));
 }
 
-void Game::run(std::unique_ptr<GameState> _initialState) {
+void Game::run(std::shared_ptr<GameState> _initialState) {
 	//manages game states with a stack invoking the appropriate events
 	//controls delta time to maintain a smooth frame rate without wasting to much CPU time
 	//performs state update + rendering
@@ -33,26 +37,27 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
 	states.push_back(std::move(_initialState));
-	bool rightPressed = false, leftPressed = false, spacePressed = false, numPressed = false, num1Pressed = false, num2Pressed = false, num3Pressed = false, num4Pressed = false,
+	bool rightPressed = false, leftPressed = false, spacePressed = false, /*numPressed = false,*/ num1Pressed = false, num2Pressed = false, num3Pressed = false, num4Pressed = false,
 		num5Pressed = false, num6Pressed = false, num7Pressed = false, num8Pressed = false, num9Pressed = false;
-	int pressedNumber = 0;
+	
 
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
 		//states saved number or second stack
 		//interuption keys
 		//saving of t in state
-		GameState& current = *states.back();
-
+		std::shared_ptr<GameState> current = states.back();
 		
-		current.onResume();
+		current->onResume();
 		float t = 0;
 		const float timeStep = 0.01;
 		auto currentTime = clock::now();
 		float dt = 0.f;
 		rightPressed = leftPressed = spacePressed = numPressed = num1Pressed = num2Pressed = num3Pressed = num4Pressed = num5Pressed = num6Pressed = num7Pressed = 
 			num8Pressed = num9Pressed = false;
+
 		pressedNumber = 0;
-		while (!current.isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
+
+		while (!current->isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -61,9 +66,9 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 			while (dt >= timeStep) {
 				t += timeStep;
 				dt -= timeStep;
-				current.update(t, timeStep);
+				current->update(t, timeStep);
 			}
-			current.draw(t, dt / timeStep);
+			current->draw(t, dt / timeStep);
 			glfwPollEvents();
 			glfwSwapBuffers(window);
 
@@ -136,37 +141,37 @@ void Game::run(std::unique_ptr<GameState> _initialState) {
 		}
 
 		if (rightPressed) {
-			current.onPause(t);
+			current->onPause(t);
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
 			states.pop_back();
 		}
 		else if (leftPressed) {
 			if (pausedStates.size() == 0) {
-				current.newState();
+				current->newState();
 			}
 			else {
-				current.onPause(t);
+				current->onPause(t);
 				std::move(pausedStates.end() - 1, pausedStates.end(), std::back_inserter(states));
 				pausedStates.pop_back();
 			}
 		}
 		else if (spacePressed) {
-			current.newState();
+			current->newState();
 		}
 		else if (numPressed) {
 			chooseState(t, pressedNumber);
 		}
 		else {
-			current.newState();
+			current->newState();
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));
 			states.pop_back();
 		}
 		if (glfwWindowShouldClose(window) || states.empty()) {
 			for (auto it = states.begin(); it != states.end(); it++) {
-				it->release();
+				it->reset();
 			}
 			for (auto it = pausedStates.begin(); it != pausedStates.end(); it++) {
-				it->release();
+				it->reset();
 			}
 		}
 	}

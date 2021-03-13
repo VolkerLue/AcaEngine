@@ -33,6 +33,14 @@ private:
 	std::string checkBoxText;
 	std::string exit;
 
+	std::string GameState1;
+	std::string GameState2;
+	std::string GameState3;
+	std::string GameState4;
+	std::string GameState5;
+	std::string GameState6;
+	std::string GameState7;
+
 	Entity entity;
 	Entity singleButton;
 	Entity singleTextField;
