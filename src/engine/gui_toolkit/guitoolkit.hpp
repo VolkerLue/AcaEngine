@@ -23,6 +23,14 @@ public:
 		addButton(_entity, glm::vec3(0.f), glm::vec3(1.f), darkBlueTexture, lightBlueTexture, true, _function, true, _text, glm::vec4(1.f));
 	}	
 
+	inline void addButton(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor) {
+		addButton(_entity, glm::vec3(0.f), glm::vec3(1.f), darkBlueTexture, lightBlueTexture, true, _function, true, _text, _textColor);
+	}
+
+	inline void addButton(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor, glm::vec3 _position, glm::vec3 _scale ) {
+		addButton(_entity, _position, _scale, darkBlueTexture, lightBlueTexture, true, _function, true, _text, _textColor);
+	}
+
 	void updateButton();
 	
 
@@ -31,6 +39,18 @@ public:
 
 	inline void addTextDisplay(Entity& _entity, std::string& _text) {
 		addTextDisplay(_entity, glm::vec3(0.f), glm::vec3(1.f), whiteTexture, _text, glm::vec4(0.f));
+	}
+
+	inline void addTextDisplay(Entity& _entity, std::string& _text, const graphics::Texture2D& _texture) {
+		addTextDisplay(_entity, glm::vec3(0.f), glm::vec3(1.f), _texture, _text, glm::vec4(0.f));
+	}
+
+	inline void addTextDisplay(Entity& _entity, std::string& _text, glm::vec4 _textColor) {
+		addTextDisplay(_entity, glm::vec3(0.f), glm::vec3(1.f), whiteTexture, _text, _textColor);
+	}
+
+	inline void addTextDisplay(Entity& _entity, std::string& _text, glm::vec3 _position, glm::vec3 _scale) {
+		addTextDisplay(_entity, _position, _scale, whiteTexture, _text, glm::vec4(0.f));
 	}
 
 	void updateTextDisplay();
@@ -48,6 +68,10 @@ public:
 
 	/* ################ Check-Box ################ */
 	void addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor);
+
+	inline void addCheckBox(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text) {
+		addCheckBox(_entity, glm::vec3(0.f), glm::vec3(1.f), redTexture, greenTexture, _function, _text, glm::vec4(0.f));
+	}
 
 	void updateCheckBox();
 
@@ -92,6 +116,7 @@ private:
 	const graphics::Texture2D& whiteTexture = (*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
 	const graphics::Texture2D& grayTexture = (*graphics::Texture2DManager::get("textures/gray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
 	const graphics::Texture2D& lightGrayTexture = (*graphics::Texture2DManager::get("textures/lightGray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
+	const graphics::Texture2D& greenTexture = (*graphics::Texture2DManager::get("textures/green.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)));
 	const graphics::Texture2D& redTexture;
 	const graphics::Texture2D& blackTexture;
 	const graphics::Texture2D& greyTexture;
@@ -106,8 +131,8 @@ private:
 
 	std::map<Entity, std::vector<Entity>> entitiesInContainer;
 
-	std::string off = "O";
-	std::string on = "X";
+	std::string off = "off";
+	std::string on = "On";
 
 	bool pressedKey_a;
 	bool pressedKey_b;

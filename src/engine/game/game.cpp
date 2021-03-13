@@ -2,14 +2,14 @@
 #include "gamehelper.hpp"
 
 
-int pressedNumber;
-bool numPressed;
+int choosenGameState;
+bool gameStateSwitcht;
 
 Game::Game() {
-	graphics::Device::initialize(3000, 2000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
+	graphics::Device::initialize(1600, 1000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
 	window = graphics::Device::getWindow();
 	input::InputManager::initialize(window);
-	glClearColor(0.5f, 0.5f, 0.5f, 0.5f);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glfwSwapInterval(0); //VSync ON->(1) , OFF->(0)
@@ -33,8 +33,7 @@ void Game::run(std::shared_ptr<GameState> _initialState) {
 	using clock = std::chrono::high_resolution_clock;
 	using duration_t = std::chrono::duration<float>;
 	states.push_back(std::move(_initialState));
-	bool rightPressed = false, leftPressed = false, spacePressed = false, /*numPressed = false,*/ num1Pressed = false, num2Pressed = false, num3Pressed = false, num4Pressed = false,
-		num5Pressed = false, num6Pressed = false, num7Pressed = false, num8Pressed = false, num9Pressed = false;
+	bool rightPressed = false, leftPressed = false, f1Pressed = false;
 	
 
 	while (!states.empty() && !glfwWindowShouldClose(window)) {
@@ -45,12 +44,11 @@ void Game::run(std::shared_ptr<GameState> _initialState) {
 		const float timeStep = 0.01;
 		auto currentTime = clock::now();
 		float dt = 0.f;
-		rightPressed = leftPressed = spacePressed = numPressed = num1Pressed = num2Pressed = num3Pressed = num4Pressed = num5Pressed = num6Pressed = num7Pressed = 
-			num8Pressed = num9Pressed = false;
+		rightPressed = leftPressed = f1Pressed = false;
 
-		pressedNumber = 0;
+		choosenGameState = 0;
 
-		while (!current->isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !spacePressed && !numPressed) {
+		while (!current->isFinished() && !glfwWindowShouldClose(window) && !leftPressed && !rightPressed && !f1Pressed && !choosenGameState) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			auto newTime = clock::now();
 			duration_t frameTime = newTime - currentTime;
@@ -73,62 +71,8 @@ void Game::run(std::shared_ptr<GameState> _initialState) {
 				leftPressed = true;
 				std::this_thread::sleep_for(std::chrono::milliseconds(250));
 			}
-			else if (input::InputManager::isKeyPressed(input::Key::SPACE)) {
-				spacePressed = true;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num1)) {
-				numPressed = true;
-				num1Pressed = true;
-				pressedNumber = 1;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num2)) {
-				numPressed = true;
-				num2Pressed = true;
-				pressedNumber = 2;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num3)) {
-				numPressed = true;
-				num3Pressed = true;
-				pressedNumber = 3;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num4)) {
-				numPressed = true;
-				num4Pressed = true;
-				pressedNumber = 4;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num5)) {
-				numPressed = true;
-				num5Pressed = true;
-				pressedNumber = 5;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num6)) {
-				numPressed = true;
-				num6Pressed = true;
-				pressedNumber = 6;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num7)) {
-				numPressed = true;
-				num7Pressed = true;
-				pressedNumber = 7;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num8)) {
-				numPressed = true;
-				num8Pressed = true;
-				pressedNumber = 8;
-				std::this_thread::sleep_for(std::chrono::milliseconds(250));
-			}
-			else if (input::InputManager::isKeyPressed(input::Key::Num9)) {
-				numPressed = true;
-				num9Pressed = true;
-				pressedNumber = 9;
+			else if (input::InputManager::isKeyPressed(input::Key::F1)) {
+				f1Pressed = true;
 				std::this_thread::sleep_for(std::chrono::milliseconds(250));
 			}
 		}
@@ -148,11 +92,11 @@ void Game::run(std::shared_ptr<GameState> _initialState) {
 				pausedStates.pop_back();
 			}
 		}
-		else if (spacePressed) {
+		else if (f1Pressed) {
 			current->newState();
 		}
-		else if (numPressed) {
-			chooseState(t, pressedNumber);
+		else if (choosenGameState) {
+			chooseState(t, choosenGameState);
 		}
 		else {
 			current->newState();

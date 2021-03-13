@@ -5,8 +5,8 @@
 #include <engine/game/freefall.hpp>
 #include <engine/game/shooter.hpp>
 #include <engine/game/lights.hpp>
-#include <engine/game/buttondemo.hpp>
-#include <engine/game/sliderdemo.hpp>
+#include <engine/game/mainmenu.hpp>
+#include <engine/game/settings.hpp>
 
 
 // CRT's memory leak detection
@@ -29,13 +29,13 @@ int main(int argc, char* argv[])
 #endif
 	
 	Game game;
-	game.addState(std::make_shared<Shooter>());
+	game.addState(std::make_shared<Settings>());
 	game.addState(std::make_shared<UpAndDown>());
 	game.addState(std::make_shared<FreeFall>());
 	game.addState(std::make_shared<Spring>());
 	game.addState(std::make_shared<Lights>());
-	game.addState(std::make_shared<SliderDemo>());
-	game.run(std::make_shared<ButtonDemo>());
+	game.addState(std::make_shared<Shooter>());
+	game.run(std::make_shared<MainMenu>());
 	
 	graphics::FontManager::clear();
 	return EXIT_SUCCESS;

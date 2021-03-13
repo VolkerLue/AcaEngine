@@ -1,5 +1,6 @@
 #pragma once
 
-extern int pressedNumber;
+// if pressedNumber > number of gamestates = exit game
+extern int choosenGameState;
 
-extern bool numPressed;
+extern bool gameStateSwitcht;
