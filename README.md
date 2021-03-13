@@ -1,7 +1,7 @@
 # AcaEngine
 The Acagamics Game Engine Course
 
-##GuiToolkit
+## GuiToolkit
 
 Das GuiToolkit stellt 4 Grundlegende Arten von Gui Objekten zur Verfügung: Slider, Checkboxes, Buttons, Textdisplays und Textfelder. 
 Alle Gui Objekte brauchen eine Entität, eine Position und eine Skalierung als Parameter.
@@ -46,7 +46,7 @@ if (buttonBox.isIn(cursorPos) == true){
 
 bei einfachen Funktionen wird diese berechnung in einer Updatefunktion im Toolkit berechnet.
 
-##Container
+## Container
 
 Container übernehmen die Positionierung und Skalierung der einzelnen Objekte. Container haben eine Position, eine Skalierung, Reihen und Spalten Zahl, einen Abstandparameter, eine Hintergrundtextur,
 zwei Booleans und einen Vector an Entitäten.
