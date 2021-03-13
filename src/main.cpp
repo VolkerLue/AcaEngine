@@ -29,7 +29,7 @@ int main(int argc, char* argv[])
 #endif
 
 	//Physic: speed or acceleration with slider, lights: on / off, brightness, shooter: kantenerkennung on/off, maybe more targets
-	//TextDisplay: leertaste, rechts/links, zahlen; Checkboxtext is functionality, slider rgb of background
+	//TextDisplay: leertaste, rechts/links, zahlen; Checkbox: text is functionality slider: rgb of background, textdisplay and textfield linked
 
 	Game game;
 	game.addState(std::make_shared<Shooter>());
