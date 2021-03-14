@@ -1,7 +1,19 @@
 #include "upanddown.hpp"
+#include "gamehelper.hpp"
 
+void toTheMenu3(Entity& _entity, System& _system) {
+	choosenGameState = 1;
+	gameStateSwitcht = true;
+};
 
-UpAndDown::UpAndDown() : GameState(), system(), timePaused{ 0.0f } {
+UpAndDown::UpAndDown() : GameState(), system(), guiToolkit(system), timePaused{ 0.0f },
+darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+{
+	menu = "Main Menu";
+	system.createEntity(menuButton);
+	guiToolkit.addButton(menuButton, glm::vec3(0.01f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, toTheMenu3, menu, glm::vec4(1.f));
+
 	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
 		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 5.f));
 	entity = EntityCreationInterface::createMovingPlanet(system, glm::translate(glm::vec3(0.f, 4.f, -12.0f)), glm::vec3(0.f, 0.f, 0.f), 
@@ -29,6 +41,8 @@ void UpAndDown::update(float _time, float _deltaTime) {
 		system.setVelocity(entity, glm::vec3(0.f, +0.1f, 0.f));
 		system.move(entity, _deltaTime);
 	}
+	system.updateTransform(_deltaTime);
+	guiToolkit.update(_deltaTime);
 }
 
 void UpAndDown::draw(float _time, float _deltaTime) {

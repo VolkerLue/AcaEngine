@@ -5,7 +5,6 @@
 #include <engine/gui_toolkit/guitoolkit.hpp>
 #include <stdlib.h>
 #include <time.h> 
-#include <engine/game/gamehelper.hpp>
 
 
 class Lights : public GameState {

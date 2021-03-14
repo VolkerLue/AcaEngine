@@ -5,7 +5,6 @@
 #include <time.h> 
 #include "../gui_toolkit/entity_creation_interface.hpp"
 #include "../gui_toolkit/guitoolkit.hpp"
-#include <engine/game/gamehelper.hpp>
 
 
 class Shooter : public GameState {

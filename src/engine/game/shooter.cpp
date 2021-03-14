@@ -1,4 +1,6 @@
 #include "shooter.hpp"
+#include "gamehelper.hpp"
+
 
 void goToMenu(Entity& _entity, System& _system) {
 	choosenGameState = 1;

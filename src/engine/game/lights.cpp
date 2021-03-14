@@ -1,5 +1,5 @@
 #include "lights.hpp"
-
+#include "gamehelper.hpp"
 
 void toTheMenu(Entity& _entity, System& _system) {
 	choosenGameState = 1;
