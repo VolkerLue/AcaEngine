@@ -24,15 +24,18 @@ public:
 private:
 	const graphics::Texture2D& darkBlueTexture;
 	const graphics::Texture2D& lightBlueTexture;
+	const graphics::Texture2D& whiteTexture;
 	std::list<Entity> entities;
 	Entity menuButton;
 	Entity createTargetsButton;
 	Entity checkBox;
+	Entity textDisplay;
 	System system;
 	GuiToolkit guiToolkit;
 	std::string menuString;
 	std::string checkBoxText;
 	std::string createTargetsString;
+	std::string textDisplayText;
 	int shot;
 	float timePaused;
 };

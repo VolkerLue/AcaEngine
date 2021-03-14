@@ -21,12 +21,15 @@ public:
 private:
 	const graphics::Texture2D& darkBlueTexture;
 	const graphics::Texture2D& lightBlueTexture;
+	const graphics::Texture2D& whiteTexture;
 	int lastFactor;
 	Entity entity;
 	Entity sliderEntity;
 	Entity menuButton;
+	Entity textDisplay;
 	System system;
 	GuiToolkit guiToolkit;
 	std::string menu;
+	std::string textDisplayText;
 	float timePaused;
 };

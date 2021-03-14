@@ -23,15 +23,18 @@ public:
 
 private:
 	const graphics::Texture2D& darkBlueTexture;
-	const graphics::Texture2D& lightBlueTexture;
+	const graphics::Texture2D& lightBlueTexture; 
+	const graphics::Texture2D& whiteTexture;
 	std::vector<Entity> lightEntities;
 	std::vector<Entity> checkBoxes;
 	std::vector<std::string> checkBoxTexts;
 	Entity meshEntity;
 	Entity menuButton;
+	Entity textDisplay;
 	System system;
 	GuiToolkit guiToolkit;
 	std::string menu;
+	std::string textDisplayText;
 	std::string checkBoxText1;
 	std::string checkBoxText2;
 	std::string checkBoxText3;

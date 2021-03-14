@@ -9,7 +9,8 @@ void nothing(Entity& _entity, System& _system) {};
 
 Lights::Lights() : GameState(), system(), guiToolkit(system), timePaused{ 0.0f },
 darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	meshEntity = EntityCreationInterface::createRotatingPlanet(system, glm::translate(glm::vec3(-15.f, 1.f, -20.0f)), glm::vec3(-15.f, 1.f, -20.f),
 		glm::vec3(1.f, 1.f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f), glm::vec3(3.f, 0.f, 0.f), glm::vec3(0.05f, 0.01f, 0.02f), true);
@@ -39,6 +40,10 @@ lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", grap
 	menu = "Main Menu";
 	system.createEntity(menuButton);
 	guiToolkit.addButton(menuButton, glm::vec3(0.01f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, toTheMenu, menu, glm::vec4(1.f));
+
+	textDisplayText = "Point Lights";
+	system.createEntity(textDisplay);
+	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayText, glm::vec4(0.f));
 
 	checkBoxText1 = "Light 1 Off";
 	checkBoxes.push_back(Entity());
@@ -87,6 +92,7 @@ void Lights::newState() {
 	system.eraseEntity(meshEntity);
 	meshEntity = EntityCreationInterface::createRotatingPlanet(system, glm::translate(glm::vec3(-15.f, 1.f, -20.0f)), glm::vec3(-15.f, 1.f, -20.f),
 		glm::vec3(1.f, 1.f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f), glm::vec3(3.f, 0.f, 0.f), glm::vec3(0.05f, 0.01f, 0.02f), true);
+
 }
 
 void Lights::update(float _time, float _deltaTime) {
