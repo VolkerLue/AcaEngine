@@ -45,25 +45,25 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	system.createEntity(textDisplay);
 	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayText, glm::vec4(0.f));
 
-	checkBoxText1 = "Light 1 Off";
+	checkBoxText1 = "Light 1";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[0]);
-	guiToolkit.addCheckBox(checkBoxes[0], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText1, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[0], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText1, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
-	checkBoxText2 = "Light 2 Off";
+	checkBoxText2 = "Light 2";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[1]);
-	guiToolkit.addCheckBox(checkBoxes[1], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText2, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[1], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText2, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
-	checkBoxText3 = "Light 3 Off";
+	checkBoxText3 = "Light 3";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[2]);
-	guiToolkit.addCheckBox(checkBoxes[2], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText3, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[2], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText3, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
-	checkBoxText4 = "Light 4 Off";
+	checkBoxText4 = "Light 4";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[3]);
-	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
 	system.createEntity(container);
 	guiToolkit.addContainer(container, glm::vec3(0.01f, 0.1f, 0.f), glm::vec3(0.25f, 0.35f, 1.f), 4, 1, 0.05, false, false, checkBoxes);
@@ -74,22 +74,22 @@ void Lights::newState() {
 	finished = false;
 	guiToolkit.deleteCheckBox(checkBoxes[0]);
 	system.createEntity(checkBoxes[0]);
-	guiToolkit.addCheckBox(checkBoxes[0], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText1, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[0], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText1, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 	system.registry.getComponentUnsafe<PointLight>(lightEntities[0]).intensity = 2.f;
 
 	guiToolkit.deleteCheckBox(checkBoxes[1]);
 	system.createEntity(checkBoxes[1]);
-	guiToolkit.addCheckBox(checkBoxes[1], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText2, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[1], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText2, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 	system.registry.getComponentUnsafe<PointLight>(lightEntities[1]).intensity = 2.f;
 
 	guiToolkit.deleteCheckBox(checkBoxes[2]);
 	system.createEntity(checkBoxes[2]);
-	guiToolkit.addCheckBox(checkBoxes[2], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText3, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[2], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText3, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 	system.registry.getComponentUnsafe<PointLight>(lightEntities[2]).intensity = 2.f;
 
 	guiToolkit.deleteCheckBox(checkBoxes[3]);
 	system.createEntity(checkBoxes[3]);
-	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 	system.registry.getComponentUnsafe<PointLight>(lightEntities[3]).intensity = 2.f;
 	
 	system.eraseEntity(container);
@@ -113,10 +113,10 @@ void Lights::update(float _time, float _deltaTime) {
 	}
 	for (int i = 0; i < 4; i++) {
 		CheckBox& c = system.registry.getComponentUnsafe<CheckBox>(checkBoxes[i]);
-		if (c.pressed && c.status) {
+		if (c.pressed && !c.status) {
 			system.registry.getComponentUnsafe<PointLight>(lightEntities[i]).intensity = 0.f;
 		}
-		else if (c.pressed && !c.status) {
+		else if (c.pressed && c.status) {
 			system.registry.getComponentUnsafe<PointLight>(lightEntities[i]).intensity = 2.f;
 		}
 	}

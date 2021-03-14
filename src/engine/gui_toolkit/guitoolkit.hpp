@@ -71,10 +71,10 @@ public:
 	
 
 	/* ################ Check-Box ################ */
-	void addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor);
+	void addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor, bool _status);
 
 	inline void addCheckBox(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text) {
-		addCheckBox(_entity, glm::vec3(0.f), glm::vec3(1.f), redTexture, greenTexture, _function, _text, glm::vec4(0.f));
+		addCheckBox(_entity, glm::vec3(0.f), glm::vec3(1.f), redTexture, greenTexture, _function, _text, glm::vec4(0.f), false);
 	}
 
 	void updateCheckBox();

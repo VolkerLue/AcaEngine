@@ -1,6 +1,8 @@
 #include "guitoolkit.hpp"
 
 
+void doNothing(Entity& _entity, System& _system) {};
+
 GuiToolkit::GuiToolkit(System& _system) : 
 	system(_system), 
 	planeMesh(*utils::MeshLoader::get("models/plane.obj")),
@@ -211,7 +213,7 @@ void GuiToolkit::updateTextField()
 
 
 /* ################ Check-Box ################ */
-void GuiToolkit::addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor)
+void GuiToolkit::addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture, void (*_function)(Entity& _entity, System& _system), std::string& _text, glm::vec4 _textColor, bool _status)
 {
 	_position.x *= graphics::Device::getAspectRatio();
 	_scale.x *= graphics::Device::getAspectRatio();
@@ -223,7 +225,10 @@ void GuiToolkit::addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _sc
 	float buttonPositionY = _position.y + (_scale.y * 0.04f);
 	float buttonScaleX = (_scale.x / graphics::Device::getAspectRatio()) * 0.22f;
 	float buttonScaleY = _scale.y * 0.92f;
-	addButton(buttonEntity, glm::vec3(buttonPositionX, buttonPositionY, 0.f), glm::vec3(buttonScaleX, buttonScaleY, 1.f), _defaultTexture, _alternativeTexture, false, nullptr, false, off, glm::vec4(0.f));
+	addButton(buttonEntity, glm::vec3(buttonPositionX, buttonPositionY, 0.f), glm::vec3(buttonScaleX, buttonScaleY, 1.f), _defaultTexture, _alternativeTexture, false, doNothing, false, off, glm::vec4(0.f));
+	if (_status == true) {
+		system.registry.getComponentUnsafe<Text>(buttonEntity).text = (char*)on.c_str();
+	}	
 
 	float textPositionX = buttonPositionX + buttonScaleX + ((_scale.x / graphics::Device::getAspectRatio()) * 0.04f);
 	float textPositionY = buttonPositionY;
@@ -237,7 +242,7 @@ void GuiToolkit::addCheckBox(Entity& _entity, glm::vec3 _position, glm::vec3 _sc
 	system.addPosition(_entity, _position);
 	system.addScale(_entity, _scale);
 	system.addOrthogonal(_entity);
-	system.addCheckBox(_entity, buttonEntity.id, textEntity.id, false, false);
+	system.addCheckBox(_entity, buttonEntity.id, textEntity.id, false, _status);
 	system.addMoved(_entity, false);
 	system.addFunction(_entity, _function);
 }
@@ -261,10 +266,12 @@ void GuiToolkit::updateCheckBox()
 				if (checkBox.status == true) {
 					checkBox.status = false;
 					text.text = (char*)off.c_str();
+					moved.moved = true;
 				}
 				else {
 					checkBox.status = true;
 					text.text = (char*)on.c_str();
+					moved.moved = true;
 				}
 				function.function(entity, system);
 			}

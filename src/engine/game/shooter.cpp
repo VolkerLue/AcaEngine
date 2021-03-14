@@ -41,7 +41,7 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 
 	checkBoxText = "Collision Detection Off";
 	system.createEntity(checkBox);
-	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
 	textDisplayText = "Shooter";
 	system.createEntity(textDisplay);
@@ -64,7 +64,7 @@ void Shooter::newState() {
 	}
 	guiToolkit.deleteCheckBox(checkBox);
 	system.createEntity(checkBox);
-	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 }
 
 void Shooter::update(float _time, float _deltaTime) {
