@@ -1,8 +1,8 @@
 #include "lights.hpp"
 
 void toTheMenu(Entity& _entity, System& _system) {
-	pressedNumber = 1;
-	numPressed = true;
+	choosenGameState = 1;
+	gameStateSwitcht = true;
 };
 
 void nothing(Entity& _entity, System& _system) {};

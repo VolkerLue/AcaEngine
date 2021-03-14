@@ -1,8 +1,8 @@
 #include "shooter.hpp"
 
 void goToMenu(Entity& _entity, System& _system) {
-	pressedNumber = 1;
-	numPressed = true;
+	choosenGameState = 1;
+	gameStateSwitcht = true;
 };
 
 void createTargets(Entity& _entity, System& _system) {
