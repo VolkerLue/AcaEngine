@@ -3,27 +3,19 @@ The Acagamics Game Engine Course
 
 Das Projekt baut mit Visual Studio 2019 16.8.4, aber nicht mit 16.9.1 wegen diesem MSVC Bug: https://developercommunity2.visualstudio.com/t/MSVC:-error-C2131-occurs-in-169-version/1358064?q=c2131+optional&viewtype=all
 
-## GuiToolkit
+## GUI-Toolkit
 
-Das GuiToolkit stellt 4 Grundlegende Arten von Gui Objekten zur Verfügung: Slider, Checkboxes, Buttons, Textdisplays und Textfelder. 
-Alle Gui Objekte brauchen eine Entität, eine Position und eine Skalierung als Parameter.
-Wenn man eine Container verwendet werden Positionierung und Skalierung über den Container verwaltet, man muss aber dennoch einen beliebigen Wert übergeben.
+Das GUI-Toolkit stellt 6 Grundlegende Arten von GUI-Objekten zur Verfügung: Slider, Checkboxen, Buttons, Textdisplays, Textfelder und Container. Alle GUI-Objekte brauchen eine Entität. Weitere Parameter wie z.B. Position, Skalierung, Funktion usw. sind abhängig vom konkreten Objekt-Typ. Wenn man einen Container verwendet werden Positionierung und Skalierung der Objekte über den Container verwaltet, man kann aber dennoch einen Wert übergeben. Dieser wird dann vom Container automatisch angepasst.
 
-Alle Objekte außer der Slider haben ein Display welches als String übergeben wird. Beim Textfeld wird der eingegebenen String durch die Nutzereingabe ersetzt.
-Weiterhin wird ein vec4 zur Textfarbe übergeben.
+Alle Objekte außer Slider und Container haben eine Textausgabemöglichkeit. Der Text muss als String übergeben werden. Beim Textfeld wird Text (Standard-Text) so lange angezeigt bis man auf das Textfeld klickt. Dann kann der Nutzer per Tastatureingabe einen neuen Text eingeben. Außerdem kann die Textfarbe übergeben werden.
 
 Textdisplays brauchen eine Textur als Hintergrundfarbe.
 
-Buttons, Textfelder und Checkboxen brauchen zwei Texturen als Parameter.
-Die erste Textur dient als Standardfarbe des Buttons und des Textfeldes und als False State der Checkbox.
-Die zweite Textur erscheint wenn man über den Button mit der Maus fährt, auf das Textfeld klickt oder drüberfährt und beim True State der Checkbox.
+Buttons, Textfelder und Checkboxen brauchen zwei Texturen als Parameter. Die erste Textur dient als Standardfarbe des Buttons und des Textfeldes und als False-State der Checkbox. Die zweite Textur erscheint, wenn man über den Button mit der Maus fährt, auf das Textfeld klickt oder drüberfährt und beim True State der Checkbox.
 
-Slider brauchen keine Texturen, sondern eine Anzahl an möglichen Sliderpositionen und eine Startposition, beide als Integer.
-Ein Boolean beim Slider richtet den Slider vertikal (true) oder horizontal (false) aus.
+Slider brauchen keine Texturen, sondern eine Anzahl an möglichen Sliderpositionen und eine Startposition, beide als Integer. Ein Boolean beim Slider richtet den Slider vertikal (true) oder horizontal (false) aus.
 
-Buttons, Checkboxen und Textfelder können eine Funktion bekommen. Bei Textfeldern wird die Funktion durch einen Enter Tastendruck während man auf das Feld geklickt hat ausgelöst.
-Bei Buttons und Checkboxen wird die Funktion durch ein anklicken ausgelöst.
-Die Funktionen erhalten die gewünschte Entität und das System als Parameter.
+Buttons, Checkboxen und Textfelder können eine Funktion bekommen. Bei Buttons und Checkboxen wird die Funktion durch ein anklicken ausgelöst. Die Funktionen erhalten die gewünschte Entität und das System als Parameter. Bei Textfeldern wird die Funktion durch einen Enter Tastendruck während man auf das Feld geklickt hat ausgelöst. Der Standard-Text wird danach wieder angezeigt. Durch Drücken von Back-Space können einzelne Zeichen gelöscht werden. Durch Drücken von Escape wird der gesamte neue Text gelöscht.
 
 Textfelder passen die Größe des eingegebenen Textes automatisch an, sodass die Box nicht überschritten wird.
 
