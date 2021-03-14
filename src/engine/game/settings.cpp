@@ -174,6 +174,7 @@ void Settings::update(float _time, float _deltaTime) {
 	float red = static_cast<float>(guiToolkit.getLevel(containerElements1.at(0))) / 10.f;
 	float green = static_cast<float>(guiToolkit.getLevel(containerElements1.at(1))) / 10.f;
 	float blue = static_cast<float>(guiToolkit.getLevel(containerElements1.at(2))) / 10.f;
+
 	glClearColor(red, green, blue, 1.f);
 
 	system.updateTransform(_deltaTime);
