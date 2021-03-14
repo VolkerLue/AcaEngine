@@ -43,7 +43,7 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	hitPointsString = "Points: 0";
 	points = 0;
 	system.createEntity(hitPoints);
-	guiToolkit.addTextDisplay(hitPoints, glm::vec3(0.7f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), whiteTexture, hitPointsString, glm::vec4(0.f));
+	guiToolkit.addTextDisplay(hitPoints, glm::vec3(0.74f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), whiteTexture, hitPointsString, glm::vec4(0.f));
 
 	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
 		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 10.f));
