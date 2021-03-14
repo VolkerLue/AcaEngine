@@ -48,22 +48,25 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	checkBoxText1 = "Light 1 Off";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[0]);
-	guiToolkit.addCheckBox(checkBoxes[0], glm::vec3(0.01f, 0.28f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText1, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[0], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText1, glm::vec4(0.f, 0.f, 0.f, 1.f));
 
 	checkBoxText2 = "Light 2 Off";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[1]);
-	guiToolkit.addCheckBox(checkBoxes[1], glm::vec3(0.01f, 0.22f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText2, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[1], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText2, glm::vec4(0.f, 0.f, 0.f, 1.f));
 
 	checkBoxText3 = "Light 3 Off";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[2]);
-	guiToolkit.addCheckBox(checkBoxes[2], glm::vec3(0.01f, 0.16f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText3, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[2], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText3, glm::vec4(0.f, 0.f, 0.f, 1.f));
 
 	checkBoxText4 = "Light 4 Off";
 	checkBoxes.push_back(Entity());
 	system.createEntity(checkBoxes[3]);
-	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.01f, 0.1f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f));
+	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f));
+
+	system.createEntity(container);
+	guiToolkit.addContainer(container, glm::vec3(0.01f, 0.1f, 0.f), glm::vec3(0.25f, 0.23f, 1.f), 4, 1, 0.01, false, false, checkBoxes);
 }
 
 void Lights::newState() {

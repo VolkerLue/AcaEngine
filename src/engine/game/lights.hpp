@@ -31,6 +31,7 @@ private:
 	Entity meshEntity;
 	Entity menuButton;
 	Entity textDisplay;
+	Entity container;
 	System system;
 	GuiToolkit guiToolkit;
 	std::string menu;

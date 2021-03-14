@@ -28,7 +28,6 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-	//Physic or lights: container,
 	//bugs: texturen lights, texturegröße freefall and upanddown
 	//TextDisplay: leertaste, rechts/links, zahlen; Checkbox: text is functionality slider: rgb of background, textdisplay and textfield linked
 
