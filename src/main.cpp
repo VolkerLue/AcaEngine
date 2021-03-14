@@ -28,13 +28,8 @@ int main(int argc, char* argv[])
 #endif
 #endif
 
-	//bugs: texturen lights, texturegröße freefall and upanddown
-	//TextDisplay: leertaste, rechts/links, zahlen; Checkbox: text is functionality slider: rgb of background, textdisplay and textfield linked
-
 	Game game;
 	game.addState(std::make_shared<Shooter>());
-	game.addState(std::make_shared<UpAndDown>());
-	game.addState(std::make_shared<FreeFall>());
 	game.addState(std::make_shared<Spring>());
 	game.addState(std::make_shared<Lights>());
 	game.run(std::make_shared<ButtonDemo>());

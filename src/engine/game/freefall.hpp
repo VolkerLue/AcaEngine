@@ -19,13 +19,8 @@ public:
 	bool isFinished();
 
 private:
-	const graphics::Texture2D& darkBlueTexture;
-	const graphics::Texture2D& lightBlueTexture;
 	Entity entity;
 	Entity entity2;
-	Entity menuButton;
 	System system;
-	GuiToolkit guiToolkit;
-	std::string menu;
 	float timePaused;
 };
