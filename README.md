@@ -68,7 +68,14 @@ Die "hitbox" für Gui Objekte und sämtliche Texte werden automatisch mitbewegt.
 
 Um die Gui Objekte sowie die bisherigen Funktionen zu zeigen, haben wir uns für ein Startmenü entschieden.
 Mit diesem Menü können die Gamestates durch Buttons aufgerufen werden.
-Weiterhin kann die Hintergrundfarbe mit Slidern eingestellt werden. Der Hintergrund bleibt für alle Games erhalten.
+Weiterhin kann die Hintergrundfarbe mit Slidern eingestellt werden. 
+Der Hintergrund bleibt für alle Games erhalten.
+
+Die einzelnen Gamestates haben zusätzlich neue Funktion, welche unsere Gui Elemente einbinden.
+Jeder Gamestate hat einen Button, welcher zurück zu Menü führt.
+Sollte dieser Button nicht getätigt werden, wird das Game nach 60 Sekunden automatisch beendet.
+
+
 
 
  
