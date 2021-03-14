@@ -68,12 +68,23 @@ Die "hitbox" für Gui Objekte und sämtliche Texte werden automatisch mitbewegt.
 
 Um die Gui Objekte sowie die bisherigen Funktionen zu zeigen, haben wir uns für ein Startmenü entschieden.
 Mit diesem Menü können die Gamestates durch Buttons aufgerufen werden.
-Weiterhin kann die Hintergrundfarbe mit Slidern eingestellt werden. 
-Der Hintergrund bleibt für alle Games erhalten.
+Weiterhin kann ein Settingsmenü aufgerufen werden.
+
+Das Settingsmenü bietet die Möglichkeit die Hintergrundfarbe für alle Gamestates und Menüs mit Slidern einzustellen, VSync mit einer Checkbox an und aus zu schalten, einen Name in ein Textfeld einzugeben und gibt einige Tastaturfunktionen für alle Gamestates an.  
 
 Die einzelnen Gamestates haben zusätzlich neue Funktion, welche unsere Gui Elemente einbinden.
 Jeder Gamestate hat einen Button, welcher zurück zu Menü führt.
 Sollte dieser Button nicht getätigt werden, wird das Game nach 60 Sekunden automatisch beendet.
+
+Die drei verfügbaren Gamestates sind Shooter, Lights und Spring.
+
+Beim Shooter werden Planeten auf Crates geschossen. Bei einem Treffer werden die Crates zerstört. Mit einem Button können neue Crates erstellt werden und mit einer Checkbox kann die Kollisionsdetection an und aus gemacht werden.
+
+Lights ist ein Gamestate bei welchem sich ein Planet durch eine Reihe von farbigen Punktlichtquellen bewegt. Diese Quellen können mit Checkboxen an und aus gemacht werden.
+
+Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
+
+
 
 
 
