@@ -27,7 +27,7 @@ int main(int argc, char* argv[])
 		//_CrtSetBreakAlloc(769028);
 #endif
 #endif
-	
+
 	Game game;
 	game.addState(std::make_shared<Settings>());
 	game.addState(std::make_shared<UpAndDown>());

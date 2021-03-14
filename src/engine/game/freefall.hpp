@@ -2,6 +2,7 @@
 #include "gamestate.hpp"
 #include "../entity_component_system/system.hpp"
 #include "../gui_toolkit/entity_creation_interface.hpp"
+#include "../gui_toolkit/guitoolkit.hpp"
 
 
 class FreeFall : public GameState {

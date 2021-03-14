@@ -5,6 +5,7 @@
 int choosenGameState;
 bool gameStateSwitcht;
 
+
 Game::Game() {
 	graphics::Device::initialize(1600, 1000, false); // fullScreen -> false or true -> has no effect -> always no fullScreen -> solution -> glfwGetPrimaryMonitor()
 	window = graphics::Device::getWindow();
@@ -119,7 +120,7 @@ void Game::chooseState(float time,  int number) {
 	int numPausedStates = pausedStates.size();
 	int numRemainingStates = states.size();
 	int totalStates = numPausedStates + numRemainingStates;
-	if (number <= numPausedStates) {		//backwards
+	if (0 < number && number <= numPausedStates) {		//backwards
 		int difference = numPausedStates - number + 1;
 		for (int i = 0; i < difference; i++) {
 			std::move(pausedStates.end() - 1, pausedStates.end(), std::back_inserter(states));
@@ -129,7 +130,7 @@ void Game::chooseState(float time,  int number) {
 	else if (number == numPausedStates + 1) {	//current
 		return;
 	}
-	else if (number <= totalStates) {		//forewards
+	else if (0 < number && number <= totalStates) {		//forewards
 		int difference = number - numPausedStates - 1;
 		for (int i = 0; i < difference; i++) {
 			std::move(states.end() - 1, states.end(), std::back_inserter(pausedStates));

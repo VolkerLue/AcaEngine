@@ -294,6 +294,16 @@ void GuiToolkit::updateCheckBox()
 		});
 }
 
+void GuiToolkit::deleteCheckBox(Entity& _entity) {
+	Entity textEntity;
+	textEntity.id = system.registry.getComponentUnsafe<CheckBox>(_entity).textEntity;
+	system.eraseEntity(textEntity);
+	Entity buttonEntity;
+	buttonEntity.id = system.registry.getComponentUnsafe<CheckBox>(_entity).buttonEntity;
+	system.eraseEntity(buttonEntity);
+	system.eraseEntity(_entity);
+}
+
 
 /* ################ Slider ################ */
 void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool _vertical) 
@@ -413,6 +423,15 @@ void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor,
 		}
 
 	});
+}
+
+void GuiToolkit::deleteSlider(Entity& _entity) {
+	Slider& slider = system.registry.getComponentUnsafe<Slider>(_entity);
+	for (int i = 0; i < slider.numberOfLevels; i++) {
+		system.eraseEntity(slider.levelEntities[i]);
+	}
+	delete[] slider.levelEntities;
+	system.eraseEntity(_entity);
 }
 
 
