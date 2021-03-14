@@ -63,4 +63,12 @@ Hier muss der Vector des innere Container allerding auch zuerst befüllt werden 
 Der innere Container kann zwar unabhängig vom äußeren bewegt werden, aber wenn der äußere bewegt wird geht der innere an seine Position im äußeren zurück.
 
 Die "hitbox" für Gui Objekte und sämtliche Texte werden automatisch mitbewegt.
+
+## Gamestates
+
+Um die Gui Objekte sowie die bisherigen Funktionen zu zeigen, haben wir uns für ein Startmenü entschieden.
+Mit diesem Menü können die Gamestates durch Buttons aufgerufen werden.
+Weiterhin kann die Hintergrundfarbe mit Slidern eingestellt werden. Der Hintergrund bleibt für alle Games erhalten.
+
+
  
