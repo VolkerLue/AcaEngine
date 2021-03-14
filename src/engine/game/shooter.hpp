@@ -30,12 +30,15 @@ private:
 	Entity createTargetsButton;
 	Entity checkBox;
 	Entity textDisplay;
+	Entity hitPoints;
 	System system;
 	GuiToolkit guiToolkit;
 	std::string menuString;
 	std::string checkBoxText;
 	std::string createTargetsString;
 	std::string textDisplayText;
+	std::string hitPointsString;
+	int points;
 	int shot;
 	float timePaused;
 };

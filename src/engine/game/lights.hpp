@@ -25,6 +25,7 @@ private:
 	const graphics::Texture2D& darkBlueTexture;
 	const graphics::Texture2D& lightBlueTexture; 
 	const graphics::Texture2D& whiteTexture;
+	Entity entity;
 	std::vector<Entity> lightEntities;
 	std::vector<Entity> checkBoxes;
 	std::vector<std::string> checkBoxTexts;

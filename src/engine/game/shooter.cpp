@@ -22,19 +22,10 @@ darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphi
 lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
 whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
-	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
-		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 10.f));
-	for (int i = 0; i < 50; i++) {
-		entities.push_back(EntityCreationInterface::createRotatingCrate(system, glm::mat4(1.f), 
-			glm::vec3(rand() % 51 + (-25), rand() % 51 + (-25), rand() % 10 + (-55)), glm::vec3(1.f, 0.5f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f),
-			glm::vec3(system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4)), 
-			glm::vec3((((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5),
-			false));
-	}
 	menuString = "Main Menu";
 	system.createEntity(menuButton);
 	guiToolkit.addButton(menuButton, glm::vec3(0.01f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, goToMenu, menuString, glm::vec4(1.f));
-	
+
 	createTargetsString = "Create Targets";
 	system.createEntity(createTargetsButton);
 	guiToolkit.addButton(createTargetsButton, glm::vec3(0.7f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, createTargets, createTargetsString, glm::vec4(1.f));
@@ -46,6 +37,22 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	textDisplayText = "Shooter";
 	system.createEntity(textDisplay);
 	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayText, glm::vec4(0.f));
+
+	hitPointsString = "Points: 0";
+	points = 0;
+	system.createEntity(hitPoints);
+	guiToolkit.addTextDisplay(hitPoints, glm::vec3(0.7f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), whiteTexture, hitPointsString, glm::vec4(0.f));
+
+	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
+		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 10.f));
+	for (int i = 0; i < 50; i++) {
+		entities.push_back(EntityCreationInterface::createRotatingCrate(system, glm::mat4(1.f), 
+			glm::vec3(rand() % 51 + (-25), rand() % 51 + (-25), rand() % 10 + (-55)), glm::vec3(1.f, 0.5f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f),
+			glm::vec3(system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4)), 
+			glm::vec3((((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5),
+			false));
+	}
+
 }
 
 void Shooter::newState() {
@@ -65,6 +72,8 @@ void Shooter::newState() {
 	guiToolkit.deleteCheckBox(checkBox);
 	system.createEntity(checkBox);
 	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
+	hitPointsString = "Points: 0";
+	points = 0;
 }
 
 void Shooter::update(float _time, float _deltaTime) {
@@ -89,13 +98,18 @@ void Shooter::update(float _time, float _deltaTime) {
 
 	int deletedCrates = system.removeIntersecting();
 
-	for (int i = 0; i < deletedCrates; i++) {
-		entities.push_back(EntityCreationInterface::createRotatingCrate(system, glm::mat4(1.f),
-			glm::vec3(rand() % 51 + (-25), rand() % 51 + (-25), rand() % 10 + (-55)), glm::vec3(1.f, 0.5f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f),
-			glm::vec3(system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4)),
-			glm::vec3((((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5),
-			false));
-	}
+	points += deletedCrates;
+	std::string tempStr = "Points: ";
+	tempStr.append(std::to_string(points));
+	hitPointsString = tempStr;
+
+	//for (int i = 0; i < deletedCrates; i++) {
+	//	entities.push_back(EntityCreationInterface::createRotatingCrate(system, glm::mat4(1.f),
+	//		glm::vec3(rand() % 51 + (-25), rand() % 51 + (-25), rand() % 10 + (-55)), glm::vec3(1.f, 0.5f, 1.f), glm::quat(1.0f, 0.f, 0.f, 0.f),
+	//		glm::vec3(system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4), system.randomWithoutZero(9, -4)),
+	//		glm::vec3((((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5, (((double)rand() / (RAND_MAX)) * 2 - 1) * 0.5),
+	//		false));
+	//}
 
 	int entityId = system.whichEntityIsNotInView();
 	if (entityId != -1) {
