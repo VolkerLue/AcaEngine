@@ -90,7 +90,7 @@ Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
 Das Entity-Creation-Interface kann genutzt werden um einfach neue Entitäten zu erstellen. Dieses Interface muss einmal mit der Funktion initialize initialisiert werden, was automatisch im Game Konstruktor geschieht. Das Interface bietet Funktionen um häufig genutzte Entitäten zu erstellen, wie beispielsweise einfach bewegende, rotierende, springartige oder schießbare Entitäten. Außerdem können mit generischen Funktionen, mit booleans zum Auswählen, beliebige Entitäten erstellt werden. Pointlights und Rectangles können auch damit erstellt werden. Dieses Interface kann genutzt werden um beim Buttondrücken neue Entitäten zu erstellen, wie es beispielsweise im Shooter mit dem Button create Targets der Fall ist.
 
 ## Restliche Gameengine
-
+Die Gameengine benutzt ein Entity-Component-System mit einer Registry. Ein System greift auf die Registry zu und verändert mit einem Physik- und Zugriffssytem (Entitysystem, Componentsystem) Entitäten und Komponenten. Außerdem stellt das System ein Drawsystem bereit, bei welchem verschiedene Renderer verwendet werden. Eine Game Klasse verwaltet alle Gamestates und ruft für sie update und draw Methoden mit der Zeit als Parametern auf, wobei diese das System aufrufen. Kollisionserkennung kann mit der Systemfunktion removeIntersecting genutzt werden, wobei vorher Boxen mit dem boolean isTarget als true oder false hinzugefügt werden müssen. Es können mit dem System Pointlights hinzugefügt werden, wobei erst, mit dem System, Lightconstants hinzugefügt werden müssen oder es wird das Entity-Creation-Interface genutzt. 
 
 
  
