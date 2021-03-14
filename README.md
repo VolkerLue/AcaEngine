@@ -82,7 +82,8 @@ Beim Shooter werden Planeten auf Crates geschossen. Bei einem Treffer werden die
 
 Lights ist ein Gamestate bei welchem sich ein Planet durch eine Reihe von farbigen Punktlichtquellen bewegt. Diese Quellen können mit Checkboxen an und aus gemacht werden.
 
-Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
+Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Die Bewegung wird durch eine Feder welche den Planeten in der Mitte fixiert beschrieben.
+Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
 
 
 
