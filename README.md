@@ -1,5 +1,6 @@
 # AcaEngine
 The Acagamics Game Engine Course
+Das Projekt baut mit Visual Studio 2019 16.8.4, aber nicht mit 16.9.1 wegen diesem MSVC Bug: https://developercommunity2.visualstudio.com/t/MSVC:-error-C2131-occurs-in-169-version/1358064?q=c2131+optional&viewtype=all
 
 ## GuiToolkit
 
