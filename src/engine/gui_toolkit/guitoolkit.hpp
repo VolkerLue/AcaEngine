@@ -31,6 +31,10 @@ public:
 		addButton(_entity, _position, _scale, darkBlueTexture, lightBlueTexture, true, _function, true, _text, _textColor);
 	}
 
+	inline void addButton(Entity& _entity, void (*_function)(Entity& _entity, System& _system), std::string& _text, const graphics::Texture2D& _defaultTexture, const graphics::Texture2D& _alternativeTexture) {
+		addButton(_entity, glm::vec3(0.f), glm::vec3(1.f), _defaultTexture, _alternativeTexture, true, _function, true, _text, glm::vec4(0.f));
+	}
+
 	void updateButton();
 	
 

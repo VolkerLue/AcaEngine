@@ -21,11 +21,11 @@ private:
 
 	const graphics::Texture2D& darkBlueTexture;
 	const graphics::Texture2D& lightBlueTexture;
-	const graphics::Texture2D& whiteTexture;
-	const graphics::Texture2D& grayTexture;
 	const graphics::Texture2D& lightGrayTexture;
 	const graphics::Texture2D& greenTexture;
+	const graphics::Texture2D& lightGreenTexture;
 	const graphics::Texture2D& redTexture;
+	const graphics::Texture2D& lightRedTexture;
 
 	std::string stringSettings;
 	std::string stringBackground;
@@ -45,9 +45,10 @@ private:
 	std::string stringVSync;
 
 	Entity entity;
-	Entity textDisplaySettingEntity;
 	Entity buttonBackEntity;
 
+	std::vector<Entity> containerElements0;
+	Entity container0;
 	std::vector<Entity> containerElements1;
 	Entity container1;
 	std::vector<Entity> containerElements2;

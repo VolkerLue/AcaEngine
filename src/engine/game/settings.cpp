@@ -2,15 +2,6 @@
 #include "gamehelper.hpp"
 #include <GLFW/glfw3.h>
 
-std::string currentNameFunktionString = "current name: ";
-void TextFieldFunktion(Entity& _entity, System& _system) {	
-	currentNameFunktionString = "current name: ";
-	char* text = _system.registry.getComponentUnsafe<Text>(_entity).text;
-	currentNameFunktionString.append(text);
-	_system.registry.getComponentUnsafe<Text>(Entity{ 49 }).text = (char*)currentNameFunktionString.c_str();
-	_system.registry.getComponentUnsafe<Moved>(Entity{ 49 }).moved = true;
-
-}
 
 void VSyncFunction(Entity& _entity, System& _system) {
 	if (_system.registry.getComponentUnsafe<CheckBox>(_entity).status == true) {
@@ -23,22 +14,50 @@ void VSyncFunction(Entity& _entity, System& _system) {
 	}
 }
 
+std::string currentNameFunktionString = "current name: ";
+void TextFieldFunktion(Entity& _entity, System& _system) {
+	currentNameFunktionString = "current name: ";
+	char* text = _system.registry.getComponentUnsafe<Text>(_entity).text;
+	currentNameFunktionString.append(text);
+	_system.registry.getComponentUnsafe<Text>(Entity{ 50 }).text = (char*)currentNameFunktionString.c_str();
+	_system.registry.getComponentUnsafe<Moved>(Entity{ 50 }).moved = true;
+}
+
 void backToMainMenu(Entity& _entity, System& _system) {
 	choosenGameState = 1;
 	gameStateSwitcht = true;
 };
+
+void buttonFunctionRed(Entity& _entity, System& _system) {	
+	if (_system.registry.getComponentUnsafe<Slider>(Entity{ 2 }).currentLevel != 10) {
+		glfwSetCursorPos(graphics::Device::getWindow(), 135.0, 535.0);
+	}	
+};
+bool bugCheatBool = false;
+void buttonFunctionGreen(Entity& _entity, System& _system) {
+	if (_system.registry.getComponentUnsafe<Slider>(Entity{ 14 }).currentLevel != 10 && bugCheatBool == true) {
+		glfwSetCursorPos(graphics::Device::getWindow(), 275.0, 535.0);
+	}
+	bugCheatBool = true;
+};
+void buttonFunctionBlue(Entity& _entity, System& _system) {
+	if (_system.registry.getComponentUnsafe<Slider>(Entity{ 26 }).currentLevel != 10) {
+		glfwSetCursorPos(graphics::Device::getWindow(), 420.0, 535.0);
+	}
+};
+
 
 Settings::Settings() :
 	GameState(),
 	system(),
 	guiToolkit(system),
 	darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-	lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-	whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-	grayTexture(*graphics::Texture2DManager::get("textures/gray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),	
 	lightGrayTexture(*graphics::Texture2DManager::get("textures/lightGray.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
 	greenTexture(*graphics::Texture2DManager::get("textures/green.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-	redTexture(*graphics::Texture2DManager::get("textures/red.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+	lightGreenTexture(*graphics::Texture2DManager::get("textures/lightGreen.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	redTexture(*graphics::Texture2DManager::get("textures/red.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+	lightRedTexture(*graphics::Texture2DManager::get("textures/lightRed.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	finished = false;
 
@@ -62,8 +81,10 @@ Settings::Settings() :
 	/*##############################################################################*/
 	/*                              Settings                                        */
 	/*##############################################################################*/
-	textDisplaySettingEntity = system.createEntity(textDisplaySettingEntity);
-	guiToolkit.addTextDisplay(textDisplaySettingEntity, stringSettings, glm::vec3(0.35f, 0.89f, 0.f), glm::vec3(0.3f, 0.1f, 1.f));
+	containerElements0.push_back(system.createEntity(entity));
+	guiToolkit.addTextDisplay(containerElements0.back(), stringSettings);
+	container0 = system.createEntity(container0);
+	guiToolkit.addContainer(container0, glm::vec3(0.35f, 0.875, 0.f), glm::vec3(0.3f, 0.1f, 1.f), 1, 1, 0.1f, darkBlueTexture, true, false, containerElements0);
 	/*##############################################################################*/
 	/*                         Background-Color                                     */
 	/*##############################################################################*/
@@ -77,11 +98,11 @@ Settings::Settings() :
 	guiToolkit.addContainer(container1, glm::vec3(0.f), glm::vec3(1.f), 1, 3, 0.05f, true, false, containerElements1);
 	/*##############################################################################*/
 	containerElements2.push_back(system.createEntity(entity));
-	guiToolkit.addTextDisplay(containerElements2.back(), stringRed, redTexture);
+	guiToolkit.addButton(containerElements2.back(), buttonFunctionRed, stringRed, redTexture, lightRedTexture);
 	containerElements2.push_back(system.createEntity(entity));
-	guiToolkit.addTextDisplay(containerElements2.back(), stringGreen, greenTexture);
+	guiToolkit.addButton(containerElements2.back(), buttonFunctionGreen, stringGreen, greenTexture, lightGreenTexture);
 	containerElements2.push_back(system.createEntity(entity));
-	guiToolkit.addTextDisplay(containerElements2.back(), stringBlue, lightBlueTexture);
+	guiToolkit.addButton(containerElements2.back(), buttonFunctionBlue, stringBlue, darkBlueTexture, lightBlueTexture);
 	container2 = system.createEntity(container2);
 	guiToolkit.addContainer(container2, glm::vec3(0.f), glm::vec3(1.f), 1, 3, 0.1f, true, false, containerElements2);
 	/*##############################################################################*/
@@ -100,7 +121,7 @@ Settings::Settings() :
 	containerElements5.push_back(container4);
 	containerElements5.push_back(container1);
 	container5 = system.createEntity(container5);
-	guiToolkit.addContainer(container5, glm::vec3(0.025f, 0.15f, 0.f), glm::vec3(0.3f, 0.7f, 1.f), 2, 1, 0.05f, lightGrayTexture, true, false, containerElements5);
+	guiToolkit.addContainer(container5, glm::vec3(0.025f, 0.15f, 0.f), glm::vec3(0.3f, 0.7f, 1.f), 2, 1, 0.05f, darkBlueTexture, true, false, containerElements5);
 	/*##############################################################################*/
 	/*                                  Name                                        */
 	/*##############################################################################*/
@@ -111,7 +132,7 @@ Settings::Settings() :
 	containerElements6.push_back(system.createEntity(entity));
 	guiToolkit.addTextDisplay(containerElements6.back(), stringCurrentName);
 	container6 = system.createEntity(container6);
-	guiToolkit.addContainer(container6, glm::vec3(0.35f, 0.15f, 0.f), glm::vec3(0.3f, 0.7f, 1.f), 3, 1, 0.05f, lightGrayTexture, true, false, containerElements6);
+	guiToolkit.addContainer(container6, glm::vec3(0.35f, 0.15f, 0.f), glm::vec3(0.3f, 0.7f, 1.f), 3, 1, 0.05f, darkBlueTexture, true, false, containerElements6);
 	/*##############################################################################*/
 	/*                             Help-And-More                                    */
 	/*##############################################################################*/
@@ -132,20 +153,20 @@ Settings::Settings() :
 	containerElements8.push_back(system.createEntity(entity));
 	guiToolkit.addCheckBox(containerElements8.back(), VSyncFunction, stringVSync);
 	container8 = system.createEntity(container8);
-	guiToolkit.addContainer(container8, glm::vec3(0.675f, 0.15f, 0.f), glm::vec3(0.3f, 0.7f, 1.f), 3, 1, 0.05f, lightGrayTexture, true, true, containerElements8);
+	guiToolkit.addContainer(container8, glm::vec3(0.675f, 0.15f, 0.f), glm::vec3(0.3f, 0.7f, 1.f), 3, 1, 0.05f, darkBlueTexture, true, true, containerElements8);
 	/*##############################################################################*/
 	/*                            Back                                    */
 	/*##############################################################################*/
 	buttonBackEntity = system.createEntity(entity);
-	guiToolkit.addButton(buttonBackEntity, backToMainMenu, stringBack, glm::vec4(0.f), glm::vec3(0.35f, 0.01f, 0.f), glm::vec3(0.3f, 0.1f, 1.f));
+	guiToolkit.addButton(buttonBackEntity, backToMainMenu, stringBack, glm::vec4(0.f), glm::vec3(0.35f, 0.025f, 0.f), glm::vec3(0.3f, 0.1f, 1.f));
 	/*##############################################################################*/
 }
 
 void Settings::newState() {
 	system.registry.getComponentUnsafe<Position>(container8).position = glm::vec3(0.675f * graphics::Device::getAspectRatio(), 0.15f, 0.f);
 	system.registry.getComponentUnsafe<Moved>(container8).moved = true;
-	system.registry.getComponentUnsafe<Text>(Entity{ 49 }).text = (char*)stringCurrentName.c_str();
-	system.registry.getComponentUnsafe<Moved>(Entity{ 49 }).moved = true;
+	system.registry.getComponentUnsafe<Text>(Entity{ 50 }).text = (char*)stringCurrentName.c_str();
+	system.registry.getComponentUnsafe<Moved>(Entity{ 50 }).moved = true;
 }
 
 void Settings::update(float _time, float _deltaTime) {

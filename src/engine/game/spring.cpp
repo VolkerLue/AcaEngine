@@ -19,7 +19,7 @@ void Spring::newState() {
 
 void Spring::update(float _time, float _deltaTime) {
 	_time += timePaused;
-	if (_time > 2) {
+	if (_time > 20) {
 		finished = true;
 	}
 	system.springY(entity, _deltaTime);
