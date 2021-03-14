@@ -74,7 +74,7 @@ Das Settingsmenü bietet die Möglichkeit die Hintergrundfarbe für alle Gamesta
 
 Die einzelnen Gamestates haben zusätzlich neue Funktion, welche unsere Gui Elemente einbinden.
 Jeder Gamestate hat einen Button, welcher zurück zu Menü führt.
-Sollte dieser Button nicht getätigt werden, wird das Game nach 60 Sekunden automatisch beendet.
+Sollte dieser Button nicht getätigt werden, wird der Gamestate nach 60 Sekunden automatisch beendet.
 
 Die drei verfügbaren Gamestates sind Shooter, Lights und Spring.
 
@@ -82,7 +82,7 @@ Beim Shooter werden Planeten auf Crates geschossen. Bei einem Treffer werden die
 
 Lights ist ein Gamestate bei welchem sich ein Planet durch eine Reihe von farbigen Punktlichtquellen bewegt. Diese Quellen können mit Checkboxen an und aus gemacht werden.
 
-Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Die Bewegung wird durch eine Feder welche den Planeten in der Mitte fixiert beschrieben.
+Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Die Bewegung wird durch eine Feder, welche den Planeten in der Mitte fixiert beschrieben.
 Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
 
 
