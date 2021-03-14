@@ -26,11 +26,13 @@ private:
 	const graphics::Texture2D& lightBlueTexture;
 	std::list<Entity> entities;
 	Entity menuButton;
+	Entity createTargetsButton;
 	Entity checkBox;
 	System system;
 	GuiToolkit guiToolkit;
-	std::string menu;
+	std::string menuString;
 	std::string checkBoxText;
+	std::string createTargetsString;
 	int shot;
 	float timePaused;
 };
