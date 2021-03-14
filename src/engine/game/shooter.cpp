@@ -30,7 +30,7 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	system.createEntity(createTargetsButton);
 	guiToolkit.addButton(createTargetsButton, glm::vec3(0.7f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, createTargets, createTargetsString, glm::vec4(1.f));
 
-	checkBoxText = "Collision Detection Off";
+	checkBoxText = "Collision Detection";
 	system.createEntity(checkBox);
 	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
@@ -95,8 +95,12 @@ void Shooter::update(float _time, float _deltaTime) {
 	else if (shot > 0) {
 		shot--;
 	}
+	int deletedCrates = 0;
 
-	int deletedCrates = system.removeIntersecting();
+	CheckBox& c = system.registry.getComponentUnsafe<CheckBox>(checkBox);
+	if (c.status) {
+		deletedCrates = system.removeIntersecting();
+	}
 
 	points += deletedCrates;
 	std::string tempStr = "Points: ";
@@ -123,17 +127,7 @@ void Shooter::update(float _time, float _deltaTime) {
 			entities.remove_if([&entity](const Entity& _entity) { return _entity.id == entity.id; });
 		}
 	}
-	CheckBox& c = system.registry.getComponentUnsafe<CheckBox>(checkBox);
-	if (c.status && c.pressed) {
-		system.registry.execute<Orientation, Box>([&](Orientation& orientation, Box& box) {
-			box.isProjectile = true;
-			});
-	}
-	else if (!c.status && c.pressed) {
-		system.registry.execute<Orientation, Box>([&](Orientation& orientation, Box& box) {
-			box.isProjectile = false;
-			});
-	}
+	
 }
 
 void Shooter::draw(float _time, float _deltaTime) {
