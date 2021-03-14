@@ -50,7 +50,7 @@ bei einfachen Funktionen wird diese berechnung in einer Updatefunktion im Toolki
 
 ## Container
 
-Container übernehmen die Positionierung und Skalierung der einzelnen Objekte. Container haben eine Position, eine Skalierung,
+Container übernehmen die Positionierung, Anordnung und Skalierung der einzelnen Objekte. Container haben eine Position, eine Skalierung,
 Reihen und Spalten Zahl, einen Abstandparameter, eine Hintergrundtextur, zwei Booleans und einen Vector an Entitäten.
 
 Der erste Boolean gibt an ob die Angegebe Textur als Hintergrund gesetzt wird. 
