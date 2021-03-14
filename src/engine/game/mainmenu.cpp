@@ -31,7 +31,7 @@ void chooseGameState7(Entity& _entity, System& _system) {
 	gameStateSwitcht = true;
 };
 void exitGameFunction(Entity& _entity, System& _system) {
-	choosenGameState = 10;
+	choosenGameState = -1;
 	gameStateSwitcht = true;
 };
 
