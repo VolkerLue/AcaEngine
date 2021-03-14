@@ -7,13 +7,13 @@ Das GuiToolkit stellt 4 Grundlegende Arten von Gui Objekten zur Verfügung: Slid
 Alle Gui Objekte brauchen eine Entität, eine Position und eine Skalierung als Parameter.
 Wenn man eine Container verwendet werden Positionierung und Skalierung über den Container verwaltet, man muss aber dennoch einen beliebigen Wert übergeben.
 
-Alle Objekte außer Slider haben ein Display welches als String übergeben wird. Beim Textfeld wird der eingegebenen String durch die Nutzereingabe ersetzt.
+Alle Objekte außer der Slider haben ein Display welches als String übergeben wird. Beim Textfeld wird der eingegebenen String durch die Nutzereingabe ersetzt.
 Weiterhin wird ein vec4 zur Textfarbe übergeben.
 
 Textdisplays brauchen eine Textur als Hintergrundfarbe.
 
 Buttons, Textfelder und Checkboxen brauchen zwei Texturen als Parameter.
-Die erste Textur dient als standart Farbe des Buttons und des Textfeldes und als False State der Checkbox.
+Die erste Textur dient als Standardfarbe des Buttons und des Textfeldes und als False State der Checkbox.
 Die zweite Textur erscheint wenn man über den Button mit der Maus fährt, auf das Textfeld klickt oder drüberfährt und beim True State der Checkbox.
 
 Slider brauchen keine Texturen, sondern eine Anzahl an möglichen Sliderpositionen und eine Startposition, beide als Integer.
@@ -27,7 +27,7 @@ Textfelder passen die Größe des eingegebenen Textes automatisch an, sodass die
 
 Die getLevel Funktion gibt den Aktuellen Sliderstand als Integer zurück.
 
-Um komplexer Funktionen zu schreiben, zum Beispiel eine Buttonfunktion welche vom Zustand einer Checkbox abhängt, kann man entweder über die ID der Checkbox auf den Boolean via System zugreifen
+Um komplexere Funktionen zu schreiben, zum Beispiel eine Buttonfunktion welche vom Zustand einer Checkbox abhängt, kann man entweder über die ID der Checkbox auf den Boolean via System zugreifen
 oder man übergibt eine leere Funktion und schreibt eine neue Funktion, welche die gewünschten Entitäten mitbekommt. Die "Hitbox" des Buttons muss mit der Position und Skalierung berechnet werden.
 
 
@@ -86,7 +86,10 @@ Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Die Bewegung
 Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
 
 
+## Entity-Creation-Interface
+Das Entity-Creation-Interface kann genutzt werden um einfach neue Entitäten zu erstellen. Dieses Interface muss einmal mit der Funktion initialize initialisiert werden, was automatisch im Game Konstruktor geschieht. Das Interface bietet Funktionen um häufig genutzte Entitäten zu erstellen, wie beispielsweise einfach bewegende, rotierende, springartige oder schießbare Entitäten. Außerdem können mit generischen Funktionen, mit booleans zum Auswählen, beliebige Entitäten erstellt werden. Pointlights und Rectangles können auch damit erstellt werden. Dieses Interface kann genutzt werden um beim Buttondrücken neue Entitäten zu erstellen, wie es beispielsweise im Shooter mit dem Button create Targets der Fall ist.
 
+## Restliche Gameengine
 
 
 
