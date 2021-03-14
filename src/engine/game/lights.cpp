@@ -66,7 +66,7 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	guiToolkit.addCheckBox(checkBoxes[3], glm::vec3(0.f, 0.f, 0.f), glm::vec3(0.f, 0.f, 0.f), lightBlueTexture, darkBlueTexture, nothing, checkBoxText4, glm::vec4(0.f, 0.f, 0.f, 1.f));
 
 	system.createEntity(container);
-	guiToolkit.addContainer(container, glm::vec3(0.01f, 0.1f, 0.f), glm::vec3(0.25f, 0.26f, 1.f), 4, 1, 0.02, false, false, checkBoxes);
+	guiToolkit.addContainer(container, glm::vec3(0.01f, 0.1f, 0.f), glm::vec3(0.25f, 0.35f, 1.f), 4, 1, 0.05, false, false, checkBoxes);
 }
 
 void Lights::newState() {
