@@ -7,7 +7,7 @@ Das Projekt baut mit Visual Studio 2019 16.8.4, aber nicht mit 16.9.1 wegen dies
 
 Das GUI-Toolkit stellt 6 Grundlegende Arten von GUI-Objekten zur Verfügung: Slider, Checkboxes, Buttons, Textdisplays, Textfields und Container. Alle GUI-Objekte brauchen eine Entität. Weitere Parameter wie z.B. Position, Skalierung, Funktion usw. sind abhängig vom konkreten Objekt-Typ. Wenn man einen Container verwendet, dann werden Positionierung und Skalierung der Objekte über den Container verwaltet, man kann aber dennoch einen Wert übergeben. Dieser wird dann vom Container automatisch angepasst.
 
-Alle Objekte außer Slider und Container haben eine Textausgabemöglichkeit. Der Text muss als String übergeben werden. Beim Textfeld wird Text (Standard-Text) so lange angezeigt bis man auf das Textfeld klickt. Dann kann der Nutzer per Tastatureingabe einen neuen Text eingeben. Außerdem kann die Textfarbe übergeben werden.
+Alle Objekte außer Slider und Container haben eine Textausgabemöglichkeit. Der Text muss als String übergeben werden. Beim Textfeld wird der Text (Standard-Text) so lange angezeigt bis man auf das Textfeld klickt. Dann kann der Nutzer per Tastatureingabe einen neuen Text eingeben. Außerdem kann die Textfarbe übergeben werden.
 
 Textdisplays brauchen eine Textur als Hintergrundfarbe.
 
