@@ -16,11 +16,13 @@ public:
 	bool isFinished();
 
 private:
-	System system;
-	GuiToolkit guiToolkit;
 
 	const graphics::Texture2D& lightGrayTexture;
-
+	System system;
+	GuiToolkit guiToolkit;
+	std::vector<Entity> containerElements1;
+	Entity entity;
+	Entity container1;
 	std::string stringMainMenu;
 	std::string stringExitGame;
 	std::string stringGameState1;
@@ -30,8 +32,4 @@ private:
 	std::string stringGameState5;
 	std::string stringGameState6;
 	std::string stringGameState7;
-
-	Entity entity;
-	Entity container1;
-	std::vector<Entity> containerElements1;
 };

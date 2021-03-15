@@ -24,13 +24,13 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	system.createEntity(sliderEntity);
 	guiToolkit.addSlider(sliderEntity, glm::vec3(0.1f, 0.1f, 0.f), glm::vec3(0.1f, 0.3f, 1.f), 10, 0, true);
 
-	menu = "Main Menu";
+	menuString = "Main Menu";
 	system.createEntity(menuButton);
-	guiToolkit.addButton(menuButton, glm::vec3(0.01f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, getToMenu, menu, glm::vec4(1.f));
+	guiToolkit.addButton(menuButton, glm::vec3(0.01f, 0.92f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, getToMenu, menuString, glm::vec4(1.f));
 
-	textDisplayText = "Spring";
+	textDisplayString = "Spring";
 	system.createEntity(textDisplay);
-	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayText, glm::vec4(0.f));
+	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayString, glm::vec4(0.f));
 }
 
 void Spring::newState() {

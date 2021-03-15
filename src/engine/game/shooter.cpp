@@ -32,13 +32,13 @@ whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sa
 	system.createEntity(createTargetsButton);
 	guiToolkit.addButton(createTargetsButton, glm::vec3(0.7f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, true, createTargets, createTargetsString, glm::vec4(1.f));
 
-	checkBoxText = "Collision Detection";
+	checkBoxString = "Collision Detection";
 	system.createEntity(checkBox);
-	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
+	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxString, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 
-	textDisplayText = "Shooter";
+	textDisplayString = "Shooter";
 	system.createEntity(textDisplay);
-	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayText, glm::vec4(0.f));
+	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayString, glm::vec4(0.f));
 
 	hitPointsString = "Points: 0";
 	points = 0;
@@ -73,7 +73,7 @@ void Shooter::newState() {
 	}
 	guiToolkit.deleteCheckBox(checkBox);
 	system.createEntity(checkBox);
-	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxText, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
+	guiToolkit.addCheckBox(checkBox, glm::vec3(0.01f, 0.05f, 0.f), glm::vec3(0.25f, 0.05f, 1.f), lightBlueTexture, darkBlueTexture, no, checkBoxString, glm::vec4(0.f, 0.f, 0.f, 1.f), true);
 	hitPointsString = "Points: 0";
 	points = 0;
 }

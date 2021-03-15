@@ -16,9 +16,6 @@ public:
 	bool isFinished();
 
 private:
-	System system;
-	GuiToolkit guiToolkit;
-
 	const graphics::Texture2D& darkBlueTexture;
 	const graphics::Texture2D& lightBlueTexture;
 	const graphics::Texture2D& lightGrayTexture;
@@ -26,7 +23,8 @@ private:
 	const graphics::Texture2D& lightGreenTexture;
 	const graphics::Texture2D& redTexture;
 	const graphics::Texture2D& lightRedTexture;
-
+	System system;
+	GuiToolkit guiToolkit;
 	std::string stringSettings;
 	std::string stringBackground;
 	std::string stringColor;
@@ -43,10 +41,8 @@ private:
 	std::string stringHelpText3;
 	std::string stringHelpText4;
 	std::string stringVSync;
-
 	Entity entity;
 	Entity buttonBackEntity;
-
 	std::vector<Entity> containerElements0;
 	Entity container0;
 	std::vector<Entity> containerElements1;
