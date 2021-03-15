@@ -24,24 +24,6 @@ Die getLevel Funktion gibt den Aktuellen Sliderstand als Integer zurück.
 Um komplexere Funktionen zu schreiben, zum Beispiel eine Buttonfunktion welche vom Zustand einer Checkbox abhängt, kann man entweder über die ID der Checkbox auf den Boolean via System zugreifen
 oder man übergibt eine leere Funktion und schreibt eine neue Funktion, welche die gewünschten Entitäten mitbekommt. Die "Hitbox" des Buttons muss mit der Position und Skalierung berechnet werden.
 
-
-## Usage
-
-```c++
-
-
-math::Rectangle buttonBox = math::Rectangle(glm::vec2(position.position[0], position.position[1]), glm::vec2(position.position[0] + scale.scale[0], position.position[1] + scale.scale[1]));
-
-glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
-
-if (buttonBox.isIn(cursorPos) == true){
-        #example_Function
-}
-
-```
-
-bei einfachen Funktionen wird diese berechnung in einer Updatefunktion im Toolkit berechnet.
-
 ## Container
 
 Container übernehmen die Positionierung, Anordnung und Skalierung der einzelnen Objekte. Container haben eine Position, eine Skalierung, eine
