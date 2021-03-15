@@ -313,7 +313,7 @@ void GuiToolkit::deleteCheckBox(Entity& _entity) {
 
 
 /* ################ Slider ################ */
-void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool _vertical) 
+void GuiToolkit::addSlider(Entity& _entity, glm::vec3 _position, glm::vec3 _scale, int _levels, int _selectedLevel, bool _vertical) 
 {
 	_position.x *= graphics::Device::getAspectRatio();
 	_scale.x *= graphics::Device::getAspectRatio();
@@ -371,7 +371,7 @@ void GuiToolkit::addSlider(Entity _entity, glm::vec3 _position, glm::vec3 _scale
 	system.addMoved(_entity, false);
 }
 
-void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor, gamestates ausw‰hlen
+void GuiToolkit::updateSlider() {	//ggf. text, move, ggf. minimaler konstruktor, gamestates ausw√§hlen
 	bool isPressed = input::InputManager::isButtonPressed(input::MouseButton::LEFT);
 	glm::vec2 cursorPos = system.cameraOrthogonal.toWorldSpace(input::InputManager::getCursorPos());
 	system.registry.execute<Slider, Position, Scale, Moved>([&](Slider& slider, Position& position, Scale& scale, Moved& moved) {
@@ -1172,4 +1172,8 @@ void GuiToolkit::updateKeyInputActions(Entity& _entity, System::Function& _funct
 
 int GuiToolkit::getLevel(Entity _entity) {
 	return system.registry.getComponentUnsafe<Slider>(_entity).currentLevel;
+}
+
+bool GuiToolkit::getBool(Entity _entity) {
+	return system.registry.getComponentUnsafe<CheckBox>(_entity).status;
 }
