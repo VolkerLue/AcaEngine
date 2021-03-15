@@ -9,7 +9,8 @@ void toTheMenu2(Entity& _entity, System& _system) {
 
 FreeFall::FreeFall() : GameState(), system(), guiToolkit(system), timePaused{ 0.0f },
 darkBlueTexture(*graphics::Texture2DManager::get("textures/darkBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
-lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
+lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR))),
+whiteTexture(*graphics::Texture2DManager::get("textures/white.png", graphics::Sampler(graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR, graphics::Sampler::Filter::LINEAR)))
 {
 	menu = "Main Menu";
 	system.createEntity(menuButton);
@@ -17,10 +18,15 @@ lightBlueTexture(*graphics::Texture2DManager::get("textures/lightBlue.png", grap
 
 	std::vector<Entity> pointLights = EntityCreationInterface::createPointLights(system, 0.1f, 0.05f, 0.01f,
 		std::vector<glm::vec3>(1, glm::vec3(0.f, 0.f, 0.f)), std::vector<glm::vec3>(1, glm::vec3(1.f, 1.f, 1.f)), std::vector<float>(1, 10.f));
-	entity = EntityCreationInterface::createMovingPlanet(system, glm::translate(glm::vec3(0.f, 10.f, -40.f)), glm::vec3(0.f, 0.13f, 0.f),
+	entity = EntityCreationInterface::createMovingPlanet(system, glm::translate(glm::vec3(0.f, 10.f, -62.f)), glm::vec3(0.f, 0.13f, 0.f),
 		glm::vec3(0.f, -0.1f, 0.f));
-	entity2 = EntityCreationInterface::createMovingCrate(system, glm::translate(glm::vec3(5.f, 10.f, -40.f)), glm::vec3(0.f, 0.13f, 0.f),
+	entity2 = EntityCreationInterface::createMovingCrate(system, glm::translate(glm::vec3(5.f, 10.f, -62.f)), glm::vec3(0.f, 0.13f, 0.f),
 		glm::vec3(0.f, -0.1f, 0.f));
+
+	textDisplayText = "Free Fall";
+	system.createEntity(textDisplay);
+	guiToolkit.addTextDisplay(textDisplay, glm::vec3(0.35f, 0.92f, 0.f), glm::vec3(0.3f, 0.05f, 1.f), whiteTexture, textDisplayText, glm::vec4(0.f));
+
 }
 
 void FreeFall::newState() {
@@ -28,9 +34,9 @@ void FreeFall::newState() {
 	timePaused = 0.0f;
 	system.eraseEntity(entity);
 	system.eraseEntity(entity2);
-	entity = EntityCreationInterface::createMovingPlanet(system, glm::translate(glm::vec3(0.f, 10.f, -40.f)), glm::vec3(0.f, 0.13f, 0.f),
+	entity = EntityCreationInterface::createMovingPlanet(system, glm::translate(glm::vec3(0.f, 10.f, -62.f)), glm::vec3(0.f, 0.13f, 0.f),
 		glm::vec3(0.f, -0.1f, 0.f));
-	entity2 = EntityCreationInterface::createMovingCrate(system, glm::translate(glm::vec3(5.f, 10.f, -40.f)), glm::vec3(0.f, 0.13f, 0.f),
+	entity2 = EntityCreationInterface::createMovingCrate(system, glm::translate(glm::vec3(5.f, 10.f, -62.f)), glm::vec3(0.f, 0.13f, 0.f),
 		glm::vec3(0.f, -0.1f, 0.f));
 }
 
