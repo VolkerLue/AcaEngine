@@ -525,11 +525,11 @@ void GuiToolkit::updateContainer(float _deltaTime)
 					position.position[0] += cursorPos.x - container.oldCursorPosition.x;
 					position.position[1] += cursorPos.y - container.oldCursorPosition.y;
 					container.oldCursorPosition = cursorPos;
-					container.time += _deltaTime;
-					if (container.time > 0.05f) {
+					//container.time += _deltaTime; //// only in Debug-Mode necessary
+					//if (container.time > 0.05f) {
 						moved.moved = true;
-						container.time = 0.f;
-					}
+						//container.time = 0.f;
+					//}
 				}
 				if (leftClick == false && container.pressed == true) {
 					moved.moved = true;

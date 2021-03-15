@@ -142,10 +142,10 @@ Settings::Settings() :
 	guiToolkit.addTextDisplay(containerElements7.back(), stringHelpText2);
 	containerElements7.push_back(system.createEntity(entity));
 	guiToolkit.addTextDisplay(containerElements7.back(), stringHelpText3);
-	containerElements7.push_back(system.createEntity(entity));
-	guiToolkit.addTextDisplay(containerElements7.back(), stringHelpText4);
+	//containerElements7.push_back(system.createEntity(entity));
+	//guiToolkit.addTextDisplay(containerElements7.back(), stringHelpText4);
 	container7 = system.createEntity(container7);
-	guiToolkit.addContainer(container7, glm::vec3(0.f), glm::vec3(1.f), 4, 1, 0.1f, lightGrayTexture, true, true, containerElements7);
+	guiToolkit.addContainer(container7, glm::vec3(0.f), glm::vec3(1.f), 3, 1, 0.1f, lightGrayTexture, true, true, containerElements7);
 	/*##############################################################################*/
 	containerElements8.push_back(system.createEntity(entity));
 	guiToolkit.addTextDisplay(containerElements8.back(), stringHelp);
