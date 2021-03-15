@@ -114,6 +114,8 @@ public:
 	void updateKeyInputActions(Entity& _entity, System::Function& _function, TextField& _textField);
 
 	int getLevel(Entity _entity);
+	
+	bool getBool(Entity _entity);
 
 private:
 	System& system;
