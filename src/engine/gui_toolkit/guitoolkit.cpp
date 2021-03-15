@@ -585,7 +585,6 @@ void GuiToolkit::update(float _deltaTime)
 	updateCheckBox();
 	updateTextDisplay();
 	updateTextField();	
-	updateTextField();
 	updateSlider();
 }
 
