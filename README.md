@@ -5,7 +5,7 @@ Das Projekt baut mit Visual Studio 2019 16.8.4, aber nicht mit 16.9.1 wegen dies
 
 ## GUI-Toolkit
 
-Das GUI-Toolkit stellt 6 Grundlegende Arten von GUI-Objekten zur Verfügung: Slider, Checkboxes, Buttons, Textdisplays, Textfields und Container. Alle GUI-Objekte brauchen eine Entität. Weitere Parameter wie z.B. Position, Skalierung, Funktion usw. sind abhängig vom konkreten Objekt-Typ. Wenn man einen Container verwendet, dann werden Positionierung und Skalierung der Objekte über den Container verwaltet, man kann aber dennoch einen Wert übergeben. Dieser wird dann vom Container automatisch angepasst.
+Das GUI-Toolkit stellt 6 Grundlegende Arten von GUI-Objekten zur Verfügung: Slider, Checkboxes, Buttons, Textdisplays, Textfields und Container. Alle GUI-Objekte brauchen eine Entität. Weitere Parameter wie z.B. Position, Skalierung, Funktion usw. sind abhängig vom konkreten Objekt-Typ. Wenn man einen Container verwendet, dann werden Positionierung und Skalierung der Objekte über den Container verwaltet, man kann aber dennoch einen Positions- und Skalierungswert übergeben. Dieser wird dann vom Container automatisch angepasst.
 
 Alle Objekte außer Slider und Container haben eine Textausgabemöglichkeit. Der Text muss als String übergeben werden. Beim Textfeld wird der Text (Standard-Text) so lange angezeigt bis man auf das Textfeld klickt. Dann kann der Nutzer per Tastatureingabe einen neuen Text eingeben. Außerdem kann die Textfarbe übergeben werden.
 
@@ -44,7 +44,7 @@ bei einfachen Funktionen wird diese berechnung in einer Updatefunktion im Toolki
 
 ## Container
 
-Container übernehmen die Positionierung, Anordnung und Skalierung der einzelnen Objekte. Container haben eine Position, eine Skalierung,
+Container übernehmen die Positionierung, Anordnung und Skalierung der einzelnen Objekte. Container haben eine Position, eine Skalierung, eine
 Reihen und Spalten Zahl, einen Abstandparameter, eine Hintergrundtextur, zwei Booleans und einen Vector an Entitäten.
 
 Der erste Boolean gibt an ob die Angegebe Textur als Hintergrund gesetzt wird. 
@@ -70,21 +70,31 @@ Die einzelnen Gamestates haben zusätzlich neue Funktion, welche unsere Gui Elem
 Jeder Gamestate hat einen Button, welcher zurück zu Menü führt.
 Sollte dieser Button nicht getätigt werden, wird der Gamestate nach 60 Sekunden automatisch beendet.
 
-Die drei verfügbaren Gamestates sind Shooter, Lights und Spring.
+Neben den zwei reinen GUI Gamestates gibt es 5 Gamestates mit GUI Elementen und weiteren Game Engine Funktionen, nämlich Shooter, Lights, Spring, UpAndDown und FreeFall.
 
-Beim Shooter werden Planeten auf Crates geschossen. Bei einem Treffer werden die Crates zerstört. Mit einem Button können neue Crates erstellt werden und mit einer Checkbox kann die Kollisionsdetection an und aus gemacht werden.
+Beim Shooter werden Planeten auf Crates geschossen. Bei einem Treffer werden die Crates zerstört. Mit einem Button können neue Crates erstellt werden und mit einer Checkbox kann die Kollisionsdetection an und aus gestellt werden.
 
 Lights ist ein Gamestate bei welchem sich ein Planet durch eine Reihe von farbigen Punktlichtquellen bewegt. Diese Quellen können mit Checkboxen an und aus gemacht werden.
 
 Spring ist ein Planet welcher sich vertikal hoch und runter bewegt. Die Bewegung wird durch eine Feder, welche den Planeten in der Mitte fixiert beschrieben.
 Mit einem Slider wird die Geschwindigkeit des Planetens modifiziert.
 
+UpAndDown ist ein Planet der erst eine Geschwindigkeit nach oben besitzt, die nach 2 Sekunden in eine Geschwindigkeit nach unten geändert wird und nach wieder 2 Sekunden zurückgeändert wird.
+
+FreeFall ist ein Planet und ein Crate, die erst eine Geschwindigkeit nach oben besitzen und dann durch ihre, die Geschwindigkeit verändernde Beschleunigung nach unten fallen.
+
 
 ## Entity-Creation-Interface
-Das Entity-Creation-Interface kann genutzt werden um einfach neue Entitäten zu erstellen. Dieses Interface muss einmal mit der Funktion initialize initialisiert werden, was automatisch im Game Konstruktor geschieht. Das Interface bietet Funktionen um häufig genutzte Entitäten zu erstellen, wie beispielsweise einfach bewegende, rotierende, springartige oder schießbare Entitäten. Außerdem können mit generischen Funktionen, mit booleans zum Auswählen, beliebige Entitäten erstellt werden. Pointlights und Rectangles können auch damit erstellt werden. Dieses Interface kann genutzt werden um beim Buttondrücken neue Entitäten zu erstellen, wie es beispielsweise im Shooter mit dem Button create Targets der Fall ist.
+Das Entity-Creation-Interface kann genutzt werden um einfach neue Entitäten zu erstellen. Dieses Interface muss einmal mit der Funktion initialize initialisiert werden, was automatisch im Game Konstruktor geschieht. 
 
-## Restliche Gameengine
-Die Gameengine benutzt ein Entity-Component-System mit einer Registry. Ein System greift auf die Registry zu und verändert mit einem Physik- und Zugriffssytem (Entitysystem, Componentsystem) Entitäten und Komponenten. Außerdem stellt das System ein Drawsystem bereit, bei welchem verschiedene Renderer verwendet werden. Eine Game Klasse verwaltet alle Gamestates und ruft für sie update und draw Methoden mit der Zeit als Parametern auf, wobei diese das System aufrufen. Kollisionserkennung kann mit der Systemfunktion removeIntersecting genutzt werden, wobei vorher Boxen mit dem boolean isTarget als true oder false hinzugefügt werden müssen. Es können mit dem System Pointlights hinzugefügt werden, wobei erst, mit dem System, Lightconstants hinzugefügt werden müssen oder es wird das Entity-Creation-Interface genutzt. 
+Das Interface bietet Funktionen um häufig genutzte Entitäten zu erstellen, wie beispielsweise einfach bewegende, rotierende, springartige oder schießbare Entitäten. 
+Außerdem können mit generischen Funktionen, mit booleans zum Auswählen, beliebige Entitäten erstellt werden. Pointlights und Rectangles können auch damit erstellt werden.
 
+Dieses Interface kann genutzt werden um beim Buttondrücken neue Entitäten zu erstellen, wie es beispielsweise im Shooter mit dem Button create Targets der Fall ist.
 
- 
+## Andere Teile der Gameengine
+Die Gameengine benutzt ein Entity-Component-System mit einer Registry. Ein System greift auf die Registry zu und verändert mit einem Physik- und Zugriffssytem (Entitysystem, Componentsystem) Entitäten und Komponenten. Außerdem stellt das System ein Drawsystem bereit, bei welchem verschiedene Renderer verwendet werden. 
+
+Eine Game Klasse verwaltet alle Gamestates und ruft für sie update und draw Methoden mit der Zeit als Parametern auf, wobei diese das System aufrufen. 
+
+Kollisionserkennung kann mit der Systemfunktion removeIntersecting genutzt werden, wobei vorher Boxen mit dem boolean isTarget als true oder false hinzugefügt werden müssen. Es können mit dem System Pointlights hinzugefügt werden, wobei erst, mit dem System, Lightconstants hinzugefügt werden müssen oder es wird das Entity-Creation-Interface genutzt. 
